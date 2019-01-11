@@ -5,7 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var sessionRouter = require('./routes/session');
+
+let game = require('./game.js');
 
 var app = express();
 
@@ -20,6 +22,14 @@ io.on('connection', function (socket) {
   socket.on('my other event', function (data) {
     console.log(data);
   });
+  socket.on('start', function (data) {
+    game.start();
+    //socket.emit('news', game.getState());
+  });
+
+  socket.on('get', function (data) {
+    socket.emit('news', game.getState());
+  });
 });
 
 // view engine setup
@@ -33,7 +43,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/session', sessionRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
