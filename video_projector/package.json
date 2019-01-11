@@ -1,0 +1,22 @@
+{
+  "name": "video_projector",
+  "version": "1.0.0",
+  "description": "Screen displayed to the runners",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PierreRainero/InterfacesTactilesEtReparties.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PierreRainero/InterfacesTactilesEtReparties/issues"
+  },
+  "homepage": "https://github.com/PierreRainero/InterfacesTactilesEtReparties#readme",
+  "dependencies": {
+    "socket.io-client": "^2.2.0"
+  }
+}
