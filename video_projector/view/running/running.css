@@ -1,0 +1,55 @@
+html, body {
+    color: #808080;
+    font-family: Monospace;
+    font-size: 13px;
+    text-align: center;
+
+    background-color: #fff;
+    margin: 0px;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+#running{
+    width: 100%;
+    height: 100%;
+}
+
+#info {
+    position: absolute;
+    top: 0px; width: 100%;
+    padding: 5px;
+}
+
+#centerer {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+#centerer-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 604px;  /* 300*2 + border; */
+}
+
+#container div {
+    float: left;
+}
+#canvas1, #canvas2, #canvas3, #canvas4 {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    border: 1px solid red;
+    float: left;
+}
+
+a {
+    color: #0080ff;
+}

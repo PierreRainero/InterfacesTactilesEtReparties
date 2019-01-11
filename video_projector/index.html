@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Running</title>
+    <link rel="stylesheet" type="text/css" href="view/running/running.css">
 </head>
 <body>
-
+    <div id="running">
+        <div id="centerer">
+            <div id="centerer-cell">
+                <div id="container">
+                    <div class="container-row">
+                        <canvas id="canvas1"></canvas>
+                        <canvas id="canvas2"></canvas>
+                    </div>
+                    <div class="container-row">
+                        <canvas id="canvas3"></canvas>
+                        <canvas id="canvas4"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="index.js"></script>
 <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+<script src="node_modules/three/build/three.js"></script>
 <script src="services/socket.js"></script>
+<script src="view/running/WebGL.js"></script>
+<script src="view/running/running.js"></script>
 </html>
