@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var sessionRouter = require('./routes/session');
 
-let game = require('./game.js');
+let game = require('./game/actions.js');
 
 var app = express();
 
@@ -24,7 +24,6 @@ io.on('connection', function (socket) {
   });
   socket.on('start', function (data) {
     game.start();
-    //socket.emit('news', game.getState());
   });
 
   socket.on('get', function (data) {
