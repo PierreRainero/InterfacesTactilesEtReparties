@@ -9,6 +9,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+app.set('port', process.env.PORT || 3000);
+
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 server.listen(8282);
