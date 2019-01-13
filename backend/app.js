@@ -16,6 +16,7 @@ var io = require('socket.io')(server);
 server.listen(8282);
 
 io.on('connection', function (socket) {
+  console.log('client connected');
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
