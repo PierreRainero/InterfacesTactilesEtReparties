@@ -5,7 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var sessionRouter = require('./routes/session');
+
+let game = require('./game/actions.js');
 
 var app = express();
 
@@ -16,9 +18,17 @@ var io = require('socket.io')(server);
 server.listen(8282);
 
 io.on('connection', function (socket) {
+  console.log('client connected');
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
+  });
+  socket.on('start', function (data) {
+    game.start();
+  });
+
+  socket.on('get', function (data) {
+    socket.emit('news', game.getState());
   });
 });
 
@@ -33,7 +43,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/session', sessionRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
