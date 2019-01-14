@@ -47,10 +47,10 @@ namespace Kinect.Communication
         /// Sends a message to a specific channel for distant server
         /// </summary>
         /// <param name="chanel">Chanel to use</param>
-        /// <param name="data">Data content</param>
+        /// <param name="data">Data content as json object in a string</param>
         public void Emit(string chanel, string data)
         {
-            socket.Send("42[\"" + chanel + "\", { \"content\":\""+ data + "\"}]");
+            socket.Send("42[\"" + chanel + "\","+ data + "]");
         }
     }
 }

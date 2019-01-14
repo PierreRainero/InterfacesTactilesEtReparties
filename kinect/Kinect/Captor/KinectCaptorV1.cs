@@ -1,4 +1,5 @@
-﻿using Kinect.Game;
+﻿using Kinect.Gameplay;
+using Kinect.Gameplay.Model;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit;
 using System;
@@ -9,18 +10,23 @@ namespace Kinect.Captor
     /// <summary>
     /// Class to detect and interacts with a kinect v1
     /// </summary>
-    class KinectV1
+    /// <author>Pierre RAINERO</author>
+    /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
+    class KinectCaptorV1
     {
         private KinectSensor sensor;
         public string Status { get; private set; }
         private Player[] players;
+        private Game gameHook;
 
         /// <summary>
-        /// Normal constructor : Detect and start kinect
+        /// Normal constructor : Detect and start the kinect
         /// </summary>
-        /// <param name="players">Players of the game to use</param>
-        public KinectV1(Player[] players)
+        /// <param name="players">Maximum players of the game to use</param>
+        /// <param name="game">Game linked to the captor</param>
+        public KinectCaptorV1(Player[] players, Game game)
         {
+            gameHook = game;
             KinectSensorChooser sensorStatus = new KinectSensorChooser();
             sensorStatus.KinectChanged += KinectSensorChooserKinectChanged;
             this.players = players;
@@ -67,9 +73,17 @@ namespace Kinect.Captor
             List<Skeleton> nonAssociatedSkeletons = UpdateDefinedPlayers(skeletons);
             AssociateSkeletonsToPlayers(nonAssociatedSkeletons);
 
-            foreach (Player player in players)
+            switch (gameHook.Step)
             {
-                RaiseHand(player);
+                case GameStep.WAITING:
+                    if(GameEngine.PlayersReady(players))
+                    {
+                        gameHook.StartGame();
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -158,28 +172,6 @@ namespace Kinect.Captor
                         break;
                     }
                  }
-            }
-        }
-
-        /// <summary>
-        /// Detects if a player raise his right hand
-        /// </summary>
-        /// <param name="player">Player to check</param>
-        private void RaiseHand(Player player)
-        {
-            if (!player.IsDefined())
-            {
-                return;
-            }
-
-            Skeleton skeleton = player.Skeleton;
-
-            Joint centreHip = skeleton.Joints[JointType.HipCenter];
-            Joint rightHand = skeleton.Joints[JointType.WristRight];
-
-            if (centreHip.Position.Y < rightHand.Position.Y)
-            {
-                Console.WriteLine("Main "+ player.Color + " levée");
             }
         }
 

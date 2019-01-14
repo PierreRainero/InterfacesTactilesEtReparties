@@ -1,6 +1,6 @@
 ﻿using Microsoft.Kinect;
 
-namespace Kinect.Game
+namespace Kinect.Gameplay.Model
 {
     /// <summary>
     /// Class representing a player
@@ -9,8 +9,9 @@ namespace Kinect.Game
     /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
     class Player
     {
-        public int TackedId { get; private set; }
+        public int TackedId { get; set; }
         public string Color { get; private set; }
+        public PlayerState state { get; set; }
         public Skeleton Skeleton { get; set; }
 
         /// <summary>
@@ -22,6 +23,7 @@ namespace Kinect.Game
             TackedId = -1;
             this.Color = color;
             Skeleton = null;
+            state = PlayerState.NOTDETECTED;
         }
 
         /// <summary>
@@ -55,6 +57,15 @@ namespace Kinect.Game
         public override string ToString()
         {
             return base.ToString() + ": { color: "+ Color + ", id: " + TackedId+" }";
+        }
+
+        /// <summary>
+        /// Convert the object to a Data Transfert Object in json format
+        /// </summary>
+        /// <returns>Minimum necessary informations to send</returns>
+        public string ToDTO()
+        {
+            return "{\"color\": \"" + Color + "\"}";
         }
     }
 }

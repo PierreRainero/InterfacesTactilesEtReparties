@@ -18,13 +18,10 @@ var io = require('socket.io')(server);
 server.listen(8282);
 
 io.on('connection', function (socket) {
-  console.log('client connected');
+  console.log('Client connected !');
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
   socket.on('start', function (data) {
-    game.start();
+    game.start(data.players);
   });
 
   socket.on('get', function (data) {

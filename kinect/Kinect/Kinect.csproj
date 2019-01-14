@@ -59,9 +59,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Captor\KinectV1.cs" />
+    <Compile Include="Gameplay\GameEngine.cs" />
+    <Compile Include="Captor\KinectCaptorV1.cs" />
+    <Compile Include="Captor\SkeletonAnalyser.cs" />
+    <Compile Include="Communication\PairFormater.cs" />
     <Compile Include="Communication\SocketIOClient.cs" />
-    <Compile Include="Game\Player.cs" />
+    <Compile Include="Gameplay\Game.cs" />
+    <Compile Include="Gameplay\Exception\UndefinedPlayerException.cs" />
+    <Compile Include="Gameplay\GameStep.cs" />
+    <Compile Include="Gameplay\Model\Player.cs" />
+    <Compile Include="Gameplay\Model\PlayerState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
