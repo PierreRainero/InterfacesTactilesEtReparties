@@ -19,7 +19,7 @@
             android:id="@+id/talkClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="selectColor"
+            android:onClick="selectColorBlue"
             android:text="Joueur bleu" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="selectColor"
+            android:onClick="selectColorRed"
             android:text="Joueur rouge" />
     </LinearLayout>
 </android.support.wear.widget.BoxInsetLayout>

@@ -1,10 +1,6 @@
 package com.example.gaulthier.watchproject;
 
 import android.content.BroadcastReceiver;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.content.Context;
 import android.content.Intent;
@@ -21,11 +17,7 @@ import com.google.android.gms.wearable.Node;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends WearableActivity implements SensorEventListener {
-
-    SensorManager mSensorManager;
-    Sensor mHeartRateSensor;
-    SensorEventListener sensorEventListener;
+public class MainActivity extends WearableActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,35 +28,26 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         Receiver messageReceiver = new Receiver();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
-
-        mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
-        mHeartRateSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
-        mSensorManager.registerListener(this, mHeartRateSensor, mSensorManager.SENSOR_DELAY_FASTEST);
     }
 
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        System.out.println("onAccuracyChanged - accuracy: " + accuracy);
+    public void selectColorBlue(View v) {
+        selectColor("blue");
     }
 
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
-            String msg = "" + (int)event.values[0];
-            System.out.println("heart : " + msg);
-        }
-        else
-        System.out.println("Unknown sensor type");
+    public void selectColorRed(View v) {
+        selectColor("red");
     }
 
-    public void selectColor(View v) {
+    public void selectColor(String color) {
         String datapath = "/my_path";
-        new SendMessage(datapath, "le message").start();
+        System.out.println("message sent to handled device");
+        new SendMessage(datapath, "device " + android.os.Build.MODEL + " choose color " + color).start();
     }
 
     public class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            String onMessageReceived = "I just received a message from the handheld ";
-//            textView.setText(onMessageReceived);
+            System.out.println("message received from the handled");
         }
     }
 

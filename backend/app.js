@@ -9,13 +9,17 @@ var sessionRouter = require('./routes/session');
 
 let game = require('./game/actions.js');
 
+// var app = express();
+
+// app.set('port', process.env.PORT || 3000);
+
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
+// server.listen(8282);
+
 var app = express();
-
-app.set('port', process.env.PORT || 3000);
-
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-server.listen(8282);
+var server = app.listen(3001);
+var io = require('socket.io').listen(server);
 
 io.on('connection', function (socket) {
   console.log('Client connected !');
@@ -23,6 +27,10 @@ io.on('connection', function (socket) {
   socket.on('start', function (data) {
     game.start(data.players);
   });
+
+  socket.on('dataWatch', function(data) {
+    console.log(data);
+  })
 
   socket.on('get', function (data) {
     socket.emit('news', game.getState());

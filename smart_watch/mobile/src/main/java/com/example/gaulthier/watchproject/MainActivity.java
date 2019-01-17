@@ -61,6 +61,14 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    /**
+     * For testing connection
+     */
+    public void sendToServer(View v) {
+        System.out.println("Try to send to server");
+        mSocket.emit("dataWatch", "laaa");
+    }
+
     public void messageText(String newinfo) {
         if (newinfo.compareTo("") != 0) {
             textview.append("\n" + newinfo);
@@ -71,8 +79,10 @@ public class MainActivity extends AppCompatActivity  {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            System.out.println("message received from wearable device");
             if (intent.getAction().equals(Intent.ACTION_SEND)) {
-                mSocket.emit("data", intent.getStringExtra("message"));
+                System.out.println("message sent to server");
+                mSocket.emit("dataWatch", intent.getStringExtra("message"));
             }
 
 
