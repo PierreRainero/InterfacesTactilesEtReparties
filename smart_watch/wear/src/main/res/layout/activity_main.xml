@@ -19,11 +19,19 @@
             android:id="@+id/talkClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Talk to the handheld"/>
+            android:onClick="selectColor"
+            android:text="Joueur bleu" />
 
         <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="selectColor"
+            android:text="Joueur rouge" />
     </LinearLayout>
 </android.support.wear.widget.BoxInsetLayout>
