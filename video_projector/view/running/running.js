@@ -12,64 +12,23 @@ var mouseX = 0, mouseY = 0;
 
 var windowWidth, windowHeight;
 
-var views = [
-    {
-        left: 0,
+var views = [];
+
+for(var i = 0; i < game.players.length; i++){
+    views.push({
+        left: (1/game.players.length) * i,
         top: 0,
-        width: 0.25,
+        width: 1/game.players.length,
         height: 1.0,
-        background: new THREE.Color( 0.5, 0.5, 0.7 ),
-        eye: [ -600, 0, 2000 ],
+        background: new THREE.Color(Math.random(), Math.random(), Math.random()),
+        eye: [ -600 + (i*400), 0, 2000 ],
         up: [ 0, 1, 0 ],
         fov: 30,
         updateCamera: function ( camera, scene, mouseX ) {
             camera.position.z += mouseY * 0.05;
-            camera.position.z = Math.max( Math.min( camera.position.z, 2000 ), - 2000 );
         }
-    },
-    {
-        left: 0.25,
-        top: 0,
-        width: 0.25,
-        height: 1.0,
-        background: new THREE.Color( 0.7, 0.5, 0.5 ),
-        eye: [ -200, 0, 2000 ],
-        up: [ 0, 1, 0 ],
-        fov: 30,
-        updateCamera: function ( camera, scene, mouseX ) {
-            camera.position.z += mouseY * 0.05;
-            camera.position.z = Math.max( Math.min( camera.position.z, 2000 ), - 2000 );
-        }
-    },
-    {
-        left: 0.5,
-        top: 0,
-        width: 0.25,
-        height: 1.0,
-        background: new THREE.Color( 0.5, 0.7, 0.5 ),
-        eye: [ 200, 0, 2000 ],
-        up: [ 0, 1, 0 ],
-        fov: 30,
-        updateCamera: function ( camera, scene, mouseX ) {
-            camera.position.z += mouseY * 0.05;
-            camera.position.z = Math.max( Math.min( camera.position.z, 2000 ), - 2000 );
-        }
-    },
-    {
-        left: 0.75,
-        top: 0,
-        width: 0.25,
-        height: 1.0,
-        background: new THREE.Color( 0.7, 0.7, 0.7 ),
-        eye: [ 600, 0, 2000 ],
-        up: [ 0, 1, 0 ],
-        fov: 30,
-        updateCamera: function ( camera, scene, mouseX ) {
-            camera.position.z += mouseY * 0.05;
-            camera.position.z = Math.max( Math.min( camera.position.z, 2000 ), - 2000 );
-        }
-    }
-];
+    });
+}
 
 init();
 animate();
