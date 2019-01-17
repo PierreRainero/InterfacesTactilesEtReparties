@@ -1,11 +1,18 @@
+const Player = require('./player.js');
+
+const players = new Array();
 let state = "waiting_players";
 let actions = {};
 
 module.exports = {
 
-    start: function () {
+    start: function (players) {
         state = "running";
-        console.log("actions start");
+        
+        players.forEach(player => {
+            players.push(new Player(player.color));
+            console.log("Player "+player.color+" is ready !");
+        });
     },
 
     getState: function (){
