@@ -39,6 +39,7 @@ namespace Kinect.Gameplay
         {
             kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
+            socketIO.On("kinectStartRun", StartRun);
 
             SimpleObjectFormater objectToSend = new SimpleObjectFormater();
             objectToSend.AddString("state", kinectMotor.Status);
@@ -69,12 +70,19 @@ namespace Kinect.Gameplay
                 {
                     SimpleObjectFormater playerObjectToSend = new SimpleObjectFormater();
                     playerObjectToSend.AddInt("id", player.PlayerId);
+                    playerObjectToSend.AddInt("state", (int)player.State);
                     playersArray.AddMember(playerObjectToSend);
                 }
             }
             objectToSend.AddArray("players", playersArray);
 
             socketIO.Emit("players", objectToSend.JSONFormat());
+        }
+
+        private void StartRun(string message)
+        {
+            Console.WriteLine("Message received : " + message + "\nThe run can start.");
+            Step = GameStep.STARTED;
         }
     }
 }

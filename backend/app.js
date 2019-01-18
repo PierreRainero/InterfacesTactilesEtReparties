@@ -32,9 +32,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('players', function (data) {
-    console.log('ok bien reçu !');
-    console.log(data);
-    game.definePlayers(data.players, projectorSocket);
+    game.definePlayers(data.players, kinectSocket, projectorSocket);
   });
 
   socket.on('dataWatch', function(data) {

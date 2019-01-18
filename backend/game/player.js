@@ -1,5 +1,6 @@
 module.exports = class Player {
-  constructor(id) {
+  constructor(id, state) {
     this.id = id;
+    this.state = state;
   }
 }

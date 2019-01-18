@@ -1,4 +1,6 @@
-﻿using WebSocketSharp;
+﻿using System;
+using System.Text.RegularExpressions;
+using WebSocketSharp;
 
 namespace Kinect.Communication
 {
@@ -10,6 +12,7 @@ namespace Kinect.Communication
     class SocketIOClient
     {
         private readonly WebSocket socket;
+        private readonly static string doublequote = "\"";
 
         /// <summary>
         /// Normal constructor : create the socket
@@ -51,6 +54,22 @@ namespace Kinect.Communication
         public void Emit(string chanel, string data)
         {
             socket.Send("42[\"" + chanel + "\","+ data + "]");
+        }
+
+        public void On(string chanel, Action<string> callback)
+        {
+            socket.OnMessage += (sender, e) => {
+                string data = e.Data;
+
+                if (data.Substring(0,2) == "42")
+                {
+                    Regex pattern = new Regex(@"\[" + doublequote + chanel + doublequote + @"," + doublequote + @"(?<message>\w+)" + doublequote + @"\]");
+                    Match match = pattern.Match(e.Data);
+                    string message = match.Groups["message"].Value;
+
+                    callback(message);
+                }
+            };
         }
     }
 }
