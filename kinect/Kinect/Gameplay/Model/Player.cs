@@ -54,6 +54,7 @@ namespace Kinect.Gameplay.Model
             Skeleton = null;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return base.ToString() + ": { id: "+ PlayerId + ", trackedId: " + TackedId+" }";

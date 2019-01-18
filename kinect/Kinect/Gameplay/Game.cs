@@ -3,6 +3,7 @@ using Kinect.Communication.Formater;
 using Kinect.Captor;
 using Kinect.Gameplay.Model;
 using System;
+using System.Configuration;
 
 namespace Kinect.Gameplay
 {
@@ -23,13 +24,10 @@ namespace Kinect.Gameplay
         /// </summary>
         public Game()
         {
-            Step = GameStep.WAITING;
+            Int32.TryParse(ConfigurationManager.AppSettings["socketIO_port"], out int port);
+            socketIO = new SocketIOClient(ConfigurationManager.AppSettings["socketIO_url"], port);
 
-            players = new Player[2];
-            players[0] = new Player(1);
-            players[1] = new Player(2);
-
-            socketIO = new SocketIOClient("localhost", 8282);
+            StartNewGame();
         }
 
         /// <summary>
@@ -77,6 +75,18 @@ namespace Kinect.Gameplay
             objectToSend.AddArray("players", playersArray);
 
             socketIO.Emit("players", objectToSend.JSONFormat());
+        }
+
+        /// <summary>
+        /// Stop for good the previous game and start a new one (return to the initial state)
+        /// </summary>
+        private void StartNewGame()
+        {
+            players = new Player[2];
+            players[0] = new Player(1);
+            players[1] = new Player(2);
+
+            Step = GameStep.WAITING;
         }
 
         /// <summary>

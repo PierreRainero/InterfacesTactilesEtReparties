@@ -6,7 +6,18 @@
 
 ## Description
 
-Ce projet a pour objectif d'intéragir avec une [Kinect](https://fr.wikipedia.org/wiki/Kinect) version 1 pour extraire les informations nécessaires pour démarrer la course de haies et détecter les coureurs tout le long de celle-ci. 
+Ce projet a pour objectif d'intéragir avec une [Kinect](https://fr.wikipedia.org/wiki/Kinect) version 1 pour extraire les informations nécessaires pour démarrer la course de haies et détecter les coureurs tout le long de celle-ci.
+
+## Configurations préalables
+
+Il est nécessaire que le "[backend](../backend)" soit prêt à intéragir avec cette application et que les informations pour rendre cette communication possible soient à jour. Pour cela il faut bien veiller à ce que l'url du "backend" soit correctement renseignée dans le fichier [App.config](./Kinect/App.config) :
+
+```xml
+<appSettings>
+    <add key="socketIO_url" value="urlDuBackend"/>
+    <add key="socketIO_port" value="portDuBackend"/>
+</appSettings>
+```
 
 ## Utilisation
 
