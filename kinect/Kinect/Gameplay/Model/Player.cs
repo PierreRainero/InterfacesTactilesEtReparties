@@ -11,7 +11,7 @@ namespace Kinect.Gameplay.Model
     {
         public int TackedId { get; private set; }
         public int PlayerId { get; private set; }
-        public PlayerState state { get; set; }
+        public PlayerState State { get; set; }
         public Skeleton Skeleton { get; set; }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Kinect.Gameplay.Model
             TackedId = -1;
             this.PlayerId = playerId;
             Skeleton = null;
-            state = PlayerState.NOTDETECTED;
+            State = PlayerState.NOTDETECTED;
         }
 
         /// <summary>

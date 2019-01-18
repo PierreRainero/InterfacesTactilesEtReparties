@@ -76,9 +76,9 @@ namespace Kinect.Captor
             switch (gameHook.Step)
             {
                 case GameStep.WAITING:
-                    if(GameEngine.PlayersReady(players))
+                    if (GameEngine.DidPlayersStateChange(players))
                     {
-                        gameHook.StartGame();
+                        gameHook.SendPlayers();
                     }
                     break;
 

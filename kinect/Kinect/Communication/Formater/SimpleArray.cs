@@ -41,7 +41,8 @@ namespace Kinect.Communication.Formater
         /// <inheritdoc />
         public override string JSONFormat()
         {
-            StringBuilder jsonObject = new StringBuilder(base.JSONFormat() + "[");
+            string baseValue = Key == null ? "[" : base.JSONFormat() + "[";
+            StringBuilder jsonObject = new StringBuilder(baseValue);
 
             foreach (SimpleMember member in members)
             {

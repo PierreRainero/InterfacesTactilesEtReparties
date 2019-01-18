@@ -2,7 +2,6 @@
 using Kinect.Communication.Formater;
 using Kinect.Captor;
 using Kinect.Gameplay.Model;
-using System.Text;
 using System;
 
 namespace Kinect.Gameplay
@@ -55,12 +54,12 @@ namespace Kinect.Gameplay
         }
 
         /// <summary>
-        /// Starts the gameplay phase
+        /// Send the current players to the backend
         /// </summary>
         /// <remarks>
         /// Gameplay method : You shouldn't call it manually.
         /// </remarks>
-        public void StartGame()
+        public void SendPlayers()
         {
             SimpleObjectFormater objectToSend = new SimpleObjectFormater();
             SimpleArray playersArray = new SimpleArray();
@@ -75,8 +74,7 @@ namespace Kinect.Gameplay
             }
             objectToSend.AddArray("players", playersArray);
 
-            socketIO.Emit("start", objectToSend.JSONFormat());
-            Step = GameStep.STARTED;
+            socketIO.Emit("players", objectToSend.JSONFormat());
         }
     }
 }

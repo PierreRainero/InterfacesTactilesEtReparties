@@ -8,6 +8,9 @@ module.exports = {
 
     start: function (data, projectorSocket) {
         state = "running";
+    },
+
+    definePlayers: function (data, projectorSocket) {
         players = new Array();
         for(const player of data) {
             players.push(new Player(player.id));
@@ -15,7 +18,8 @@ module.exports = {
         }
         
         if(projectorSocket!==null) {
-            projectorSocket.emit('gameStart', players);
+            // @TODO
+            // Emit the list of players to the projector
         }
     },
 
