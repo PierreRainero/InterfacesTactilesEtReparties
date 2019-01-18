@@ -79,6 +79,10 @@ namespace Kinect.Gameplay
             socketIO.Emit("players", objectToSend.JSONFormat());
         }
 
+        /// <summary>
+        /// Pass to the next gameplay step which is the run
+        /// </summary>
+        /// <param name="message">Message emitted by the backend</param>
         private void StartRun(string message)
         {
             Console.WriteLine("Message received : " + message + "\nThe run can start.");

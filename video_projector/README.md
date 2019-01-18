@@ -1,7 +1,6 @@
-# Projection vidéo
+# Projecteur vidéo
 
-## Description
+## Auteurs
 
-## Documentations
-
-## Technologies utilisées
+* [Julien MAUREILLE](julien.maureille@live.fr)
+* [Gregory MERLET](gregory.merlet@outlook.fr)

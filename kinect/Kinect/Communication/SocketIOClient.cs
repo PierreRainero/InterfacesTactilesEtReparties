@@ -56,6 +56,11 @@ namespace Kinect.Communication
             socket.Send("42[\"" + chanel + "\","+ data + "]");
         }
 
+        /// <summary>
+        /// Receive a message from distant server
+        /// </summary>
+        /// <param name="chanel">Chanel to listen</param>
+        /// <param name="callback">Method to call when a message is emitted</param>
         public void On(string chanel, Action<string> callback)
         {
             socket.OnMessage += (sender, e) => {
