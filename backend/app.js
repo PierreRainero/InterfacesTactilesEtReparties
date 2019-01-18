@@ -9,17 +9,13 @@ var sessionRouter = require('./routes/session');
 
 let game = require('./game/actions.js');
 
-// var app = express();
-
-// app.set('port', process.env.PORT || 3000);
-
-// var server = require('http').Server(app);
-// var io = require('socket.io')(server);
-// server.listen(8282);
-
 var app = express();
-var server = app.listen(3001);
-var io = require('socket.io').listen(server);
+
+app.set('port', process.env.PORT || 3000);
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+server.listen(8282);
 
 io.on('connection', function (socket) {
   console.log('Client connected !');
