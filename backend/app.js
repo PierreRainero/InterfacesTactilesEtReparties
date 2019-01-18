@@ -20,14 +20,13 @@ server.listen(8282);
 var projectorSocket = null;
 
 io.on('connection', function (socket) {
-  console.log('Client connected !');
-  socket.emit('news', { hello: 'world' });
-
   socket.on('hiImTheProjector', function (){
+    console.log('projector ready !');
     projectorSocket = socket;
   });
 
   socket.on('start', function (data) {
+    console.log('kinect ready !');
     game.start(data.players, projectorSocket);
   });
 

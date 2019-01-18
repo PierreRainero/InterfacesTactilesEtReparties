@@ -1,19 +1,19 @@
 const Player = require('./player.js');
 
-const players = new Array();
+
 let state = "waiting_players";
 let actions = {};
 
 module.exports = {
 
-    start: function (players, projectorSocket) {
+    start: function (data, projectorSocket) {
         state = "running";
-        
-        players.forEach(player => {
+        const players = new Array();
+        for(const player of data) {
             players.push(new Player(player.color));
             console.log("Player "+player.color+" is ready !");
-        });
-
+        }
+        console.log(players);
         projectorSocket.emit('gameStart', players);
     },
 
