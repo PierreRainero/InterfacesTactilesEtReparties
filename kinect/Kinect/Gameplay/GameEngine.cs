@@ -1,6 +1,7 @@
 ﻿using Kinect.Captor;
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
+using System;
 
 namespace Kinect.Gameplay
 {

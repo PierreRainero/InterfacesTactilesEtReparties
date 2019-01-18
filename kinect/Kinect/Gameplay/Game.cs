@@ -1,7 +1,9 @@
 ﻿using Kinect.Communication;
+using Kinect.Communication.Formater;
 using Kinect.Captor;
 using Kinect.Gameplay.Model;
 using System.Text;
+using System;
 
 namespace Kinect.Gameplay
 {
@@ -25,8 +27,8 @@ namespace Kinect.Gameplay
             Step = GameStep.WAITING;
 
             players = new Player[2];
-            players[0] = new Player("blue");
-            players[1] = new Player("red");
+            players[0] = new Player(1);
+            players[1] = new Player(2);
 
             socketIO = new SocketIOClient("localhost", 8282);
         }
@@ -38,6 +40,10 @@ namespace Kinect.Gameplay
         {
             kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
+
+            SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+            objectToSend.AddString("state", kinectMotor.Status);
+            socketIO.Emit("kinectConnected", objectToSend.JSONFormat());
         }
 
         /// <summary>
@@ -56,17 +62,20 @@ namespace Kinect.Gameplay
         /// </remarks>
         public void StartGame()
         {
-            StringBuilder playersList = new StringBuilder("[");
+            SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+            SimpleArray playersArray = new SimpleArray();
             foreach (Player player in players)
             {
                 if (player.IsDefined())
                 {
-                    playersList.Append(player.ToDTO());
+                    SimpleObjectFormater playerObjectToSend = new SimpleObjectFormater();
+                    playerObjectToSend.AddInt("id", player.PlayerId);
+                    playersArray.AddMember(playerObjectToSend);
                 }
             }
-            playersList.Append("]");
-            
-            socketIO.Emit("start", new PairFormater("players", playersList.ToString()).JSONFormat());
+            objectToSend.AddArray("players", playersArray);
+
+            socketIO.Emit("start", objectToSend.JSONFormat());
             Step = GameStep.STARTED;
         }
     }

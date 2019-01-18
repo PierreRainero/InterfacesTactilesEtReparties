@@ -112,6 +112,7 @@ namespace Kinect.Captor
                     trackedSkeletons.Add(skel);
                 }
             }
+
             return trackedSkeletons;
         }
 

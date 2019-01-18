@@ -1,5 +1,5 @@
 module.exports = class Player {
-  constructor(color) {
-    this.color = color;
+  constructor(id) {
+    this.id = id;
   }
 }

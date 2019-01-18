@@ -59,10 +59,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\Formater\SimpleArray.cs" />
+    <Compile Include="Communication\Formater\SimpleIntPair.cs" />
+    <Compile Include="Communication\Formater\SimpleMember.cs" />
+    <Compile Include="Communication\Formater\SimpleObjectFormater.cs" />
+    <Compile Include="Communication\Formater\SimpleStringPair.cs" />
     <Compile Include="Gameplay\GameEngine.cs" />
     <Compile Include="Captor\KinectCaptorV1.cs" />
     <Compile Include="Captor\SkeletonAnalyser.cs" />
-    <Compile Include="Communication\PairFormater.cs" />
     <Compile Include="Communication\SocketIOClient.cs" />
     <Compile Include="Gameplay\Game.cs" />
     <Compile Include="Gameplay\Exception\UndefinedPlayerException.cs" />
