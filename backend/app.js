@@ -17,11 +17,18 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 server.listen(8282);
 
+var projectorSocket = null;
+
 io.on('connection', function (socket) {
   console.log('Client connected !');
   socket.emit('news', { hello: 'world' });
+
+  socket.on('hiImTheProjector', function (){
+    projectorSocket = socket;
+  });
+
   socket.on('start', function (data) {
-    game.start(data.players);
+    game.start(data.players, projectorSocket);
   });
 
   socket.on('dataWatch', function(data) {

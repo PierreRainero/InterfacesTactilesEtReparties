@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Running</title>
+    <link rel="stylesheet" type="text/css" href="view/running/running.css">
 </head>
 <body>
-
+    <div id="running">
+        <p id="chrono"></p>
+        <div id="container"></div>
+    </div>
 </body>
 <script src="index.js"></script>
 <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+<script src="node_modules/three/build/three.js"></script>
+<script src="model/game.js"></script>
 <script src="services/socket.js"></script>
+<script src="view/running/WebGL.js"></script>
+<script src="view/running/running.js"></script>
 </html>
