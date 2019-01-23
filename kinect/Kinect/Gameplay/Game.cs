@@ -4,6 +4,7 @@ using Kinect.Captor;
 using Kinect.Gameplay.Model;
 using System;
 using System.Configuration;
+using Microsoft.Kinect;
 
 namespace Kinect.Gameplay
 {

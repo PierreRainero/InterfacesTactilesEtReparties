@@ -21,7 +21,8 @@ Il est nécessaire que le "[backend](../backend)" soit prêt à intéragir avec 
 
 ## Utilisation
 
-Une fois une Kinect branchée et l'application lancée (voir [Technologies utilisées](##Technologies%20utilisées)), l'application va reconnaitre jusqu'à **2 joueurs**, respectivement "1" et "2".
+Une fois une Kinect branchée et l'application lancée (voir [Technologies utilisées](##Technologies%20utilisées)), l'application va reconnaitre jusqu'à **2 joueurs**, respectivement "1" et "2" :  
+![architecture_scheme](doc/imgs/detection_2_joueurs.png)  
 
 1. Elle émettra la liste des joueurs sur le canal  `players` du "backend" sous la forme suivante dès que cette liste changera et tant que la partie n'aura pas démarré :
 
