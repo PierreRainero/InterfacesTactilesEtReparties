@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="369dp" />
+        android:layout_height="40dp" />
 
     <Button
         android:id="@+id/button"
@@ -28,5 +28,17 @@
         android:layout_height="wrap_content"
         android:text="Send to server"
         android:onClick="sendToServer"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startRun"
+        android:text="Start run" />
 
 </LinearLayout>

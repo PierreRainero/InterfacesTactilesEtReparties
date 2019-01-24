@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity  {
         });
 
         try {
-            mSocket = IO.socket("http://172.20.10.2:3001");
+            mSocket = IO.socket("http://172.20.10.2:8282");
         } catch (URISyntaxException e) {
             System.out.println("error : " + e);
         }
@@ -66,7 +66,11 @@ public class MainActivity extends AppCompatActivity  {
      */
     public void sendToServer(View v) {
         System.out.println("Try to send to server");
-        mSocket.emit("dataWatch", "laaa");
+        mSocket.emit("hiImTheSmartphone", "laaa");
+    }
+
+    public void startRun(View v) {
+        new NewThread("/my_path", "startRun").start();
     }
 
     public void messageText(String newinfo) {

@@ -1,0 +1,39 @@
+<android.support.wear.widget.BoxInsetLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:padding="15dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        app:boxedEdges="all">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Voulez-vous rendre votre rythme cardique visible par le public ?"
+            android:textColor="@color/white" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|left"
+            android:background="@null"
+            android:onClick="refuseData"
+            android:src="@drawable/ic_close_black_24dp" />
+
+        <ImageButton
+            style="@drawa"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|right"
+            android:background="@null"
+            android:onClick="acceptData"
+            android:src="@drawable/ic_check_black_24dp" />
+    </FrameLayout>
+</android.support.wear.widget.BoxInsetLayout>

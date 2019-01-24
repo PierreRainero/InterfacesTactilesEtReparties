@@ -6,7 +6,7 @@ let actions = {};
 
 module.exports = {
 
-    start: function (players, projectorSocket) {
+    start: function (players, projectorSocket, smartphoneSocket) {
         state = "running";
         
         players.forEach(player => {
@@ -15,6 +15,7 @@ module.exports = {
         });
 
         projectorSocket.emit('gameStart', players);
+        smartphoneSocket.emit('gameStart', players);
     },
 
     getState: function (){

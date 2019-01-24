@@ -18,6 +18,7 @@ var io = require('socket.io')(server);
 server.listen(8282);
 
 var projectorSocket = null;
+var smartphoneSocket = null;
 
 io.on('connection', function (socket) {
   console.log('Client connected !');
@@ -27,8 +28,13 @@ io.on('connection', function (socket) {
     projectorSocket = socket;
   });
 
+  socket.on('hiImTheSmartphone', function() {
+    smartphoneSocket = socket;
+    console.log('smartphone connected')
+  })
+
   socket.on('start', function (data) {
-    game.start(data.players, projectorSocket);
+    game.start(data.players, projectorSocket, smartphoneSocket);
   });
 
   socket.on('dataWatch', function(data) {
