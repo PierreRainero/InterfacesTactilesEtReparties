@@ -27,8 +27,8 @@ io.on('connection', function (socket) {
   });
 
   socket.on('hiImTheSmartphone', function() {
+    console.log('smartphone connected');
     smartphoneSocket = socket;
-    console.log('smartphone connected')
   })
 
   socket.on('kinectConnected', function (kinect) {
@@ -40,7 +40,7 @@ io.on('connection', function (socket) {
     game.definePlayers(data.players, kinectSocket, projectorSocket);
   });
 
-  socket.on('dataWatch', function(data) {
+  socket.on('watch', function(data) {
     console.log(data);
   })
 

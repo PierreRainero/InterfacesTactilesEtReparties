@@ -56,17 +56,11 @@ public class ConfigRunActivity extends WearableActivity {
 
     public void heartDataSharing(boolean acceptHeartDataSharing) {
         String datapath = "/my_path";
-        new ConfigRunActivity.SendMessage(datapath, "heartData:" + acceptHeartDataSharing).start();
+        new ConfigRunActivity.SendMessage(datapath, "device " + android.os.Build.MODEL + " accept heart data sharing: " + acceptHeartDataSharing).start();
         this.setContentView(R.layout.waiting_run);
     }
 
     public void startRun() {
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        long[] vibrationPattern = {0, 500, 50, 300};
-        //-1 - don't repeat
-        final int indexInPatternToRepeat = -1;
-        vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
-
         Intent intentMain = new Intent(ConfigRunActivity.this , RunActivity.class);
         ConfigRunActivity.this.startActivity(intentMain);
         finish();
@@ -75,8 +69,11 @@ public class ConfigRunActivity extends WearableActivity {
     public class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            System.out.println("message received from the handled");
-            startRun();
+            String message = intent.getStringExtra("message");
+
+            if (message.equals("gameStart")) {
+                startRun();
+            }
         }
     }
 

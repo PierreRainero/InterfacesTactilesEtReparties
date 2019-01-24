@@ -9,23 +9,18 @@
     tools:context=".RunActivity"
     tools:deviceIds="wear">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/buttonStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rythme cardique" />
+        app:boxedEdges="all">
 
         <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Run activity"/>
+            android:id="@+id/timerTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="@color/white" />
 
-    </LinearLayout>
+    </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>

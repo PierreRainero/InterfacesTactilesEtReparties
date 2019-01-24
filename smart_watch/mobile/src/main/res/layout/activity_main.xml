@@ -26,8 +26,8 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send to server"
-        android:onClick="sendToServer"/>
+        android:onClick="connectToServer"
+        android:text="Connect to server" />
 
     <TextView
         android:id="@+id/textView2"
@@ -38,7 +38,7 @@
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="startRun"
-        android:text="Start run" />
+        android:onClick="gameStart"
+        android:text="Simulated start run" />
 
 </LinearLayout>
