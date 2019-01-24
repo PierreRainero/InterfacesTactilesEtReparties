@@ -18,6 +18,10 @@ var views = [];
 
 var shadowMaterial;
 
+var clock = new THREE.Clock();
+
+var mixers = [], gltfs = [];
+
 setupViews();
 init();
 animate();
@@ -100,6 +104,13 @@ function animate() {
 function render() {
 
     updateSize();
+
+    var delta = clock.getDelta();
+    for(var i = 0; i < mixers.length; i++) {
+        if (mixers[i] != null) {
+            mixers[i].update(delta);
+        }
+    }
 
     for ( var ii = 0; ii < views.length; ++ ii ) {
 
@@ -217,47 +228,9 @@ function createWaitingScreen(){
 }
 
 function createRunners(){
-    //Balls
-
-    var radius = 200;
-
-    for(var i = 0; i < game.players.length; i++){
-
-        var geometry = new THREE.IcosahedronBufferGeometry( radius, 1 );
-
-        var count = geometry.attributes.position.count;
-        geometry.addAttribute( 'color', new THREE.BufferAttribute( new Float32Array( count * 3 ), 3 ) );
-
-        var color = new THREE.Color();
-        var positions1 = geometry.attributes.position;
-        var colors1 = geometry.attributes.color;
-
-        var playerColor = game.getPlayerColor(game.players[i].color);
-
-        for ( var j = 0; j < count; j ++ ) {
-            color.setHSL( playerColor.h, playerColor.s, playerColor.l );
-            colors1.setXYZ( j, color.r, color.g, color.b );
-        }
-
-        var material = new THREE.MeshPhongMaterial( {
-            color: 0xffffff,
-            flatShading: true,
-            vertexColors: THREE.VertexColors,
-            shininess: 0
-        } );
-
-        var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true } );
-
-        var mesh = new THREE.Mesh( geometry, material );
-        var wireframe = new THREE.Mesh( geometry, wireframeMaterial );
-        mesh.add( wireframe );
-        mesh.position.x = -600 + (i*400);
-        runningGroup.add( mesh );
-    }
-
     //Shadows
 
-    var shadowGeo = new THREE.PlaneBufferGeometry( 300, 300, 1, 1 );
+    var shadowGeo = new THREE.PlaneBufferGeometry( 200, 200, 1, 1 );
 
     var shadowMesh;
 
@@ -267,6 +240,34 @@ function createRunners(){
         shadowMesh.position.y = -250;
         shadowMesh.rotation.x = -Math.PI / 2;
         runningGroup.add(shadowMesh);
+    }
+
+    //Runners
+
+    var loader = new THREE.GLTFLoader();
+
+    // Load a glTF resource
+    for(var i = 0; i < game.players.length; i++) {
+        loader.load(`view/running/models/${game.getPlayerModel(game.players[i].color)}/scene.gltf`,
+            (function (gltf) {
+                gltfs.push(gltf);
+
+                var model = gltf.scene;
+                model.scale.x = 50;
+                model.scale.y = 50;
+                model.scale.z = 50;
+                model.position.x = -530 + (this.i*400);
+                model.position.z = -150;
+                model.position.y = -350;
+                model.rotation.y = Math.PI;
+                runningGroup.add(model);
+
+                var mixer = new THREE.AnimationMixer(model);
+                mixer.clipAction(gltf.animations[0]).play();
+                mixers.push(mixer);
+
+                render();
+            }).bind({i: i}));
     }
 }
 

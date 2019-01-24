@@ -48,5 +48,15 @@ var game = {
             default:
                 return "rgb(0, 0, 0)";
         }
+    },
+    getPlayerModel(id){
+        switch(id){
+            case "red":
+                return "runner_red";
+            case "blue":
+                return "runner_blue";
+            default:
+                return "runner_base";
+        }
     }
 }
