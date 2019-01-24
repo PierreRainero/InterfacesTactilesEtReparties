@@ -18,17 +18,21 @@ var io = require('socket.io')(server);
 server.listen(8282);
 
 var projectorSocket = null;
+var kinectSocket = null;
 
 io.on('connection', function (socket) {
-  console.log('Client connected !');
-  socket.emit('news', { hello: 'world' });
-
   socket.on('hiImTheProjector', function (){
+    console.log('Projector ready.');
     projectorSocket = socket;
   });
 
-  socket.on('start', function (data) {
-    game.start(data.players, projectorSocket);
+  socket.on('kinectConnected', function (kinect) {
+    console.log('Kinect '+kinect.state+'.');
+    kinectSocket = socket;
+  });
+
+  socket.on('players', function (data) {
+    game.definePlayers(data.players, kinectSocket, projectorSocket);
   });
 
   socket.on('dataWatch', function(data) {

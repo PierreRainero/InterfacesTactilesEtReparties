@@ -1,5 +1,6 @@
 module.exports = class Player {
-  constructor(color) {
-    this.color = color;
+  constructor(id, state) {
+    this.id = id;
+    this.state = state;
   }
 }

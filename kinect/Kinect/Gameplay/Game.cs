@@ -1,7 +1,10 @@
 ﻿using Kinect.Communication;
+using Kinect.Communication.Formater;
 using Kinect.Captor;
 using Kinect.Gameplay.Model;
-using System.Text;
+using System;
+using System.Configuration;
+using Microsoft.Kinect;
 
 namespace Kinect.Gameplay
 {
@@ -22,13 +25,10 @@ namespace Kinect.Gameplay
         /// </summary>
         public Game()
         {
-            Step = GameStep.WAITING;
+            Int32.TryParse(ConfigurationManager.AppSettings["socketIO_port"], out int port);
+            socketIO = new SocketIOClient(ConfigurationManager.AppSettings["socketIO_url"], port);
 
-            players = new Player[2];
-            players[0] = new Player("blue");
-            players[1] = new Player("red");
-
-            socketIO = new SocketIOClient("localhost", 8282);
+            StartNewGame();
         }
 
         /// <summary>
@@ -38,6 +38,11 @@ namespace Kinect.Gameplay
         {
             kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
+            socketIO.On("kinectStartRun", StartRun);
+
+            SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+            objectToSend.AddString("state", kinectMotor.Status);
+            socketIO.Emit("kinectConnected", objectToSend.JSONFormat());
         }
 
         /// <summary>
@@ -49,24 +54,49 @@ namespace Kinect.Gameplay
         }
 
         /// <summary>
-        /// Starts the gameplay phase
+        /// Send the current players to the backend
         /// </summary>
         /// <remarks>
         /// Gameplay method : You shouldn't call it manually.
         /// </remarks>
-        public void StartGame()
+        public void SendPlayers()
         {
-            StringBuilder playersList = new StringBuilder("[");
+            SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+            SimpleArray playersArray = new SimpleArray();
             foreach (Player player in players)
             {
                 if (player.IsDefined())
                 {
-                    playersList.Append(player.ToDTO());
+                    SimpleObjectFormater playerObjectToSend = new SimpleObjectFormater();
+                    playerObjectToSend.AddInt("id", player.PlayerId);
+                    playerObjectToSend.AddInt("state", (int)player.State);
+                    playersArray.AddMember(playerObjectToSend);
                 }
             }
-            playersList.Append("]");
-            
-            socketIO.Emit("start", new PairFormater("players", playersList.ToString()).JSONFormat());
+            objectToSend.AddArray("players", playersArray);
+
+            socketIO.Emit("players", objectToSend.JSONFormat());
+        }
+
+        /// <summary>
+        /// Stop for good the previous game and start a new one (return to the initial state)
+        /// </summary>
+        private void StartNewGame()
+        {
+            players = new Player[2];
+            players[0] = new Player(1);
+            players[1] = new Player(2);
+
+            Step = GameStep.WAITING;
+        }
+
+        /// <summary>
+        /// Pass to the next gameplay step which is the run
+        /// </summary>
+        /// <param name="message">Message emitted by the backend</param>
+        private void StartRun(string message)
+        {
+            Console.WriteLine("Message received : " + message + "\nThe run can start.");
             Step = GameStep.STARTED;
         }
     }

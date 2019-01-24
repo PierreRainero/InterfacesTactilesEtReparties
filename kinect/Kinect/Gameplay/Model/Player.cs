@@ -9,21 +9,21 @@ namespace Kinect.Gameplay.Model
     /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
     class Player
     {
-        public int TackedId { get; set; }
-        public string Color { get; private set; }
-        public PlayerState state { get; set; }
+        public int TackedId { get; private set; }
+        public int PlayerId { get; private set; }
+        public PlayerState State { get; set; }
         public Skeleton Skeleton { get; set; }
 
         /// <summary>
         /// Normal constructor
         /// </summary>
-        /// <param name="color">Color of the player (identifier)</param>
-        public Player(string color)
+        /// <param name="playerId">Player identifier</param>
+        public Player(int playerId)
         {
             TackedId = -1;
-            this.Color = color;
+            this.PlayerId = playerId;
             Skeleton = null;
-            state = PlayerState.NOTDETECTED;
+            State = PlayerState.NOTDETECTED;
         }
 
         /// <summary>
@@ -54,18 +54,10 @@ namespace Kinect.Gameplay.Model
             Skeleton = null;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return base.ToString() + ": { color: "+ Color + ", id: " + TackedId+" }";
-        }
-
-        /// <summary>
-        /// Convert the object to a Data Transfert Object in json format
-        /// </summary>
-        /// <returns>Minimum necessary informations to send</returns>
-        public string ToDTO()
-        {
-            return "{\"color\": \"" + Color + "\"}";
+            return base.ToString() + ": { id: "+ PlayerId + ", trackedId: " + TackedId+" }";
         }
     }
 }
