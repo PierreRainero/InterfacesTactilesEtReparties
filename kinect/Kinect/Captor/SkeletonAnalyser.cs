@@ -21,7 +21,7 @@ namespace Kinect.Captor
         {
             if (!player.IsDefined())
             {
-                throw new UndefinedPlayerException("Player "+ player.Color+ " is undefined.");
+                throw new UndefinedPlayerException("Player "+ player.PlayerId+ " is undefined.");
             }
 
             Skeleton skeleton = player.Skeleton;

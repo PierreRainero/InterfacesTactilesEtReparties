@@ -21,10 +21,8 @@ var projectorSocket = null;
 var smartphoneSocket = null;
 
 io.on('connection', function (socket) {
-  console.log('Client connected !');
-  socket.emit('news', { hello: 'world' });
-
   socket.on('hiImTheProjector', function (){
+    console.log('Projector ready.');
     projectorSocket = socket;
   });
 
@@ -33,8 +31,13 @@ io.on('connection', function (socket) {
     console.log('smartphone connected')
   })
 
-  socket.on('start', function (data) {
-    game.start(data.players, projectorSocket, smartphoneSocket);
+  socket.on('kinectConnected', function (kinect) {
+    console.log('Kinect '+kinect.state+'.');
+    kinectSocket = socket;
+  });
+
+  socket.on('players', function (data) {
+    game.definePlayers(data.players, kinectSocket, projectorSocket);
   });
 
   socket.on('dataWatch', function(data) {

@@ -4,6 +4,7 @@ using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kinect.Captor
 {
@@ -64,21 +65,28 @@ namespace Kinect.Captor
         /// <param name="e">Detection frame</param>
         private void KinectSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
-            List<Skeleton> skeletons = DetectSkeletons(e);
-            if (skeletons.Count == 0)
+            List<Skeleton> detectedSkeletons = DetectSkeletons(e);
+            if (detectedSkeletons.Count == 0)
             {
                 return;
             }
 
-            List<Skeleton> nonAssociatedSkeletons = UpdateDefinedPlayers(skeletons);
-            AssociateSkeletonsToPlayers(nonAssociatedSkeletons);
+            List<Skeleton> nonAssociatedSkeletons = UpdateDefinedPlayers(detectedSkeletons);
+            if (gameHook.Step == GameStep.WAITING)
+            {
+                OrderPlayersFromLeft(detectedSkeletons);
+            } else
+            {
+                AssociateSkeletonsToPlayers(nonAssociatedSkeletons);
+            }
+            
 
             switch (gameHook.Step)
             {
                 case GameStep.WAITING:
-                    if(GameEngine.PlayersReady(players))
+                    if (GameEngine.DidPlayersStateChange(players))
                     {
-                        gameHook.StartGame();
+                        gameHook.SendPlayers();
                     }
                     break;
 
@@ -112,6 +120,7 @@ namespace Kinect.Captor
                     trackedSkeletons.Add(skel);
                 }
             }
+
             return trackedSkeletons;
         }
 
@@ -123,11 +132,7 @@ namespace Kinect.Captor
         /// <returns>List of kinect skeleton without player associated</returns>
         private List<Skeleton> UpdateDefinedPlayers(List<Skeleton> skeletons)
         {
-            List<Skeleton> nonAssociatedSkeletons = new List<Skeleton>();
-            foreach(Skeleton skeleton in skeletons)
-            {
-                nonAssociatedSkeletons.Add(skeleton);
-            }
+            List<Skeleton> nonAssociatedSkeletons = skeletons.Select(skeleton => skeleton).ToList();
 
             foreach (Player player in players)
             {
@@ -172,6 +177,25 @@ namespace Kinect.Captor
                         break;
                     }
                  }
+            }
+        }
+
+        /// <summary>
+        /// Checks and associates a list of skeletons to players starting from the left
+        /// </summary>
+        /// <param name="skeletons">list of available skeletons</param>
+        private void OrderPlayersFromLeft(List<Skeleton> skeletons)
+        {
+            List<Skeleton> orderedSkeletons = skeletons.Select(skeleton => skeleton).ToList();
+            orderedSkeletons.Sort((skeleton1, skeleton2) => skeleton1.Position.X.CompareTo(skeleton2.Position.X));
+
+            for (int i=0; i<orderedSkeletons.Count; i++)
+            {
+                Skeleton currentSkeleton = orderedSkeletons.ElementAt(i);
+                if (players[i].IsDefined() || players[i].TackedId != currentSkeleton.TrackingId)
+                {
+                    players[i].Defined(currentSkeleton);
+                }
             }
         }
 
