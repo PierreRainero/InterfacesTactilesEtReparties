@@ -21,11 +21,11 @@ module.exports = {
         players = new Array();
         for(const player of data) {
             players.push(new Player(player.id, player.state));
-            //@TODO send players list to projector
+            projectorSocket.emit('playerChange', data);
         }
         
-        if(this.isPlayersReady()) {
-            //@TODO start count down (3seconds) then launch the game and emit following message
+        if(this.isPlayersReady() && projectorSocket && kinectSocket) {
+            projectorSocket.emit('everyonesReady', players);
             kinectSocket.emit('kinectStartRun', 'Ready');
         }
     },

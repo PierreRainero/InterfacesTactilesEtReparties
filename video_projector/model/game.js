@@ -1,6 +1,11 @@
 var game = {
     players: [],
     startTime: null,
+    setPlayers: function(players){
+        this.players = players;
+        game.setPlayerReadyText();
+        startRunning();
+    },
     getCurrentTime: function(){
         var current = new Date();
         var diff = current - this.startTime;
@@ -23,27 +28,48 @@ var game = {
         }
         return `${hr}:${min}:${sec}:${msec}`;
     },
-    startTimerOn: function (element) {
-        this.startTime = new Date();
-        setInterval(() => {
-            element.innerHTML = this.getCurrentTime();
-        }, 1);
-    },
-    getPlayerColor(id){
-        switch(id){
-            case "red":
-                return {h: 0, s: 0.53, l: 0.58};
-            case "blue":
-                return {h: 0.58, s: 1, l: 0.56};
-            default:
-                return {h: 0, s: 0, l: 0};
+    startTimer: function () {
+        var chrono = document.getElementById("chrono");
+        if(this.arePlayersReady()) {
+            chrono.innerHTML = "3";
+            setTimeout(() => {
+                if (this.arePlayersReady()) {
+                    chrono.innerHTML = "2";
+                    setTimeout(() => {
+                        if (this.arePlayersReady()) {
+                            chrono.innerHTML = "1";
+                            setTimeout(() => {
+                                if (this.arePlayersReady()) {
+                                    this.clearPlayerReadyText();
+                                    chrono.innerHTML = "C'est parti !";
+                                    this.startTime = new Date();
+                                    startRunning();
+                                    setTimeout(() => {
+                                        setInterval(() => {
+                                            chrono.innerHTML = this.getCurrentTime();
+                                        }, 1);
+                                    }, 500);
+                                } else {
+                                    chrono.innerHTML = "";
+                                }
+                            }, 1000);
+                        } else {
+                            chrono.innerHTML = "";
+                        }
+                    }, 1000);
+                } else {
+                    chrono.innerHTML = "";
+                }
+            }, 1000);
+        } else {
+            chrono.innerHTML = "";
         }
     },
     getPlayerBackgroundColor(id){
         switch(id){
-            case "red":
+            case 1:
                 return "rgb(92, 205, 205)";
-            case "blue":
+            case 2:
                 return "rgb(255, 141, 30)";
             default:
                 return "rgb(0, 0, 0)";
@@ -51,12 +77,36 @@ var game = {
     },
     getPlayerModel(id){
         switch(id){
-            case "red":
+            case 1:
                 return "runner_red";
-            case "blue":
+            case 2:
                 return "runner_blue";
             default:
                 return "runner_base";
         }
+    },
+    setPlayerReadyText(){
+        var playersReadyContent = "";
+        for(var i = 0; i < this.players.length; i++){
+            var taille = 100 / this.players.length;
+            var position = 0 + taille*i;
+            var style = `width: ${taille}%; left: ${position}%`;
+            if(this.players[i].state === 2)
+                playersReadyContent += `<div style="${style}">Joueur prêt !</div>`;
+            else
+                playersReadyContent += `<div style="${style}">Levez la main droite quand vous êtes prêt à jouer</div>`;
+        }
+        document.getElementById("playersReady").innerHTML = playersReadyContent;
+    },
+    clearPlayerReadyText(){
+        document.getElementById("playersReady").innerHTML = "";
+    },
+    arePlayersReady(){
+        for(var player of this.players){
+            if(player.state !== 2){
+                return false;
+            }
+        }
+        return true;
     }
 }

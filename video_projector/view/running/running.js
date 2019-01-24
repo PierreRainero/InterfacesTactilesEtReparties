@@ -157,7 +157,7 @@ function setupViews(){
     } else {
         for(var i = 0; i < game.players.length; i++){
 
-            var backgroundColor = game.getPlayerBackgroundColor(game.players[i].color);
+            var backgroundColor = game.getPlayerBackgroundColor(game.players[i].id);
 
             views.push({
                 left: (1/game.players.length) * i,
@@ -165,7 +165,7 @@ function setupViews(){
                 width: 1/game.players.length,
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
-                eye: [ -600 + (i*400), 0, 2000 ],
+                eye: [ -600 + (i*400), 0, 1500 ],
                 up: [ 0, 1, 0 ],
                 fov: 30,
                 updateCamera: function ( camera, scene, mouseX ) {
@@ -228,8 +228,11 @@ function createWaitingScreen(){
 }
 
 function createRunners(){
-    //Shadows
+    for (var i = runningGroup.children.length - 1; i >= 0; i--) {
+        runningGroup.remove(runningGroup.children[i]);
+    }
 
+    //Shadows
     var shadowGeo = new THREE.PlaneBufferGeometry( 200, 200, 1, 1 );
 
     var shadowMesh;
@@ -248,7 +251,7 @@ function createRunners(){
 
     // Load a glTF resource
     for(var i = 0; i < game.players.length; i++) {
-        loader.load(`view/running/models/${game.getPlayerModel(game.players[i].color)}/scene.gltf`,
+        loader.load(`view/running/models/${game.getPlayerModel(game.players[i].id)}/scene.gltf`,
             (function (gltf) {
                 gltfs.push(gltf);
 
@@ -263,7 +266,8 @@ function createRunners(){
                 runningGroup.add(model);
 
                 var mixer = new THREE.AnimationMixer(model);
-                mixer.clipAction(gltf.animations[0]).play();
+                var animation = game.startTime ? gltf.animations[2] : game.players[this.i].state === 1 ? gltf.animations[0] : gltf.animations[3];
+                mixer.clipAction(animation).play();
                 mixers.push(mixer);
 
                 render();

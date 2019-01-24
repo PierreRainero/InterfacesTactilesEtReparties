@@ -22,9 +22,22 @@ a {
 #chrono{
     position: absolute;
     top: 5px;
-    left: 5px;
     width: 100%;
     text-align: center;
     color: white;
     font-size: 35pt;
+}
+
+#playersReady{
+    position: absolute;
+    top: 35%;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 25pt;
+}
+
+#playersReady *{
+    position: absolute;
+    display: inline-block;
 }
