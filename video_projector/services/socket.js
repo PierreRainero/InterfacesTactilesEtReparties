@@ -1,6 +1,6 @@
 var socket = io('http://192.168.43.238:8282');
 
-socket.emit('hiImTheProjector');
+socket.emit('connectProjector');
 
 /*
 //TEST ZONE
