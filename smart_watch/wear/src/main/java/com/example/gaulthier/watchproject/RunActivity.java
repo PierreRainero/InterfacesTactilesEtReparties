@@ -3,31 +3,62 @@ package com.example.gaulthier.watchproject;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Vibrator;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends WearableActivity {
+public class RunActivity extends WearableActivity {
+
+    TextView timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.run);
 
-        IntentFilter newFilter = new IntentFilter(Intent.ACTION_SEND);
-        MainActivity.Receiver messageReceiver = new MainActivity.Receiver();
+        timer = findViewById(R.id.timerTextView);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
+        new CountDownTimer(4000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                long[] vibrationPattern = {0, 200};
+                final int indexInPatternToRepeat = -1;
+                vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
+                timer.setText(Integer.toString(Integer.parseInt(timer.getText().toString()) - 1));
+            }
+
+            public void onFinish() {
+                timer.setText("124 BPM");
+                RunActivity.this.sendBPMEachSeconds();
+            }
+        }.start();
+    }
+
+    public void sendBPMEachSeconds() {
+        new CountDownTimer(60000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                String datapath = "/my_path";
+                int valueBPM = 124;
+                new RunActivity.SendMessage(datapath, "device " + android.os.Build.MODEL + " BPM: " + valueBPM).start();
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
     }
 
     public class Receiver extends BroadcastReceiver {
@@ -35,15 +66,8 @@ public class MainActivity extends WearableActivity {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("message");
 
-            if (message.equals("connectedToServer")) {
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                long[] vibrationPattern = {0, 200};
-                final int indexInPatternToRepeat = -1;
-                vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
-
-                Intent intentMain = new Intent(MainActivity.this , ConfigRunActivity.class);
-                MainActivity.this.startActivity(intentMain);
-                MainActivity.this.finish();
+            if (message.equals("endGame")) {
+                System.out.println("endGame received");
             }
         }
     }
@@ -66,7 +90,7 @@ public class MainActivity extends WearableActivity {
                 for (Node node : nodes) {
 
                     Task<Integer> sendMessageTask =
-                            Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());
+                            Wearable.getMessageClient(RunActivity.this).sendMessage(node.getId(), path, message.getBytes());
 
                     try {
                         Integer result = Tasks.await(sendMessageTask);

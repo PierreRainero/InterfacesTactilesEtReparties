@@ -13,6 +13,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -49,10 +50,23 @@ public class MainActivity extends AppCompatActivity  {
         });
 
         try {
-            mSocket = IO.socket("http://172.20.10.2:3001");
+            mSocket = IO.socket("http://172.20.10.2:8282");
         } catch (URISyntaxException e) {
             System.out.println("error : " + e);
         }
+
+        mSocket.on("gameStart", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new NewThread("/my_path", "gameStart").start();
+            }
+        }).on("gameEnd", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new NewThread("/my_path", "gameEnd").start();
+            }
+        });
+
         mSocket.connect();
 
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
@@ -62,11 +76,16 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     /**
-     * For testing connection
+     * Connect to the backend to initiate web socket
      */
-    public void sendToServer(View v) {
+    public void connectToServer(View v) {
         System.out.println("Try to send to server");
-        mSocket.emit("dataWatch", "laaa");
+        mSocket.emit("hiImTheSmartphone", "");
+        new NewThread("/my_path", "connectedToServer").start();
+    }
+
+    public void gameStart(View v) {
+        new NewThread("/my_path", "gameStart").start();
     }
 
     public void messageText(String newinfo) {
@@ -82,7 +101,7 @@ public class MainActivity extends AppCompatActivity  {
             System.out.println("message received from wearable device");
             if (intent.getAction().equals(Intent.ACTION_SEND)) {
                 System.out.println("message sent to server");
-                mSocket.emit("dataWatch", intent.getStringExtra("message"));
+                mSocket.emit("watch", intent.getStringExtra("message"));
             }
 
 

@@ -6,7 +6,7 @@ let actions = {};
 
 module.exports = {
 
-    start: function (data, projectorSocket) {
+    start: function (players, projectorSocket, smartphoneSocket) {
         state = "running";
     },
 
@@ -41,6 +41,9 @@ module.exports = {
                 playersReady = false;
             }
         }
+
+        projectorSocket.emit('gameStart', players);
+        smartphoneSocket.emit('gameStart', players);
 
         return playersReady;
     },
