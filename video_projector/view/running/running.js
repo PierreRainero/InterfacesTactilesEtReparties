@@ -261,13 +261,6 @@ function createRunners(){
                 model.position.y = -350;
                 model.rotation.y = Math.PI;
 
-                model.traverse((node) => {
-                    if (node.isMesh) {
-                        node.material.flatShading = true; // r87+
-                        node.material.needsUpdate = true;
-                    }
-                });
-
                 runningGroup.add(model);
 
                 var mixer = new THREE.AnimationMixer(model);
