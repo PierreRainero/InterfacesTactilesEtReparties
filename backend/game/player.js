@@ -11,10 +11,12 @@ module.exports = class Player {
   }
 
   isApproachingHurdle(map){
+    let res = false;
     for (let hurdle in map.hurdles){
       if(this.progress > hurdle - 2 && this.progress < hurdle){
-
+        res = true;
       }
     }
+    return res;
   }
 }
