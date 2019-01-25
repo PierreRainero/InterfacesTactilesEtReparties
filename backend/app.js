@@ -21,7 +21,7 @@ var projectorSocket = null;
 var smartphoneSocket = null;
 
 io.on('connection', function (socket) {
-  socket.on('hiImTheProjector', function (){
+  socket.on('connectProjector', function (){
     console.log('Projector ready.');
     projectorSocket = socket;
   });
