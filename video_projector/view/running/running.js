@@ -140,7 +140,7 @@ function render() {
 
 function setupViews(){
     views = [];
-    if(game.players.length === 0){
+    if(game.players.length() === 0){
         views.push({
             left: 0,
             top: 0,
@@ -155,14 +155,14 @@ function setupViews(){
             }
         });
     } else {
-        for(var i = 0; i < game.players.length; i++){
+        for(var i = 0; i < game.players.length(); i++){
 
-            var backgroundColor = game.getPlayerBackgroundColor(game.players[i].id);
+            var backgroundColor = game.players.get(i).backgroundColor;
 
             views.push({
-                left: (1/game.players.length) * i,
+                left: (1/game.players.length()) * i,
                 top: 0,
-                width: 1/game.players.length,
+                width: 1/game.players.length(),
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
                 eye: [ -600 + (i*400), 0, 1500 ],
@@ -237,7 +237,7 @@ function createRunners(){
 
     var shadowMesh;
 
-    for(var i = 0; i < game.players.length; i++) {
+    for(var i = 0; i < game.players.length(); i++) {
         shadowMesh = new THREE.Mesh(shadowGeo, shadowMaterial);
         shadowMesh.position.x = -600 + (i*400);
         shadowMesh.position.y = -250;
@@ -250,8 +250,8 @@ function createRunners(){
     var loader = new THREE.GLTFLoader();
 
     // Load a glTF resource
-    for(var i = 0; i < game.players.length; i++) {
-        loader.load(`view/running/models/${game.getPlayerModel(game.players[i].id)}/scene.gltf`,
+    for(var i = 0; i < game.players.length(); i++) {
+        loader.load(`view/running/models/${game.players.get(i).model}/scene.gltf`,
             (function (gltf) {
                 gltfs.push(gltf);
 
@@ -266,7 +266,7 @@ function createRunners(){
                 runningGroup.add(model);
 
                 var mixer = new THREE.AnimationMixer(model);
-                var animation = game.startTime ? gltf.animations[2] : game.players[this.i].state === 1 ? gltf.animations[0] : gltf.animations[3];
+                var animation = game.startTime ? gltf.animations[2] : game.players.get(this.i).state === 1 ? gltf.animations[0] : gltf.animations[3];
                 mixer.clipAction(animation).play();
                 mixers.push(mixer);
 

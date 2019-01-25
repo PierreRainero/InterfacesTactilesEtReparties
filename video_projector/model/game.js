@@ -1,10 +1,12 @@
 function Game() {
-    this.players = [];
+    this.players = new Players();
     this.startTime = null;
 }
 
 Game.prototype.setPlayers = function(players){
-    this.players = players;
+    for(var player of players){
+        this.players.add(player);
+    }
     this.setPlayerReadyText();
     startRunning();
 };
@@ -32,35 +34,13 @@ Game.prototype.getCurrentTime = function(){
     return `${hr}:${min}:${sec}:${msec}`;
 };
 
-Game.prototype.getPlayerBackgroundColor = function(id){
-    switch(id){
-        case 1:
-            return "rgb(92, 205, 205)";
-        case 2:
-            return "rgb(255, 141, 30)";
-        default:
-            return "rgb(0, 0, 0)";
-    }
-};
-
-Game.prototype.getPlayerModel = function(id){
-    switch(id){
-        case 1:
-            return "runner_red";
-        case 2:
-            return "runner_blue";
-        default:
-            return "runner_base";
-    }
-};
-
 Game.prototype.setPlayerReadyText = function(){
     var playersReadyContent = "";
-    for(var i = 0; i < this.players.length; i++){
-        var taille = 100 / this.players.length;
+    for(var i = 0; i < this.players.length(); i++){
+        var taille = 100 / this.players.length();
         var position = 0 + taille*i;
         var style = `width: ${taille}%; left: ${position}%`;
-        if(this.players[i].state === 2)
+        if(this.players.get(i).state === 2)
             playersReadyContent += `<div style="${style}">Joueur prêt !</div>`;
         else
             playersReadyContent += `<div style="${style}">Levez la main droite quand vous êtes prêt à jouer</div>`;
@@ -70,15 +50,6 @@ Game.prototype.setPlayerReadyText = function(){
 
 Game.prototype.clearPlayerReadyText = function(){
     document.getElementById("playersReady").innerHTML = "";
-};
-
-Game.prototype.arePlayersReady = function(){
-    for(var player of this.players){
-        if(player.state !== 2){
-            return false;
-        }
-    }
-    return true;
 };
 
 Game.prototype.setCountdown = function(value){
@@ -92,6 +63,7 @@ Game.prototype.setCountdown = function(value){
         this.startTime = new Date();
         startRunning();
         setTimeout(() => {
+            this.clearPlayerReadyText();
             setInterval(() => {
                 chrono.innerHTML = this.getCurrentTime();
             }, 1);
