@@ -26,13 +26,14 @@ io.on('connection', function (socket) {
     projectorSocket = socket;
   });
 
-  socket.on('hiImTheSmartphone', function() {
-    console.log('smartphone connected');
+  socket.on('smartphoneConnect', function() {
+    console.log('Smartphone connected.');
     smartphoneSocket = socket;
   })
 
   socket.on('kinectConnected', function (kinect) {
     console.log('Kinect '+kinect.state+'.');
+    game.setup();
     kinectSocket = socket;
   });
 
@@ -42,6 +43,11 @@ io.on('connection', function (socket) {
 
   socket.on('watch', function(data) {
     console.log(data);
+  })
+
+  socket.on('watchConfigurations', function(data) {
+    console.log(data);
+    // setWatch(data);
   })
 
   socket.on('get', function (data) {

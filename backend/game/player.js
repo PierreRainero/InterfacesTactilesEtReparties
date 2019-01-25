@@ -3,4 +3,9 @@ module.exports = class Player {
     this.id = id;
     this.state = state;
   }
+
+  setWatchCaptor(deviceId, dataSharing) {
+    this.deviceId = deviceId;
+    this.allowDataSharing = dataSharing;
+  }
 }

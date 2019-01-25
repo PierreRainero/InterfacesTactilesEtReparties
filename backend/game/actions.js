@@ -10,7 +10,10 @@ module.exports = {
         state = "running";
     },
 
-    
+    setup: function() {
+        players = new Array();
+    },
+
   /**
    * Update the list of players for the next game
    * @param data object which contains all players
@@ -19,16 +22,37 @@ module.exports = {
    * @param smartphoneSocket socket to communicate with the wears engine
    */
     definePlayers: function (data, kinectSocket, projectorSocket, smartphoneSocket) {
-        players = new Array();
-        for(const player of data) {
-            players.push(new Player(player.id, player.state));
-            projectorSocket.emit('playerChange', data);
+        if(players.length == 0){
+            for(const player of data) {
+                players.push(new Player(player.id, player.state));
+            }
+        }else{
+            for(const player of players) {
+                for(const newPlayer of data){
+                    if(player.id == newPlayer.id){
+                        player.state = newPlayer.state;
+                    }
+                }
+            }
         }
+        projectorSocket.emit('playerChange', players);
         
         if(this.isPlayersReady() && projectorSocket && kinectSocket) {
             projectorSocket.emit('everyonesReady', players);
-            smartphoneSocket.emit('gameStart', players);
+            if (smartphoneSocket) {
+                smartphoneSocket.emit('gameStart', players);
+            }
             kinectSocket.emit('kinectStartRun', 'Ready');
+        }
+    },
+
+    setWatch: function(data) {
+        for(const watch of data) {
+            for(const player of players) {
+                if(player.id == watch.playerId){ // red === 1, blue === 2
+                    player.setWatchCaptor(watch.deviceID, watch.dataSharing);
+                }
+            }
         }
     },
 

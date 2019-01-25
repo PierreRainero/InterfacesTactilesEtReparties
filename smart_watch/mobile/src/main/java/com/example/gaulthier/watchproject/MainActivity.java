@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity  {
      */
     public void connectToServer(View v) {
         System.out.println("Try to send to server");
-        mSocket.emit("hiImTheSmartphone", "");
+        mSocket.emit("smartphoneConnect", "");
         new NewThread("/my_path", "connectedToServer").start();
     }
 
