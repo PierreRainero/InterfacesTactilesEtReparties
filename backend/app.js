@@ -37,6 +37,13 @@ io.on('connection', function (socket) {
     kinectSocket = socket;
   });
 
+  socket.on('kinectPlayerJump', function (jumper) {
+    var received = new Date();
+    console.log(received.getDate() + "/"+received.getMonth() + "/"+received.getFullYear() + " "+received.getHours()+":"+received.getMinutes()+":"+received.getSeconds());
+    console.log("Player " + jumper.playerId + " jumps !");
+    console.log("-------------------------------------");
+  });
+
   socket.on('players', function (data) {
     game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });
@@ -46,7 +53,6 @@ io.on('connection', function (socket) {
   })
 
   socket.on('watchConfigurations', function(data) {
-    console.log(data);
     // setWatch(data);
   })
 });

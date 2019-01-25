@@ -12,7 +12,9 @@ namespace Kinect.Gameplay.Model
         public int TackedId { get; private set; }
         public int PlayerId { get; private set; }
         public PlayerState State { get; set; }
-        public Skeleton Skeleton { get; set; }
+        public Skeleton PreviousSkeleton { get; set; }
+        public Skeleton CurrentSkeleton { get; set; }
+        public int JumpCounter { get; private set; }
 
         /// <summary>
         /// Normal constructor
@@ -22,7 +24,7 @@ namespace Kinect.Gameplay.Model
         {
             TackedId = -1;
             this.PlayerId = playerId;
-            Skeleton = null;
+            CurrentSkeleton = null;
             State = PlayerState.NOTDETECTED;
         }
 
@@ -42,7 +44,8 @@ namespace Kinect.Gameplay.Model
         public void Defined(Skeleton skeleton)
         {
             this.TackedId = skeleton.TrackingId;
-            this.Skeleton = skeleton;
+            this.PreviousSkeleton = this.CurrentSkeleton;
+            this.CurrentSkeleton = skeleton;
         }
 
         /// <summary>
@@ -51,7 +54,32 @@ namespace Kinect.Gameplay.Model
         public void Undefined()
         {
             TackedId = -1;
-            Skeleton = null;
+            CurrentSkeleton = null;
+        }
+
+        /// <summary>
+        /// Cancel in progress jump
+        /// </summary>
+        public void CancelJump()
+        {
+            JumpCounter = 0;
+        }
+
+        /// <summary>
+        /// Notifies the system the player is still jumping
+        /// </summary>
+        public void JumpDetected()
+        {
+            JumpCounter++;
+        }
+
+        /// <summary>
+        /// Allows to know if the jump is completed
+        /// </summary>
+        /// <returns>"true" if the jump is completed, "false" otherwise</returns>
+        public bool IsJumping()
+        {
+            return JumpCounter == 3;
         }
 
         /// <inheritdoc />

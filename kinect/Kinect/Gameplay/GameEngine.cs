@@ -1,6 +1,8 @@
 ﻿using Kinect.Captor;
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
+using System;
+using System.Collections.Generic;
 
 namespace Kinect.Gameplay
 {
@@ -52,6 +54,34 @@ namespace Kinect.Gameplay
             }
 
             return playerChange;
+        }
+
+        /// <summary>
+        /// Detects all player who made a complete jump
+        /// </summary>
+        /// <param name="players">Players of the game to control</param>
+        /// <returns>List containing jumpers id</returns>
+        public static List<int> DetectsPlayerJump(Player[] players)
+        {
+            List<int> playersWhoJumped = new List<int>();
+            foreach (Player player in players)
+            {
+                if (player.IsDefined() && SkeletonAnalyser.DidJump(player.PreviousSkeleton, player.CurrentSkeleton))
+                {
+                    player.JumpDetected();
+                }
+                else
+                {
+                    player.CancelJump();
+                }
+
+                if (player.IsJumping())
+                {
+                    playersWhoJumped.Add(player.PlayerId);
+                }
+            }
+
+            return playersWhoJumped;
         }
     }
 }

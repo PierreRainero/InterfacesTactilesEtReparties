@@ -4,6 +4,7 @@ using Kinect.Captor;
 using Kinect.Gameplay.Model;
 using System;
 using System.Configuration;
+using System.Collections.Generic;
 
 namespace Kinect.Gameplay
 {
@@ -75,6 +76,20 @@ namespace Kinect.Gameplay
             objectToSend.AddArray("players", playersArray);
 
             socketIO.Emit("players", objectToSend.JSONFormat());
+        }
+
+        /// <summary>
+        /// Send all players who jumped to the backend
+        /// </summary>
+        /// <param name="jumpers">List containing jumpers id</param>
+        public void SendJumpers(List<int> jumpers)
+        {
+            foreach (int jumperId in jumpers)
+            {
+                SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+                objectToSend.AddInt("playerId", jumperId);
+                socketIO.Emit("kinectPlayerJump", objectToSend.JSONFormat());
+            }
         }
 
         /// <summary>

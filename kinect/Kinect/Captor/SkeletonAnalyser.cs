@@ -24,12 +24,34 @@ namespace Kinect.Captor
                 throw new UndefinedPlayerException("Player "+ player.PlayerId+ " is undefined.");
             }
 
-            Skeleton skeleton = player.Skeleton;
+            Skeleton skeleton = player.CurrentSkeleton;
 
             Joint head = skeleton.Joints[JointType.Head];
             Joint rightHand = skeleton.Joints[JointType.WristRight];
 
             return head.Position.Y < rightHand.Position.Y;
         }
+
+        /// <summary>
+        /// Check if a player is jumping
+        /// </summary>
+        /// <param name="previousSkeleton">Skeleton at the previous frame</param>
+        /// <param name="lastSkeleton">Current skeleton</param>
+        /// <returns>"true" if the player is jumping using his two feet, "false" otherwise</returns>
+        public static bool DidJump(Skeleton previousSkeleton, Skeleton lastSkeleton)
+        {
+            if(previousSkeleton == null || lastSkeleton == null)
+            {
+                return false;
+            }
+
+            float pFootRight = previousSkeleton.Joints[JointType.FootRight].Position.Y;
+            float pFootLeft = previousSkeleton.Joints[JointType.FootLeft].Position.Y;
+            float lFootRight = lastSkeleton.Joints[JointType.FootRight].Position.Y;
+            float lFootLeft = lastSkeleton.Joints[JointType.FootLeft].Position.Y;
+
+            return (lFootRight - pFootRight) > 0.02 && (lFootLeft - pFootLeft) > 0.02;
+        }
+
     }
 }
