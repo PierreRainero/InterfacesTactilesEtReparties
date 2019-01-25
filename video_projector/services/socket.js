@@ -13,21 +13,15 @@ setTimeout(() => {
             setTimeout(() => {
                 game.setPlayers([{id: 1, state: 2},{id: 2, state: 2}]);
                 setTimeout(() => {
-                    game.players = [{id: 1, state: 2},{id: 2, state: 2}];
-                    //game.startTimer();
-
+                    game.setCountdown(3);
                     setTimeout(() => {
-                        game.setCountdown(3);
+                        game.setCountdown(2);
                         setTimeout(() => {
-                            game.setCountdown(2);
+                            game.setCountdown(1);
                             setTimeout(() => {
-                                game.setCountdown(1);
-                                setTimeout(() => {
-                                    game.setCountdown(0);
-                                }, 500);
+                                game.setCountdown(0);
                             }, 500);
                         }, 500);
-
                     }, 500);
                 }, 500);
             }, 5000);
@@ -39,11 +33,6 @@ setTimeout(() => {
 socket.on('playerChange', function (data) {
     console.log("Player change received, data : ", data);
     game.setPlayers(data);
-});
-
-socket.on('everyonesReady', function (data) {
-    console.log("Everyone's ready received, data : ", data);
-    game.players = data;
 });
 
 socket.on('countdown', function (data){

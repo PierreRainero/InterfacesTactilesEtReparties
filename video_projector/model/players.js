@@ -4,12 +4,10 @@ function Players() {
 
 Players.prototype.add = function(player){
     var position = this.positionOf(player.id);
-    console.log(position);
     if(position !== null)
         this.players[position].update(player.id, player.state);
     else
         this.players.push(new Player(player.id, player.state));
-    console.log(this.players);
 }
 
 Players.prototype.positionOf = function(id){

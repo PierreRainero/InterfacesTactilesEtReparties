@@ -1,6 +1,8 @@
 function Player(id, state) {
     this.id = id;
     this.state = state;
+    this.animations = [];
+    this.mixer = null;
 
     this.updateTrait();
 }
@@ -27,4 +29,12 @@ Player.prototype.updateTrait = function () {
             this.backgroundColor = "rgb(0, 0, 0)";
             break;
     }
+}
+
+Player.prototype.setAnimations = function (animations) {
+    this.animations = animations;
+}
+
+Player.prototype.setMixer = function (mixer) {
+    this.mixer = mixer;
 }

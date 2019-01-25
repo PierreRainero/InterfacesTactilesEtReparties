@@ -20,8 +20,6 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
-var mixers = [], gltfs = [];
-
 setupViews();
 init();
 animate();
@@ -106,9 +104,10 @@ function render() {
     updateSize();
 
     var delta = clock.getDelta();
-    for(var i = 0; i < mixers.length; i++) {
-        if (mixers[i] != null) {
-            mixers[i].update(delta);
+    for(var i = 0; i < game.players.length(); i++) {
+        var mixer = game.players.get(i).mixer;
+        if (mixer != null) {
+            mixer.update(delta);
         }
     }
 
@@ -253,8 +252,6 @@ function createRunners(){
     for(var i = 0; i < game.players.length(); i++) {
         loader.load(`view/running/models/${game.players.get(i).model}/scene.gltf`,
             (function (gltf) {
-                gltfs.push(gltf);
-
                 var model = gltf.scene;
                 model.scale.x = 50;
                 model.scale.y = 50;
@@ -268,7 +265,8 @@ function createRunners(){
                 var mixer = new THREE.AnimationMixer(model);
                 var animation = game.startTime ? gltf.animations[2] : game.players.get(this.i).state === 1 ? gltf.animations[0] : gltf.animations[3];
                 mixer.clipAction(animation).play();
-                mixers.push(mixer);
+                game.players.get(this.i).setMixer(mixer);
+                game.players.get(this.i).setAnimations(gltf.animations);
 
                 render();
             }).bind({i: i}));
