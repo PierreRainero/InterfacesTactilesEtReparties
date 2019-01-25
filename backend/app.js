@@ -49,10 +49,6 @@ io.on('connection', function (socket) {
     console.log(data);
     // setWatch(data);
   })
-
-  socket.on('get', function (data) {
-    socket.emit('news', game.getState());
-  });
 });
 
 // view engine setup
