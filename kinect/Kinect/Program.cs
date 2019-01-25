@@ -15,7 +15,7 @@ namespace Kinect
             Game game = new Game();
             game.StartCapture();
 
-            Console.WriteLine("Press enter to stop this program");
+            Console.WriteLine("--- Press enter to stop this program ---");
             Console.ReadLine();
             game.StopCapture();
         }

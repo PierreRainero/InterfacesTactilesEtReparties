@@ -1,7 +1,7 @@
 ﻿using Kinect.Captor;
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
-using System;
+using log4net;
 using System.Collections.Generic;
 
 namespace Kinect.Gameplay
@@ -13,6 +13,8 @@ namespace Kinect.Gameplay
     /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
     abstract class GameEngine
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Check all players and update their state if needed
         /// </summary>
@@ -42,7 +44,7 @@ namespace Kinect.Gameplay
                         player.State = PlayerState.DETECTED;
                     }
                 }
-                catch (UndefinedPlayerException e)
+                catch (UndefinedPlayerException exception)
                 {
                     if(player.State != PlayerState.NOTDETECTED)
                     {
@@ -75,7 +77,7 @@ namespace Kinect.Gameplay
                     player.CancelJump();
                 }
 
-                if (player.IsJumping())
+                if (player.Jumped())
                 {
                     playersWhoJumped.Add(player.PlayerId);
                 }

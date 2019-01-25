@@ -32,16 +32,13 @@ module.exports = {
                 }
             }
         }
-        //projectorSocket.emit('playerChange', players);
+        projectorSocket.emit('playerChange', players);
 
-        /*if (this.isPlayersReady() && projectorSocket && kinectSocket) {
+        if (this.isPlayersReady() && projectorSocket && kinectSocket) {
             projectorSocket.emit('everyonesReady', players);
             if (smartphoneSocket) {
                 smartphoneSocket.emit('gameStart', players);
             }
-            kinectSocket.emit('kinectStartRun', 'Ready');
-        }*/
-        if(this.isPlayersReady()){
             kinectSocket.emit('kinectStartRun', 'Ready');
         }
     },

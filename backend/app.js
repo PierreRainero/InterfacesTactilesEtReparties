@@ -41,7 +41,6 @@ io.on('connection', function (socket) {
     var received = new Date();
     console.log(received.getDate() + "/"+received.getMonth() + "/"+received.getFullYear() + " "+received.getHours()+":"+received.getMinutes()+":"+received.getSeconds());
     console.log("Player " + jumper.playerId + " jumps !");
-    console.log("-------------------------------------");
   });
 
   socket.on('players', function (data) {

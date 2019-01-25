@@ -1,4 +1,5 @@
 ﻿using Microsoft.Kinect;
+using System;
 
 namespace Kinect.Gameplay.Model
 {
@@ -14,7 +15,7 @@ namespace Kinect.Gameplay.Model
         public PlayerState State { get; set; }
         public Skeleton PreviousSkeleton { get; set; }
         public Skeleton CurrentSkeleton { get; set; }
-        public int JumpCounter { get; private set; }
+        private Jump lastJump;
 
         /// <summary>
         /// Normal constructor
@@ -24,8 +25,10 @@ namespace Kinect.Gameplay.Model
         {
             TackedId = -1;
             this.PlayerId = playerId;
+            PreviousSkeleton = null;
             CurrentSkeleton = null;
             State = PlayerState.NOTDETECTED;
+            lastJump = new Jump();
         }
 
         /// <summary>
@@ -62,24 +65,33 @@ namespace Kinect.Gameplay.Model
         /// </summary>
         public void CancelJump()
         {
-            JumpCounter = 0;
+            lastJump.Cancel();
         }
 
         /// <summary>
-        /// Notifies the system the player is still jumping
+        /// Notifies the system the player is jumping
         /// </summary>
         public void JumpDetected()
         {
-            JumpCounter++;
+            lastJump.Increment();
         }
 
         /// <summary>
         /// Allows to know if the jump is completed
         /// </summary>
         /// <returns>"true" if the jump is completed, "false" otherwise</returns>
-        public bool IsJumping()
+        public bool Jumped()
         {
-            return JumpCounter == 3;
+            return lastJump.IsJumpFinished();
+        }
+
+        /// <summary>
+        /// Marks the last jump as validate and associate a time for it
+        /// </summary>
+        /// <param name="time">Time when the last jump was validate</param>
+        public void ValidateJump(DateTime time)
+        {
+            lastJump.Complete(time);
         }
 
         /// <inheritdoc />

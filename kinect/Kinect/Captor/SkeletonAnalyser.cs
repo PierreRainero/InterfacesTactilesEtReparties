@@ -50,7 +50,7 @@ namespace Kinect.Captor
             float lFootRight = lastSkeleton.Joints[JointType.FootRight].Position.Y;
             float lFootLeft = lastSkeleton.Joints[JointType.FootLeft].Position.Y;
 
-            return (lFootRight - pFootRight) > 0.02 && (lFootLeft - pFootLeft) > 0.02;
+            return (lFootRight - pFootRight) > 0.035 && (lFootLeft - pFootLeft) > 0.035;
         }
 
     }

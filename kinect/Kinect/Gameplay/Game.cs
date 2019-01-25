@@ -5,6 +5,7 @@ using Kinect.Gameplay.Model;
 using System;
 using System.Configuration;
 using System.Collections.Generic;
+using log4net;
 
 namespace Kinect.Gameplay
 {
@@ -19,6 +20,7 @@ namespace Kinect.Gameplay
         private SocketIOClient socketIO;
         private Player[] players;
         public GameStep Step { get; private set; }
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Normal constructor : Create the game for one or two players
@@ -89,6 +91,8 @@ namespace Kinect.Gameplay
                 SimpleObjectFormater objectToSend = new SimpleObjectFormater();
                 objectToSend.AddInt("playerId", jumperId);
                 socketIO.Emit("kinectPlayerJump", objectToSend.JSONFormat());
+                log.Info("Player " + jumperId + " has jumped.");
+                players[jumperId - 1].ValidateJump(DateTime.Now);
             }
         }
 
@@ -110,7 +114,7 @@ namespace Kinect.Gameplay
         /// <param name="message">Message emitted by the backend</param>
         private void StartRun(string message)
         {
-            Console.WriteLine("Message received : " + message + "\nThe run can start.");
+            log.Info("Message received : " + message + "\tThe run can start.");
             Step = GameStep.STARTED;
         }
     }
