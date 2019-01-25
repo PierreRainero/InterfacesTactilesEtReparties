@@ -260,10 +260,18 @@ function createRunners(){
                 model.position.z = -150;
                 model.position.y = -350;
                 model.rotation.y = Math.PI;
+
+                model.traverse((node) => {
+                    if (node.isMesh) {
+                        node.material.flatShading = true; // r87+
+                        node.material.needsUpdate = true;
+                    }
+                });
+
                 runningGroup.add(model);
 
                 var mixer = new THREE.AnimationMixer(model);
-                var animation = game.startTime ? gltf.animations[2] : game.players.get(this.i).state === 1 ? gltf.animations[0] : gltf.animations[3];
+                var animation = game.startTime ? gltf.animations[0] : game.players.get(this.i).state === 1 ? gltf.animations[1] : gltf.animations[2];
                 mixer.clipAction(animation).play();
                 game.players.get(this.i).setMixer(mixer);
                 game.players.get(this.i).setAnimations(gltf.animations);
