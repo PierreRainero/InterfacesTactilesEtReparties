@@ -28,43 +28,6 @@ var game = {
         }
         return `${hr}:${min}:${sec}:${msec}`;
     },
-    startTimer: function () {
-        var chrono = document.getElementById("chrono");
-        if(this.arePlayersReady()) {
-            chrono.innerHTML = "3";
-            setTimeout(() => {
-                if (this.arePlayersReady()) {
-                    chrono.innerHTML = "2";
-                    setTimeout(() => {
-                        if (this.arePlayersReady()) {
-                            chrono.innerHTML = "1";
-                            setTimeout(() => {
-                                if (this.arePlayersReady()) {
-                                    this.clearPlayerReadyText();
-                                    chrono.innerHTML = "C'est parti !";
-                                    this.startTime = new Date();
-                                    startRunning();
-                                    setTimeout(() => {
-                                        setInterval(() => {
-                                            chrono.innerHTML = this.getCurrentTime();
-                                        }, 1);
-                                    }, 500);
-                                } else {
-                                    chrono.innerHTML = "";
-                                }
-                            }, 1000);
-                        } else {
-                            chrono.innerHTML = "";
-                        }
-                    }, 1000);
-                } else {
-                    chrono.innerHTML = "";
-                }
-            }, 1000);
-        } else {
-            chrono.innerHTML = "";
-        }
-    },
     getPlayerBackgroundColor(id){
         switch(id){
             case 1:
@@ -108,5 +71,22 @@ var game = {
             }
         }
         return true;
+    },
+    setCountdown(value){
+        var chrono = document.getElementById("chrono");
+        if(value > 0)
+            chrono.innerHTML = value;
+
+        else if(value === 0){
+            chrono.innerHTML = "C'est parti !"
+
+            this.startTime = new Date();
+            startRunning();
+            setTimeout(() => {
+                setInterval(() => {
+                    chrono.innerHTML = this.getCurrentTime();
+                }, 1);
+            }, 500);
+        }
     }
 }

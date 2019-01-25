@@ -3,10 +3,14 @@ const Player = require('./player.js');
 let players;
 let state = "waiting_players";
 let actions = {};
+let kinect;
+let projector;
+let smartphone;
+
 
 module.exports = {
 
-    start: function (players, projectorSocket, smartphoneSocket) {
+    start: function () {
         state = "running";
     },
 
@@ -22,6 +26,10 @@ module.exports = {
    * @param smartphoneSocket socket to communicate with the wears engine
    */
     definePlayers: function (data, kinectSocket, projectorSocket, smartphoneSocket) {
+        kinect = kinectSocket;
+        projector = projectorSocket;
+        smartphone = smartphoneSocket;
+
         if(players.length == 0){
             for(const player of data) {
                 players.push(new Player(player.id, player.state));
@@ -38,11 +46,7 @@ module.exports = {
         projectorSocket.emit('playerChange', players);
         
         if(this.isPlayersReady() && projectorSocket && kinectSocket) {
-            projectorSocket.emit('everyonesReady', players);
-            if (smartphoneSocket) {
-                smartphoneSocket.emit('gameStart', players);
-            }
-            kinectSocket.emit('kinectStartRun', 'Ready');
+            this.startCountdown();
         }
     },
 
@@ -73,6 +77,42 @@ module.exports = {
 
     getState: function (){
         return state;
+    },
+
+    startCountdown: function (){
+
+        projector.emit('everyonesReady', players);
+
+        projector.emit('countdown', {value:3});
+
+            setTimeout(() => {
+                if (this.isPlayersReady()) {
+                    projector.emit('countdown', {value:2});
+
+                    setTimeout(() => {
+                        if (this.isPlayersReady()) {
+                            projector.emit('countdown', {value:1});
+
+                            setTimeout(() => {
+                                if (this.isPlayersReady()) {
+                                    if (smartphone) {
+                                        smartphone.emit('gameStart', players);
+                                    }
+                                    kinect.emit('kinectStartRun', 'Ready');
+                                    projector.emit('countdown', {value:0});
+
+                                } else {
+                                    // un joueur quite
+                                }
+                            }, 1000);
+                        } else {
+                            // un joueur quite
+                        }
+                    }, 1000);
+                } else {
+                    // un joueur quite
+                }
+            }, 1000);
     }
 
 };
