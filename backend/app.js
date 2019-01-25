@@ -37,7 +37,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('players', function (data) {
-    game.definePlayers(data.players, kinectSocket, projectorSocket);
+    game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });
 
   socket.on('watch', function(data) {

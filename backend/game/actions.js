@@ -16,8 +16,9 @@ module.exports = {
    * @param data object which contains all players
    * @param kinectSocket socket to communicate with the kinect
    * @param projectorSocket socket to communicate with the projector
+   * @param smartphoneSocket socket to communicate with the wears engine
    */
-    definePlayers: function (data, kinectSocket, projectorSocket) {
+    definePlayers: function (data, kinectSocket, projectorSocket, smartphoneSocket) {
         players = new Array();
         for(const player of data) {
             players.push(new Player(player.id, player.state));
@@ -26,6 +27,7 @@ module.exports = {
         
         if(this.isPlayersReady() && projectorSocket && kinectSocket) {
             projectorSocket.emit('everyonesReady', players);
+            smartphoneSocket.emit('gameStart', players);
             kinectSocket.emit('kinectStartRun', 'Ready');
         }
     },
@@ -41,9 +43,6 @@ module.exports = {
                 playersReady = false;
             }
         }
-
-        projectorSocket.emit('gameStart', players);
-        smartphoneSocket.emit('gameStart', players);
 
         return playersReady;
     },
