@@ -1,4 +1,5 @@
 const Player = require('./player.js');
+const Map = require ('./map.js');
 
 let players;
 let state = "waiting_players";
@@ -6,6 +7,7 @@ let actions = {};
 let kinect;
 let projector;
 let smartphone;
+let map = new Map();
 
 
 module.exports = {
@@ -77,6 +79,12 @@ module.exports = {
 
     getState: function (){
         return state;
+    },
+
+    checkJump: function (playerId){
+        if(players[playerId].isApproachingHurdle(map)){
+
+        }
     },
 
     startCountdown: function (){
