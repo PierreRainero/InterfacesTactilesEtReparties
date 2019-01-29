@@ -227,6 +227,8 @@ function createWaitingScreen(){
 }
 
 function createRunners(){
+    scene.remove(waitingGroup);
+
     for (var i = runningGroup.children.length - 1; i >= 0; i--) {
         runningGroup.remove(runningGroup.children[i]);
     }
@@ -261,6 +263,8 @@ function createRunners(){
                 model.position.y = -350;
                 model.rotation.y = Math.PI;
 
+                //game.players.get(this.i).setModel(model);
+
                 runningGroup.add(model);
 
                 var mixer = new THREE.AnimationMixer(model);
@@ -272,11 +276,7 @@ function createRunners(){
                 render();
             }).bind({i: i}));
     }
-}
 
-function startRunning(){
-    scene.remove(waitingGroup);
-    createRunners();
     scene.add(runningGroup);
     animate();
 }

@@ -25,3 +25,9 @@ Players.prototype.get = function(i){
 Players.prototype.length = function(){
     return this.players.length;
 }
+
+Players.prototype.update = function () {
+    for(var player of this.players){
+        player.update();
+    }
+}

@@ -4,11 +4,16 @@ function Game() {
 }
 
 Game.prototype.setPlayers = function(players){
+    var needUpdate = players.length !== this.players.length();
+
     for(var player of players){
         this.players.add(player);
     }
     this.setPlayerReadyText();
-    startRunning();
+    //startRunning();
+    if(needUpdate){
+        createRunners();
+    }
 };
 
 Game.prototype.getCurrentTime = function(){
@@ -61,7 +66,7 @@ Game.prototype.setCountdown = function(value){
         chrono.innerHTML = "C'est parti !"
 
         this.startTime = new Date();
-        startRunning();
+        this.players.update();
         setTimeout(() => {
             this.clearPlayerReadyText();
             setInterval(() => {
@@ -70,3 +75,11 @@ Game.prototype.setCountdown = function(value){
         }, 500);
     }
 };
+
+Game.prototype.playerJump = function (id) {
+    var position = this.players.positionOf(id);
+
+    if(position !== null){
+        this.players.get(position).jump();
+    }
+}

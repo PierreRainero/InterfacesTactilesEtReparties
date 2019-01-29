@@ -3,15 +3,22 @@ function Player(id, state) {
     this.state = state;
     this.animations = [];
     this.mixer = null;
+    this.model = null;
 
     this.updateTrait();
 }
 
 Player.prototype.update = function (id, state) {
-    this.id = id;
-    this.state = state;
+    if(id)
+        this.id = id;
+    if(state)
+        this.state = state;
 
     this.updateTrait();
+
+    var animation = game.startTime ? this.animations[0] : this.state === 1 ? this.animations[1] : this.animations[2];
+    this.mixer.stopAllAction();
+    this.mixer.clipAction(animation).play();
 }
 
 Player.prototype.updateTrait = function () {
@@ -37,4 +44,14 @@ Player.prototype.setAnimations = function (animations) {
 
 Player.prototype.setMixer = function (mixer) {
     this.mixer = mixer;
+}
+
+Player.prototype.setModel = function (model) {
+    this.model = model;
+}
+
+Player.prototype.jump = function () {
+    console.log(this.model);
+    this.model.position.y += 500;
+    console.log(this.model);
 }

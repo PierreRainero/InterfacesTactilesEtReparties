@@ -2,7 +2,7 @@ var socket = io('http://192.168.43.238:8282');
 
 socket.emit('connectProjector');
 
-
+/*
 //TEST ZONE
 setTimeout(() => {
     game.setPlayers([{id: 1, state: 1}]);
@@ -28,7 +28,7 @@ setTimeout(() => {
         }, 5000);
     }, 5000);
 }, 5000);
-
+*/
 
 socket.on('playerChange', function (data) {
     console.log("Player change received, data : ", data);
