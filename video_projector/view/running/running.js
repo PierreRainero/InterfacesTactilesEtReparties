@@ -20,6 +20,9 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
+var gravity = 1;
+var playerBasePositionY = -350;
+
 setupViews();
 init();
 animate();
@@ -105,9 +108,20 @@ function render() {
 
     var delta = clock.getDelta();
     for(var i = 0; i < game.players.length(); i++) {
-        var mixer = game.players.get(i).mixer;
+        var player = game.players.get(i);
+
+        var mixer = player.mixer;
         if (mixer != null) {
             mixer.update(delta);
+        }
+
+        if(player.modelObject) {
+            player.modelObject.position.y += player.bounceValue;
+
+            if(player.modelObject.position.y > playerBasePositionY)
+                player.setBounceValue(player.bounceValue - gravity);
+            else
+                player.setBounceValue(0);
         }
     }
 
@@ -260,10 +274,10 @@ function createRunners(){
                 model.scale.z = 50;
                 model.position.x = -530 + (this.i*400);
                 model.position.z = -150;
-                model.position.y = -350;
+                model.position.y = playerBasePositionY;
                 model.rotation.y = Math.PI;
 
-                //game.players.get(this.i).setModel(model);
+                game.players.get(this.i).setModel(model);
 
                 runningGroup.add(model);
 

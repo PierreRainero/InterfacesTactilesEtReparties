@@ -3,7 +3,8 @@ function Player(id, state) {
     this.state = state;
     this.animations = [];
     this.mixer = null;
-    this.model = null;
+    this.modelObject = null;
+    this.bounceValue = 0;
 
     this.updateTrait();
 }
@@ -47,11 +48,14 @@ Player.prototype.setMixer = function (mixer) {
 }
 
 Player.prototype.setModel = function (model) {
-    this.model = model;
+    this.modelObject = model;
 }
 
 Player.prototype.jump = function () {
-    console.log(this.model);
-    this.model.position.y += 500;
-    console.log(this.model);
+    this.bounceValue = 25;
+    console.log("JUMP");
+}
+
+Player.prototype.setBounceValue = function (value) {
+    this.bounceValue = value;
 }

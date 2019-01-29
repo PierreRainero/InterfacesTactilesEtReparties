@@ -20,6 +20,9 @@ setTimeout(() => {
                             game.setCountdown(1);
                             setTimeout(() => {
                                 game.setCountdown(0);
+                                setTimeout(() => {
+                                    game.playerJump(1);
+                                }, 3000);
                             }, 500);
                         }, 500);
                     }, 500);
@@ -37,4 +40,8 @@ socket.on('playerChange', function (data) {
 
 socket.on('countdown', function (data){
     game.setCountdown(data.value);
+});
+
+socket.on('playerJump', function (data){
+    game.playerJump(data.id);
 });
