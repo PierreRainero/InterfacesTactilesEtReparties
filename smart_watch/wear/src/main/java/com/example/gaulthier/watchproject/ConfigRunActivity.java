@@ -61,8 +61,16 @@ public class ConfigRunActivity extends WearableActivity {
     public void selectColor(String color) {
         String datapath = "/my_path";
         System.out.println("message sent to handled device");
+        int colorValue = 0;
+        if (color.equals("red")) {
+            colorValue = 1;
+        } else if (color.equals("blue")) {
+            colorValue =2;
+        }
+        String message = "configurationPlayerId:" + android.os.Build.MODEL + ":" + colorValue;
+
         new SendMessageThread(ConfigRunActivity.this, getApplicationContext(),
-                datapath, "device " + android.os.Build.MODEL + " choose color " + color).start();
+                datapath, message).start();
         this.setContentView(R.layout.config_data);
     }
 
@@ -88,8 +96,13 @@ public class ConfigRunActivity extends WearableActivity {
      */
     public void heartDataSharing(boolean acceptHeartDataSharing) {
         String datapath = "/my_path";
+        int acceptDataSharingValue = 0;
+        if (acceptHeartDataSharing) {
+            acceptDataSharingValue = 1;
+        }
+        String message = "configurationDataSharing:" + android.os.Build.MODEL + ":" + acceptDataSharingValue;
         new SendMessageThread(ConfigRunActivity.this, getApplicationContext(),
-                datapath, "device " + android.os.Build.MODEL + " accept heart data sharing: " + acceptHeartDataSharing).start();
+                datapath, message).start();
         this.setContentView(R.layout.waiting_run);
     }
 

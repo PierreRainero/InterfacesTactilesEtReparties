@@ -56,8 +56,9 @@ public class RunActivity extends WearableActivity {
             public void onTick(long millisUntilFinished) {
                 String datapath = "/my_path";
                 int valueBPM = 124;
+                String message = "heartbeat:" + android.os.Build.MODEL + ":value:" + valueBPM;
                 new SendMessageThread(RunActivity.this, getApplicationContext(),
-                        datapath, "device " + android.os.Build.MODEL + " BPM: " + valueBPM).start();
+                        datapath, message).start();
             }
 
             @Override

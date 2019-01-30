@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity  {
         textview = findViewById(R.id.textView);
 
         try {
-            mSocket = IO.socket("http://172.20.10.2:8282");
+            mSocket = IO.socket("http://172.20.10.5:8282");
         } catch (URISyntaxException e) {
             System.out.println("error : " + e);
         }
@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity  {
 
     /**
      *
-     * @param v
      */
     public void gameStart(View v) {
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
@@ -127,15 +126,29 @@ public class MainActivity extends AppCompatActivity  {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            System.out.println("message received from wearable device");
             String typeMessage = intent.getStringExtra("message").split(":")[0];
-            String contentMessage = intent.getStringExtra("message").split(":")[1];
+            String idDevice = intent.getStringExtra("message").split(":")[1];
+            String valueMessage= intent.getStringExtra("message").split(":")[2];
+
             if (typeMessage.equals("heartbeat")) {
-                System.out.println("heartbeat received");
-                mSocket.emit("heartbeat", contentMessage);
-            } else if (typeMessage.equals("configurations")) {
-                System.out.println("configurations received");
-                mSocket.emit("watchConfigurations", contentMessage);
+                String messageToSend = "[{" +
+                        "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
+                        "\"BPM\"" + ":" + "\"124\"" +
+                        "}]";
+                mSocket.emit("heartbeat", messageToSend);
+            }
+            else if (typeMessage.equals("configurationPlayerId")) {
+                String messageToSend = "[{" +
+                        "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
+                        "\"playerId\"" + ":" + "\"" + valueMessage + "\"" +
+                        "}]";
+                mSocket.emit("watchConfigurations", messageToSend);
+            } else if (typeMessage.equals("configurationDataSharing")) {
+                String messageToSend = "[{" +
+                        "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
+                        "\"dataSharing\"" + ":" + "\"" + valueMessage + "\"" +
+                        "}]";
+                mSocket.emit("watchConfigurations", messageToSend);
             }
         }
     }
