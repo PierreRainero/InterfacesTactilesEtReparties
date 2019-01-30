@@ -58,6 +58,20 @@ module.exports = {
     },
 
     /**
+     * Received heartbeat from smartphone and send it to projector
+     * @param {array} data 
+     */
+    heartbeatReceived: function(data) {
+        for (const watch of data) {
+            for (const player of players) {
+                if (player.id == watch.playerId) {
+                    
+                }
+            }
+        }
+    },
+
+    /**
      * Check if all players of the next game are ready to start
      * @return {boolean} "true" if the kinect says every players are ready, "false" otherwise
      */

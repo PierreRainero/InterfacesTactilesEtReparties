@@ -9,27 +9,38 @@ import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.Wearable;
-
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 public class MainActivity extends WearableActivity {
 
+    IntentFilter newFilter;
+    Receiver messageReceiver;
+
+    /**
+     * On create
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        IntentFilter newFilter = new IntentFilter(Intent.ACTION_SEND);
-        MainActivity.Receiver messageReceiver = new MainActivity.Receiver();
+        newFilter = new IntentFilter(Intent.ACTION_SEND);
+        messageReceiver = new Receiver();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
     }
 
+    /**
+     * On destroy
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    }
+
+    /**
+     * A class to receive  message from android device
+     */
     public class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -44,38 +55,6 @@ public class MainActivity extends WearableActivity {
                 Intent intentMain = new Intent(MainActivity.this , ConfigRunActivity.class);
                 MainActivity.this.startActivity(intentMain);
                 MainActivity.this.finish();
-            }
-        }
-    }
-
-    class SendMessage extends Thread {
-        String path;
-        String message;
-
-        SendMessage(String p, String m) {
-            path = p;
-            message = m;
-        }
-
-        public void run() {
-            Task<List<Node>> nodeListTask =
-                    Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
-            try {
-
-                List<Node> nodes = Tasks.await(nodeListTask);
-                for (Node node : nodes) {
-
-                    Task<Integer> sendMessageTask =
-                            Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());
-
-                    try {
-                        Integer result = Tasks.await(sendMessageTask);
-                    } catch (ExecutionException exception) {
-                    } catch (InterruptedException exception) {
-                    }
-                }
-            } catch (ExecutionException exception) {
-            } catch (InterruptedException exception) {
             }
         }
     }

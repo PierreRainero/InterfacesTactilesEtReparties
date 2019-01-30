@@ -47,13 +47,15 @@ io.on('connection', function (socket) {
     game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });
 
-  socket.on('watch', function(data) {
-    console.log(data);
-  })
-
   socket.on('watchConfigurations', function(data) {
-    // setWatch(data);
-  })
+    console.log('watchConfigurations > Data received from smartphone: ' + data);
+    game.setWatch(data);
+  });
+
+  socket.on('heartbeat', function(data) {
+    console.log('heartbeat > Data received from smartphone: ' + data);
+    game.heartbeatReceived(data);
+  });
 });
 
 // view engine setup
