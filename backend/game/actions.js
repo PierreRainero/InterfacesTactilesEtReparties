@@ -115,6 +115,23 @@ module.exports = {
                                     kinect.emit('kinectStartRun', 'Ready');
                                     projector.emit('countdown', {value:0});
 
+                                    let updateJob = setInterval(() => {
+                                        let needUpdate = false;
+                                        let everyoneFinished = true;
+                                        for(let player of players){
+                                            let result = player.addProgress(0.00275);
+                                            needUpdate = result !== null;
+                                            if(!player.finish)
+                                                everyoneFinished = false;
+                                        }
+                                        if(needUpdate)
+                                            projector.emit('updatePlayers', players);
+                                        if(everyoneFinished) {
+                                            projector.emit('gameFinished');
+                                            clearInterval(updateJob);
+                                        }
+                                    }, 1);
+
                                 } else {
                                     // un joueur quite
                                 }

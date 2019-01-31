@@ -3,6 +3,7 @@ module.exports = class Player {
     this.id = id;
     this.state = state;
     this.progress = 0;
+    this.finish = false;
   }
 
   /**
@@ -23,5 +24,15 @@ module.exports = class Player {
       }
     }
     return res;
+  }
+
+  addProgress(progress){
+    if(this.progress < 110) {
+        this.progress += progress;
+        return this.progress;
+    } else {
+      this.finish = true;
+    }
+    return null;
   }
 }
