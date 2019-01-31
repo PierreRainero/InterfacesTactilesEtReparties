@@ -90,6 +90,14 @@ namespace Kinect.Captor
                     }
                     break;
 
+                case GameStep.STARTED:
+                    List<int> jumpers = GameEngine.DetectsPlayerJump(players);
+                    if(jumpers.Count > 0)
+                    {
+                        gameHook.SendJumpers(jumpers);
+                    }
+                    break;
+
                 default:
                     break;
             }
@@ -147,7 +155,8 @@ namespace Kinect.Captor
                     if (player.TackedId == skeleton.TrackingId)
                     {
                         existingSkeletonForThisPlayer = true;
-                        player.Skeleton = skeleton;
+                        player.PreviousSkeleton = player.CurrentSkeleton;
+                        player.CurrentSkeleton = skeleton;
                         nonAssociatedSkeletons.Remove(skeleton);
                     }
                 }

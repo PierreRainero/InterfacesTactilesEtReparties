@@ -4,6 +4,8 @@ using Kinect.Captor;
 using Kinect.Gameplay.Model;
 using System;
 using System.Configuration;
+using System.Collections.Generic;
+using log4net;
 
 namespace Kinect.Gameplay
 {
@@ -18,6 +20,7 @@ namespace Kinect.Gameplay
         private SocketIOClient socketIO;
         private Player[] players;
         public GameStep Step { get; private set; }
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Normal constructor : Create the game for one or two players
@@ -78,6 +81,22 @@ namespace Kinect.Gameplay
         }
 
         /// <summary>
+        /// Send all players who jumped to the backend
+        /// </summary>
+        /// <param name="jumpers">List containing jumpers id</param>
+        public void SendJumpers(List<int> jumpers)
+        {
+            foreach (int jumperId in jumpers)
+            {
+                SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+                objectToSend.AddInt("playerId", jumperId);
+                socketIO.Emit("kinectPlayerJump", objectToSend.JSONFormat());
+                log.Info("Player " + jumperId + " has jumped.");
+                players[jumperId - 1].ValidateJump(DateTime.Now);
+            }
+        }
+
+        /// <summary>
         /// Stop for good the previous game and start a new one (return to the initial state)
         /// </summary>
         private void StartNewGame()
@@ -95,7 +114,7 @@ namespace Kinect.Gameplay
         /// <param name="message">Message emitted by the backend</param>
         private void StartRun(string message)
         {
-            Console.WriteLine("Message received : " + message + "\nThe run can start.");
+            log.Info("Message received : " + message + "\tThe run can start.");
             Step = GameStep.STARTED;
         }
     }

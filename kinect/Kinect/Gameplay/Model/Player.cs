@@ -1,4 +1,5 @@
 ﻿using Microsoft.Kinect;
+using System;
 
 namespace Kinect.Gameplay.Model
 {
@@ -12,7 +13,9 @@ namespace Kinect.Gameplay.Model
         public int TackedId { get; private set; }
         public int PlayerId { get; private set; }
         public PlayerState State { get; set; }
-        public Skeleton Skeleton { get; set; }
+        public Skeleton PreviousSkeleton { get; set; }
+        public Skeleton CurrentSkeleton { get; set; }
+        private Jump lastJump;
 
         /// <summary>
         /// Normal constructor
@@ -22,8 +25,10 @@ namespace Kinect.Gameplay.Model
         {
             TackedId = -1;
             this.PlayerId = playerId;
-            Skeleton = null;
+            PreviousSkeleton = null;
+            CurrentSkeleton = null;
             State = PlayerState.NOTDETECTED;
+            lastJump = new Jump();
         }
 
         /// <summary>
@@ -42,7 +47,8 @@ namespace Kinect.Gameplay.Model
         public void Defined(Skeleton skeleton)
         {
             this.TackedId = skeleton.TrackingId;
-            this.Skeleton = skeleton;
+            this.PreviousSkeleton = this.CurrentSkeleton;
+            this.CurrentSkeleton = skeleton;
         }
 
         /// <summary>
@@ -51,7 +57,41 @@ namespace Kinect.Gameplay.Model
         public void Undefined()
         {
             TackedId = -1;
-            Skeleton = null;
+            CurrentSkeleton = null;
+        }
+
+        /// <summary>
+        /// Cancel in progress jump
+        /// </summary>
+        public void CancelJump()
+        {
+            lastJump.Cancel();
+        }
+
+        /// <summary>
+        /// Notifies the system the player is jumping
+        /// </summary>
+        public void JumpDetected()
+        {
+            lastJump.Increment();
+        }
+
+        /// <summary>
+        /// Allows to know if the jump is completed
+        /// </summary>
+        /// <returns>"true" if the jump is completed, "false" otherwise</returns>
+        public bool Jumped()
+        {
+            return lastJump.IsJumpFinished();
+        }
+
+        /// <summary>
+        /// Marks the last jump as validate and associate a time for it
+        /// </summary>
+        /// <param name="time">Time when the last jump was validate</param>
+        public void ValidateJump(DateTime time)
+        {
+            lastJump.Complete(time);
         }
 
         /// <inheritdoc />

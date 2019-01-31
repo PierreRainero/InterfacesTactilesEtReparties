@@ -32,6 +32,12 @@ Une fois une Kinect branchée et l'application lancée (voir [Technologies utili
 
 2. Pour démarrer la partie il faut que chaque joueur lève sa main droite au-dessus de sa tête (de cette manière le status de chaque joueur passera à "2"). Le "backend" émettra alors un message sur le canal `kinectStartRun` à l'intention de l'application pour passer à la phase de course.
 
+3. Une fois la partie démarrée, la kinect suivra autant que possible les joueurs (même s'ils inversent leur place). **⚠ Ceci n'est cependant pas conseillé**. A chaque fois qu'un joueur sautera (que ses deux pieds décolleront suffisamment du sol), cette application émettra un message de la sorte sur le canal `kinectPlayerJump` du "backend" :
+
+    ```json
+    { "playerId": 1}
+    ```
+
 ## Technologies utilisées
 
 * [.NETFramework](https://dotnet.microsoft.com/download/dotnet-framework-runtime) 4.6.1
