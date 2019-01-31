@@ -39,9 +39,11 @@ socket.on('playerChange', function (data) {
 });
 
 socket.on('countdown', function (data){
+    console.log("Countdown received, data : ", data);
     game.setCountdown(data.value);
 });
 
 socket.on('playerJump', function (data){
-    game.playerJump(data.id);
+    console.log("Player jump received, data : ", data);
+    game.playerJump(data.playerId);
 });
