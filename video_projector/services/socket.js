@@ -43,6 +43,11 @@ socket.on('countdown', function (data){
     game.setCountdown(data.value);
 });
 
+socket.on('hurdles', function (data){
+    console.log("Hurdles received : ", data);
+    game.setHurdles(data);
+});
+
 socket.on('playerJump', function (data){
     console.log("Player jump received, data : ", data);
     game.playerJump(data.playerId);
