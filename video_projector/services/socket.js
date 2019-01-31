@@ -49,9 +49,11 @@ socket.on('playerJump', function (data){
 });
 
 socket.on('updatePlayers', function (data) {
-    console.log("updatePlayers received, data : ", data);
+    //console.log("updatePlayers received, data : ", data);
+    game.setPlayers(data);
 })
 
-socket.on('gameFinished', function () {
-    console.log("Game finished received");
+socket.on('gameFinished', function (data) {
+    console.log("Game finished received, data : ", data);
+    game.setPlayers(data);
 })

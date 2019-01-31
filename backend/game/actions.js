@@ -133,7 +133,7 @@ module.exports = {
                                     if(needUpdate)
                                         projector.emit('updatePlayers', players);
                                     if(everyoneFinished) {
-                                        projector.emit('gameFinished');
+                                        projector.emit('gameFinished', players);
                                         clearInterval(updateJob);
                                     }
                                 }, 1);

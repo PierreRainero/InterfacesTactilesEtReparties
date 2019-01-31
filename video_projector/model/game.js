@@ -10,7 +10,7 @@ Game.prototype.setPlayers = function(players){
         this.players.add(player);
     }
     this.setPlayerReadyText();
-    //startRunning();
+
     if(needUpdate){
         createRunners();
     }
@@ -82,4 +82,8 @@ Game.prototype.playerJump = function (id) {
     if(position !== null){
         this.players.get(position).jump();
     }
+}
+
+Game.prototype.getRelativePosition = function(position){
+    return - position * 100;
 }

@@ -21,7 +21,7 @@ var shadowMaterial;
 var clock = new THREE.Clock();
 
 var gravity = 1;
-var playerBasePositionY = -350;
+var playerBasePositionY = -50;
 
 setupViews();
 init();
@@ -115,7 +115,12 @@ function render() {
             mixer.update(delta);
         }
 
-        if(player.modelObject) {
+        if(player.modelObject && player.shadowObject) {
+            let playerPosition = game.getRelativePosition(player.progress);
+
+            player.modelObject.position.z = playerPosition;
+            player.shadowObject.position.z = playerPosition - 150;
+            player.cameraObject.position.z = playerPosition + 1500;
             player.modelObject.position.y += player.bounceValue;
 
             if(player.modelObject.position.y > playerBasePositionY)
@@ -178,7 +183,7 @@ function setupViews(){
                 width: 1/game.players.length(),
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
-                eye: [ -600 + (i*400), 0, 1500 ],
+                eye: [ -600 + (i*400), 350, 1500 ],
                 up: [ 0, 1, 0 ],
                 fov: 30,
                 updateCamera: function ( camera, scene, mouseX ) {
@@ -195,6 +200,8 @@ function setupViews(){
         var camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.fromArray( view.eye );
         camera.up.fromArray( view.up );
+        if(game.players.length() !== 0)
+            game.players.get(ii).setCamera(camera);
         view.camera = camera;
     }
 }
@@ -247,6 +254,35 @@ function createRunners(){
         runningGroup.remove(runningGroup.children[i]);
     }
 
+    //Ground
+    var geometry = new THREE.PlaneGeometry( 22000, 22000, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0x567D46, side: THREE.DoubleSide} );
+    var plane = new THREE.Mesh( geometry, material );
+    plane.position.z = -5500;
+    plane.rotateX(-Math.PI/2);
+    runningGroup.add( plane );
+
+    //Start Line
+    var linematerial = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+
+    var startgeometry = new THREE.Geometry();
+    startgeometry.vertices.push(new THREE.Vector3( -700, 0, -150) );
+    startgeometry.vertices.push(new THREE.Vector3( 700, 0, -150) );
+
+    var startline = new THREE.Line( startgeometry, linematerial );
+
+    runningGroup.add(startline);
+
+    //End Line
+
+    var endgeometry = new THREE.Geometry();
+    endgeometry.vertices.push(new THREE.Vector3( -700, 0, game.getRelativePosition(110)) );
+    endgeometry.vertices.push(new THREE.Vector3( 700, 0, game.getRelativePosition(110)) );
+
+    var endline = new THREE.Line( endgeometry, linematerial );
+
+    runningGroup.add(endline);
+
     //Shadows
     var shadowGeo = new THREE.PlaneBufferGeometry( 200, 200, 1, 1 );
 
@@ -255,8 +291,9 @@ function createRunners(){
     for(var i = 0; i < game.players.length(); i++) {
         shadowMesh = new THREE.Mesh(shadowGeo, shadowMaterial);
         shadowMesh.position.x = -600 + (i*400);
-        shadowMesh.position.y = -250;
+        shadowMesh.position.y = 1;
         shadowMesh.rotation.x = -Math.PI / 2;
+        game.players.get(i).setShadow(shadowMesh);
         runningGroup.add(shadowMesh);
     }
 
