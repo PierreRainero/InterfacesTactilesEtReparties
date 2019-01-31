@@ -127,26 +127,26 @@ public class MainActivity extends AppCompatActivity  {
         @Override
         public void onReceive(Context context, Intent intent) {
             String typeMessage = intent.getStringExtra("message").split(":")[0];
-            String idDevice = intent.getStringExtra("message").split(":")[1];
+            String playerId = intent.getStringExtra("message").split(":")[1];
             String valueMessage= intent.getStringExtra("message").split(":")[2];
 
             if (typeMessage.equals("heartbeat")) {
                 String messageToSend = "[{" +
-                        "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
+                        "\"playerId\"" + ":" + "\"" + playerId + "\"," +
                         "\"heartbeat\"" + ":" + "\"" + valueMessage + "\"" +
                         "}]";
                 mSocket.emit("heartbeat", messageToSend);
             }
             else if (typeMessage.equals("configurationPlayerId")) {
                 String messageToSend = "[{" +
-                        "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
+                        "\"deviceId\"" + ":" + "\"" + playerId + "\"," +
                         "\"playerId\"" + ":" + "\"" + valueMessage + "\"" +
                         "}]";
                 mSocket.emit("watchConfigurations", messageToSend);
             }
             else if (typeMessage.equals("configurationDataSharing")) {
                 String messageToSend = "[{" +
-                        "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
+                        "\"playerId\"" + ":" + "\"" + playerId + "\"," +
                         "\"dataSharing\"" + ":" + "\"" + valueMessage + "\"" +
                         "}]";
                 mSocket.emit("watchConfigurations", messageToSend);

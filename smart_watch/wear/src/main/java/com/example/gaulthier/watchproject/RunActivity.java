@@ -14,6 +14,8 @@ import java.util.Random;
 public class RunActivity extends WearableActivity {
 
     TextView timer;
+    int playerId;
+    boolean acceptDataSharing;
 
     /**
      * On create
@@ -25,6 +27,12 @@ public class RunActivity extends WearableActivity {
         setContentView(R.layout.run);
 
         timer = findViewById(R.id.timerTextView);
+
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+            this.playerId = b.getInt("playerId");
+            this.acceptDataSharing = b.getBoolean("acceptDataSharing");
+        }
 
         new CountDownTimer(4000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -62,9 +70,11 @@ public class RunActivity extends WearableActivity {
 
                 timer.setText("♡ " + Integer.toString(valueBPM));
 
-                String message = "heartbeat:" + android.os.Build.MODEL + ":" + valueBPM;
-                new SendMessageThread(RunActivity.this, getApplicationContext(),
-                        datapath, message).start();
+                if (acceptDataSharing) {
+                    String message = "heartbeat:" + playerId + ":" + valueBPM;
+                    new SendMessageThread(RunActivity.this, getApplicationContext(),
+                            datapath, message).start();
+                }
             }
 
             @Override
