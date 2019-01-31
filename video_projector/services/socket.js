@@ -4,6 +4,7 @@ socket.emit('connectProjector');
 
 /*
 //TEST ZONE
+game.setHurdles([13.72, 22.86, 32, 41.14, 50.28, 59.42, 68.56, 77.7, 86.84, 95.98]);
 setTimeout(() => {
     game.setPlayers([{id: 1, state: 1}]);
     setTimeout(() => {

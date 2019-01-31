@@ -283,6 +283,18 @@ function createRunners(){
 
     runningGroup.add(endline);
 
+    //Hurdles
+    for(let hurdle of game.hurdles) {
+        for (var i = 0; i < game.players.length(); i++) {
+            var geometry = new THREE.PlaneGeometry(200, 300, 32);
+            var material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
+            var hurdleMesh = new THREE.Mesh(geometry, material);
+            hurdleMesh.position.x = -600 + (i * 400);
+            hurdleMesh.position.z = game.getRelativePosition(hurdle);
+            runningGroup.add(hurdleMesh);
+        }
+    }
+
     //Shadows
     var shadowGeo = new THREE.PlaneBufferGeometry( 200, 200, 1, 1 );
 
