@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity  {
             if (typeMessage.equals("heartbeat")) {
                 String messageToSend = "[{" +
                         "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
-                        "\"BPM\"" + ":" + "\"124\"" +
+                        "\"heartbeat\"" + ":" + "\"" + valueMessage + "\"" +
                         "}]";
                 mSocket.emit("heartbeat", messageToSend);
             }
@@ -143,7 +143,8 @@ public class MainActivity extends AppCompatActivity  {
                         "\"playerId\"" + ":" + "\"" + valueMessage + "\"" +
                         "}]";
                 mSocket.emit("watchConfigurations", messageToSend);
-            } else if (typeMessage.equals("configurationDataSharing")) {
+            }
+            else if (typeMessage.equals("configurationDataSharing")) {
                 String messageToSend = "[{" +
                         "\"deviceId\"" + ":" + "\"" + idDevice + "\"," +
                         "\"dataSharing\"" + ":" + "\"" + valueMessage + "\"" +

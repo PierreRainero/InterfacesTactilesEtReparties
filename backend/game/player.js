@@ -13,4 +13,12 @@ module.exports = class Player {
     this.deviceId = deviceId;
     this.allowDataSharing = dataSharing;
   }
+
+  /**
+   * Update heartbeat to a player
+   * @param {*} heartbeat 
+   */
+  setHeartbeat(heartbeat) {
+    this.heartbeat = heartbeat
+  }
 }

@@ -9,6 +9,8 @@ import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.widget.TextView;
 
+import java.util.Random;
+
 public class RunActivity extends WearableActivity {
 
     TextView timer;
@@ -55,8 +57,11 @@ public class RunActivity extends WearableActivity {
         new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished) {
                 String datapath = "/my_path";
-                int valueBPM = 124;
-                String message = "heartbeat:" + android.os.Build.MODEL + ":value:" + valueBPM;
+
+                Random r = new Random();
+                int valueBPM = r.nextInt(130 - 120) + 120;
+
+                String message = "heartbeat:" + android.os.Build.MODEL + ":" + valueBPM;
                 new SendMessageThread(RunActivity.this, getApplicationContext(),
                         datapath, message).start();
             }

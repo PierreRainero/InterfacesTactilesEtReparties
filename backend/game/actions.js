@@ -50,7 +50,8 @@ module.exports = {
     setWatch: function (data) {
         for (const watch of data) {
             for (const player of players) {
-                if (player.id == watch.playerId) { // red === 1, blue === 2
+                // red === 1, blue === 2
+                if (player.id == watch.playerId) {
                     player.setWatchCaptor(watch.deviceID, watch.dataSharing);
                 }
             }
@@ -65,7 +66,7 @@ module.exports = {
         for (const watch of data) {
             for (const player of players) {
                 if (player.id == watch.playerId) {
-                    
+                    player.setHeartbeat(watch.heartbeat);
                 }
             }
         }
