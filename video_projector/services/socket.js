@@ -55,7 +55,12 @@ socket.on('playerJump', function (data){
 
 socket.on('updatePlayers', function (data) {
     console.log("updatePlayers received, data : ", data);
-})
+});
+
+socket.on('heartbeat', function (data) {
+    console.log("heartbeat received, data : ", data);
+    game.updateHeartbeat(data.playerId, data.heartbeatValue);
+});
 
 socket.on('gameFinished', function () {
     console.log("Game finished received");

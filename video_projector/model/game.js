@@ -81,6 +81,17 @@ Game.prototype.setCountdown = function(value){
     }
 };
 
+Game.prototype.updateHeartbeat = function(playerId, heartbeatValue) {
+    var heartbeatDiv;
+    if (playerId == 1) {
+        heartbeatDiv = document.getElementById("heartbeatPlayer1");
+        heartbeatDiv.innerHTML = "♡" + heartbeatValue;
+    } else if (playerId == 2) {
+        heartbeatDiv = document.getElementById("heartbeatPlayer2");
+        heartbeatDiv.innerHTML = heartbeatValue + "♡";
+    }
+}
+
 Game.prototype.playerJump = function (id) {
     var position = this.players.positionOf(id);
 
