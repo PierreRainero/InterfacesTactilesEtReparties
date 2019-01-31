@@ -34,21 +34,16 @@ module.exports = {
         projector = projectorSocket;
         smartphone = smartphoneSocket;
 
-        if(players.length == 0){
-            for(const player of data) {
-                players.push(new Player(player.id, player.state));
-            }
-        } else {
-            for (const player of players) {
-                for (const newPlayer of data) {
-                    if (player.id == newPlayer.id) {
-                        player.state = newPlayer.state;
-                    }
-                }
+        for(const newPlayer of data){
+            const playerId = this.findPlayerIndexById(newPlayer.id);
+            if(playerId !== -1){
+                players[playerId].state = newPlayer.state;
+            }else{
+                players.push(new Player(newPlayer.id, newPlayer.state));
             }
         }
         projectorSocket.emit('playerChange', players);
-        
+
         if(this.isPlayersReady() && projectorSocket && kinectSocket) {
             this.startCountdown();
         }
@@ -83,6 +78,17 @@ module.exports = {
         return playersReady;
     },
 
+    /**
+     * Search the index of a player using his id
+     * @param {number} idToSearch of the player to search
+     * @return {number} number corresponding of his index if this player exists, -1 otherwise
+     */
+    findPlayerIndexById: function(idToSearch) {
+        return players.map(function (player) {
+            return player.id;
+        }).indexOf(idToSearch);
+    },
+
     getState: function (){
         return state;
     },
@@ -99,51 +105,50 @@ module.exports = {
 
         projector.emit('countdown', {value:3});
 
-            setTimeout(() => {
-                if (this.isPlayersReady()) {
-                    projector.emit('countdown', {value:2});
+        setTimeout(() => {
+            if (this.isPlayersReady()) {
+                projector.emit('countdown', {value:2});
 
-                    setTimeout(() => {
-                        if (this.isPlayersReady()) {
-                            projector.emit('countdown', {value:1});
+                setTimeout(() => {
+                    if (this.isPlayersReady()) {
+                        projector.emit('countdown', {value:1});
 
-                            setTimeout(() => {
-                                if (this.isPlayersReady()) {
-                                    if (smartphone) {
-                                        smartphone.emit('gameStart', players);
-                                    }
-                                    kinect.emit('kinectStartRun', 'Ready');
-                                    projector.emit('countdown', {value:0});
-
-                                    let updateJob = setInterval(() => {
-                                        let needUpdate = false;
-                                        let everyoneFinished = true;
-                                        for(let player of players){
-                                            let result = player.addProgress(0.00275);
-                                            needUpdate = result !== null;
-                                            if(!player.finish)
-                                                everyoneFinished = false;
-                                        }
-                                        if(needUpdate)
-                                            projector.emit('updatePlayers', players);
-                                        if(everyoneFinished) {
-                                            projector.emit('gameFinished');
-                                            clearInterval(updateJob);
-                                        }
-                                    }, 1);
-
-                                } else {
-                                    // un joueur quite
+                        setTimeout(() => {
+                            if (this.isPlayersReady()) {
+                                if (smartphone) {
+                                    smartphone.emit('gameStart', players);
                                 }
-                            }, 1000);
-                        } else {
-                            // un joueur quite
-                        }
-                    }, 1000);
-                } else {
-                    // un joueur quite
-                }
-            }, 1000);
-    }
+                                kinect.emit('kinectStartRun', 'Ready');
+                                projector.emit('countdown', {value:0});
 
+                                let updateJob = setInterval(() => {
+                                    let needUpdate = false;
+                                    let everyoneFinished = true;
+                                    for(let player of players){
+                                        let result = player.addProgress(0.00275);
+                                        needUpdate = result !== null;
+                                        if(!player.finish)
+                                            everyoneFinished = false;
+                                    }
+                                    if(needUpdate)
+                                        projector.emit('updatePlayers', players);
+                                    if(everyoneFinished) {
+                                        projector.emit('gameFinished');
+                                        clearInterval(updateJob);
+                                    }
+                                }, 1);
+
+                            } else {
+                                // un joueur quite
+                            }
+                        }, 1000);
+                    } else {
+                        // un joueur quite
+                    }
+                }, 1000);
+            } else {
+                // un joueur quite
+            }
+        }, 1000);
+    }
 };
