@@ -36,8 +36,7 @@ public class RunActivity extends WearableActivity {
             }
 
             public void onFinish() {
-                timer.setText("124 BPM");
-                RunActivity.this.sendBPMEachSeconds();
+                sendBPMEachSeconds();
             }
         }.start();
     }
@@ -60,6 +59,8 @@ public class RunActivity extends WearableActivity {
 
                 Random r = new Random();
                 int valueBPM = r.nextInt(130 - 120) + 120;
+
+                timer.setText("♡ " + Integer.toString(valueBPM));
 
                 String message = "heartbeat:" + android.os.Build.MODEL + ":" + valueBPM;
                 new SendMessageThread(RunActivity.this, getApplicationContext(),
