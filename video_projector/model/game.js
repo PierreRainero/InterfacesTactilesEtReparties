@@ -1,6 +1,7 @@
 function Game() {
     this.players = new Players();
     this.startTime = null;
+    this.hurdles = [];
 }
 
 Game.prototype.setPlayers = function(players){
@@ -14,6 +15,10 @@ Game.prototype.setPlayers = function(players){
     if(needUpdate){
         createRunners();
     }
+};
+
+Game.prototype.setHurdles = function(hurdles){
+    this.hurdles = hurdles;
 };
 
 Game.prototype.getCurrentTime = function(){
@@ -75,6 +80,17 @@ Game.prototype.setCountdown = function(value){
         }, 500);
     }
 };
+
+Game.prototype.updateHeartbeat = function(playerId, heartbeatValue) {
+    var heartbeatDiv;
+    if (playerId == 1) {
+        heartbeatDiv = document.getElementById("heartbeatPlayer1");
+        heartbeatDiv.innerHTML = "♡" + heartbeatValue;
+    } else if (playerId == 2) {
+        heartbeatDiv = document.getElementById("heartbeatPlayer2");
+        heartbeatDiv.innerHTML = heartbeatValue + "♡";
+    }
+}
 
 Game.prototype.playerJump = function (id) {
     var position = this.players.positionOf(id);

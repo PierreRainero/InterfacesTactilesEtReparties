@@ -41,3 +41,21 @@ a {
     position: absolute;
     display: inline-block;
 }
+
+#heartbeatPlayer1 {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    text-align: center;
+    color: white;
+    font-size: 35pt;
+}
+
+#heartbeatPlayer2 {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    text-align: center;
+    color: white;
+    font-size: 35pt;
+}
