@@ -19,17 +19,12 @@ module.exports = {
      * @param {socketIO} smartphoneSocket socket to communicate with the wears engine
      */
     definePlayers: function (data, kinectSocket, projectorSocket, smartphoneSocket) {
-        if (players.length == 0) {
-            for (const player of data) {
-                players.push(new Player(player.id, player.state));
-            }
-        } else {
-            for (const player of players) {
-                for (const newPlayer of data) {
-                    if (player.id == newPlayer.id) {
-                        player.state = newPlayer.state;
-                    }
-                }
+        for(const newPlayer of data){
+            const playerId = this.findPlayerIndexById(newPlayer.id);
+            if(playerId !== -1){
+                players[playerId].state = newPlayer.state;
+            }else{
+                players.push(new Player(newPlayer.id, newPlayer.state));
             }
         }
         projectorSocket.emit('playerChange', players);
@@ -70,5 +65,16 @@ module.exports = {
         }
 
         return playersReady;
+    },
+
+    /**
+     * Search the index of a player using his id
+     * @param {number} idToSearch of the player to search
+     * @return {number} number corresponding of his index if this player exists, -1 otherwise
+     */
+    findPlayerIndexById: function(idToSearch) {
+        return players.map(function (player) {
+          return player.id;
+        }).indexOf(idToSearch);
     }
 };
