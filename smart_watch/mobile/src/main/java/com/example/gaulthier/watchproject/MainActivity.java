@@ -14,14 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.android.gms.wearable.Wearable;
 
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -31,26 +25,21 @@ public class MainActivity extends AppCompatActivity  {
     Button talkbutton;
     TextView textview;
     private Socket mSocket;
-    protected Handler myHandler;
 
+    /**
+     * On create
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         talkbutton = findViewById(R.id.talkButton);
         textview = findViewById(R.id.textView);
 
-        myHandler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                Bundle stuff = msg.getData();
-                messageText(stuff.getString("messageText"));
-                return true;
-            }
-        });
-
         try {
-            mSocket = IO.socket("http://172.20.10.2:8282");
+            mSocket = IO.socket("http://172.20.10.5:8282");
         } catch (URISyntaxException e) {
             System.out.println("error : " + e);
         }
@@ -58,12 +47,12 @@ public class MainActivity extends AppCompatActivity  {
         mSocket.on("gameStart", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                new NewThread("/my_path", "gameStart").start();
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
             }
         }).on("gameEnd", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                new NewThread("/my_path", "gameEnd").start();
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
             }
         });
 
@@ -72,7 +61,27 @@ public class MainActivity extends AppCompatActivity  {
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         Receiver messageReceiver = new Receiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
+    }
 
+    /**
+     * On destroy
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+        mSocket.off("gameStart", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
+            }
+        }).off("gameEnd", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
+            }
+        });
     }
 
     /**
@@ -81,81 +90,68 @@ public class MainActivity extends AppCompatActivity  {
     public void connectToServer(View v) {
         System.out.println("Try to send to server");
         mSocket.emit("smartphoneConnect", "");
-        new NewThread("/my_path", "connectedToServer").start();
+        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "connectedToServer").start();
     }
 
+    /**
+     * Disconnect to the backend
+     */
+    public void disconnectServer(View v) {
+        mSocket.disconnect();
+        mSocket.off("gameStart", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
+            }
+        }).off("gameEnd", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
+            }
+        });
+    }
+
+
+    /**
+     *
+     */
     public void gameStart(View v) {
-        new NewThread("/my_path", "gameStart").start();
+        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
     }
 
-    public void messageText(String newinfo) {
-        if (newinfo.compareTo("") != 0) {
-            textview.append("\n" + newinfo);
-        }
-    }
-
+    /**
+     * A class to receive  message from wearable device
+     */
     public class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            System.out.println("message received from wearable device");
-            if (intent.getAction().equals(Intent.ACTION_SEND)) {
-                System.out.println("message sent to server");
-                mSocket.emit("watch", intent.getStringExtra("message"));
+            String typeMessage = intent.getStringExtra("message").split(":")[0];
+            String playerId = intent.getStringExtra("message").split(":")[1];
+            String valueMessage= intent.getStringExtra("message").split(":")[2];
+
+            if (typeMessage.equals("heartbeat")) {
+                String messageToSend = "[{" +
+                        "\"playerId\"" + ":" + "\"" + playerId + "\"," +
+                        "\"heartbeat\"" + ":" + "\"" + valueMessage + "\"" +
+                        "}]";
+                mSocket.emit("heartbeat", messageToSend);
             }
-
-
-        }
-    }
-
-    public void talkClick(View v) {
-        String message = "Sending message.... ";
-        textview.setText(message);
-
-        new NewThread("/my_path", message).start();
-
-    }
-
-    public void sendmessage(String messageText) {
-        Bundle bundle = new Bundle();
-        bundle.putString("messageText", messageText);
-        Message msg = myHandler.obtainMessage();
-        msg.setData(bundle);
-        myHandler.sendMessage(msg);
-
-    }
-
-    class NewThread extends Thread {
-        String path;
-        String message;
-
-        NewThread(String p, String m) {
-            path = p;
-            message = m;
-        }
-
-        public void run() {
-
-            Task<List<Node>> wearableList =
-                    Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
-            try {
-
-                List<Node> nodes = Tasks.await(wearableList);
-                for (Node node : nodes) {
-                    Task<Integer> sendMessageTask =
-
-                            Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());
-
-                    try {
-                        Integer result = Tasks.await(sendMessageTask);
-                        sendmessage("I just sent the wearable a message ");
-                    } catch (ExecutionException exception) {
-                    } catch (InterruptedException exception) {
-                    }
-                }
-            } catch (ExecutionException exception) {
-            } catch (InterruptedException exception) {
+            else if (typeMessage.equals("configurationPlayerId")) {
+                String messageToSend = "[{" +
+                        "\"deviceId\"" + ":" + "\"" + playerId + "\"," +
+                        "\"playerId\"" + ":" + "\"" + valueMessage + "\"" +
+                        "}]";
+                mSocket.emit("watchConfigurations", messageToSend);
+            }
+            else if (typeMessage.equals("configurationDataSharing")) {
+                String messageToSend = "[{" +
+                        "\"playerId\"" + ":" + "\"" + playerId + "\"," +
+                        "\"dataSharing\"" + ":" + "\"" + valueMessage + "\"" +
+                        "}]";
+                mSocket.emit("watchConfigurations", messageToSend);
             }
         }
     }
+
 }
