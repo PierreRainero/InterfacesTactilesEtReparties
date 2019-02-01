@@ -1,12 +1,12 @@
 const Player = require('./player.js');
-const Map = require ('./map.js');
+const map = require ('./map.js');
 
 let players;
 let state = "waiting_players";
 let kinect;
 let projector;
 let smartphone;
-let map = new Map();
+
 
 
 module.exports = {
@@ -108,10 +108,8 @@ module.exports = {
         return state;
     },
 
-    checkJump: function (playerId){
-        if(players[playerId].isApproachingHurdle(map)){
-
-        }
+    playerJump: function (playerId){
+        players[playerId].jump(map);
     },
 
     startCountdown: function (){
@@ -141,6 +139,9 @@ module.exports = {
                                     let everyoneFinished = true;
                                     for(let player of players){
                                         let result = player.addProgress(0.00275);
+                                        if(player.checkCollision(map)){
+                                            projector.emit('collision', {player:player});
+                                        }
                                         needUpdate = result !== null;
                                         if(!player.finish)
                                             everyoneFinished = false;

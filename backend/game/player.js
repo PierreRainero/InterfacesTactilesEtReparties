@@ -3,6 +3,7 @@ module.exports = class Player {
     this.id = id;
     this.state = state;
     this.progress = 0;
+    this.hurdlesAvoided = [];
     this.finish = false;
   }
 
@@ -16,15 +17,40 @@ module.exports = class Player {
     this.allowDataSharing = dataSharing;
   }
 
-    isApproachingHurdle(map){
-        let res = false;
-        for (let hurdle in map.hurdles){
-            if(this.progress > hurdle - 2 && this.progress < hurdle){
-                res = true;
-            }
-        }
-        return res;
+  isApproachingHurdle(map){
+    const nextHurdle = this.hurdlesAvoided.length;
+
+    // hurdle approaching
+    if (this.progress > map.hurdles[nextHurdle] - 2 && this.progress < map.hurdles[nextHurdle]){
+      return true;
     }
+    else return false;
+  }
+
+
+  checkCollision(map){
+    let res = false;
+    const nextHurdle = this.hurdlesAvoided.length;
+
+    if(this.progress >= map.hurdles[nextHurdle]){
+      if(!this.hasJumped) {
+        this.hurdlesAvoided.push(false);
+        res = true;
+      }
+
+      else {
+        this.hurdlesAvoided.push(true);
+      }
+      this.hasJumped = false;
+    }
+    return res;
+  }
+
+  jump(map){
+    if(this.isApproachingHurdle(map)){
+      this.hasJumped = true;
+    }
+  }
 
     addProgress(progress){
         if(this.progress < 110) {

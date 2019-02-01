@@ -57,9 +57,13 @@ socket.on('playerJump', function (data){
 socket.on('updatePlayers', function (data) {
     //console.log("updatePlayers received, data : ", data);
     game.setPlayers(data);
-})
+});
+
+socket.on('collision', function (data) {
+    console.log("collision detected, player : ", data);
+});
 
 socket.on('gameFinished', function (data) {
     console.log("Game finished received, data : ", data);
     game.stopGame(data);
-})
+});
