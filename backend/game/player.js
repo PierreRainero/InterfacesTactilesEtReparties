@@ -2,6 +2,9 @@ module.exports = class Player {
   constructor(id, state) {
     this.id = id;
     this.state = state;
+    this.progress = 0;
+    this.finish = false;
+    this.heartbeat = 0;
   }
 
   /**
@@ -14,11 +17,31 @@ module.exports = class Player {
     this.allowDataSharing = dataSharing;
   }
 
-  /**
-   * Update heartbeat to a player
-   * @param {*} heartbeat 
-   */
-  setHeartbeat(heartbeat) {
-    this.heartbeat = heartbeat
-  }
+    isApproachingHurdle(map){
+        let res = false;
+        for (let hurdle in map.hurdles){
+            if(this.progress > hurdle - 2 && this.progress < hurdle){
+                res = true;
+            }
+        }
+        return res;
+    }
+
+    addProgress(progress){
+        if(this.progress < 110) {
+            this.progress += progress;
+            return this.progress;
+        } else {
+            this.finish = true;
+        }
+        return null;
+    }
+
+    /**
+     * Update heartbeat to a player
+     * @param {*} heartbeat
+     */
+    setHeartbeat(heartbeat) {
+        this.heartbeat = heartbeat
+    }
 }

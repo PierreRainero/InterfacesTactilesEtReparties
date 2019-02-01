@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var sessionRouter = require('./routes/session');
 
 let game = require('./game/actions.js');
+let map = require('./game/map.js')
 
 var app = express();
 
@@ -24,6 +25,7 @@ io.on('connection', function (socket) {
   socket.on('connectProjector', function (){
     console.log('Projector ready.');
     projectorSocket = socket;
+    projectorSocket.emit('hurdles', map.getHurdles());
   });
 
   socket.on('smartphoneConnect', function() {
@@ -41,6 +43,7 @@ io.on('connection', function (socket) {
     var received = new Date();
     console.log(received.getDate() + "/"+received.getMonth() + "/"+received.getFullYear() + " "+received.getHours()+":"+received.getMinutes()+":"+received.getSeconds());
     console.log("Player " + jumper.playerId + " jumps !");
+    projectorSocket.emit('playerJump', jumper);
   });
 
   socket.on('players', function (data) {
@@ -53,8 +56,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('heartbeat', function(data) {
-    console.log('heartbeat > Data received from smartphone: ' + data);
-    game.heartbeatReceived(data);
+    game.heartbeatReceived(JSON.parse(data));
   });
 });
 
