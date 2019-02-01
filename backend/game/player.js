@@ -5,6 +5,7 @@ module.exports = class Player {
     this.progress = 0;
     this.hurdlesAvoided = [];
     this.finish = false;
+    this.heartbeat = 0;
   }
 
   /**

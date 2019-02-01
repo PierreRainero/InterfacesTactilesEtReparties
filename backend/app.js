@@ -57,8 +57,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('heartbeat', function(data) {
-    console.log('heartbeat > Data received from smartphone: ' + data);
-    game.heartbeatReceived(data);
+    game.heartbeatReceived(JSON.parse(data));
   });
 });
 

@@ -1,13 +1,11 @@
 const Player = require('./player.js');
-const map = require ('./map.js');
+const Map = require ('./map.js');
 
 let players;
 let state = "waiting_players";
 let kinect;
 let projector;
 let smartphone;
-
-
 
 module.exports = {
 
@@ -69,9 +67,13 @@ module.exports = {
      * @param {array} data 
      */
     heartbeatReceived: function(data) {
+        if(!players){
+            return;
+        }
+
         for (const watch of data) {
             for (const player of players) {
-                if (player.id == watch.playerId) {
+                if (player.id === watch.playerId) {
                     player.setHeartbeat(watch.heartbeat);
                 }
             }
