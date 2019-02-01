@@ -114,8 +114,8 @@ module.exports = {
         players[this.findPlayerIndexById(playerId)].jump(map);
     },
 
-    updatePlayersSpeed: function(players){
-        for(const player of players){
+    updatePlayersSpeed: function(data){
+        for(const player of data){
             console.log("Player "+player.id+" run at "+player.speed+" m/s");
             players[this.findPlayerIndexById(player.id)].updateSpeed(player.speed);
         }
