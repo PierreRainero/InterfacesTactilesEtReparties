@@ -69,8 +69,12 @@ module.exports = {
     heartbeatReceived: function(data) {
         for (const watch of data) {
             for (const player of players) {
-                if (player.id == watch.playerId) {
+                if (player.id === watch.playerId) {
                     player.setHeartbeat(watch.heartbeat);
+                }else{
+                    console.log(player.id);
+                    console.log(watch);
+                    console.log("-----------------------");
                 }
             }
         }

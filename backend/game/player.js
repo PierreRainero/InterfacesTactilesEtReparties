@@ -4,6 +4,7 @@ module.exports = class Player {
     this.state = state;
     this.progress = 0;
     this.finish = false;
+    this.heartbeat = 0;
   }
 
   /**
