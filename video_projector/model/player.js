@@ -57,10 +57,10 @@ Player.prototype.updateTrait = function () {
 
 Player.prototype.updateHeartbeat = function() {
     var heartbeatDiv;
-    if (this.id == 1) {
+    if (this.id === 1 && this.heartbeat != 0) {
         heartbeatDiv = document.getElementById("heartbeatPlayer1");
         heartbeatDiv.innerHTML = "♡" + this.heartbeat;
-    } else if (this.id == 2) {
+    } else if (this.id === 2 && this.heartbeat != 0) {
         heartbeatDiv = document.getElementById("heartbeatPlayer2");
         heartbeatDiv.innerHTML = this.heartbeat + "♡";
     }
