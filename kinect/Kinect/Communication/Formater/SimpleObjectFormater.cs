@@ -40,6 +40,16 @@ namespace Kinect.Communication.Formater
         }
 
         /// <summary>
+        /// Add a floating number as new child (attribute of the object to send)
+        /// </summary>
+        /// <param name="key">Value of the key</param>
+        /// <param name="value">Value associated to the key</param>
+        public void AddFloat(string key, float value)
+        {
+            children.Add(new SimpleFloatPair(key, value));
+        }
+
+        /// <summary>
         /// Add a generic object as new child (attribute of the object to send)
         /// </summary>
         /// <param name="key">Value of the key</param>
