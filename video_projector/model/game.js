@@ -92,7 +92,7 @@ Game.prototype.playerJump = function (id) {
 }
 
 Game.prototype.getRelativePosition = function(position){
-    return - position * 100;
+    return - position * 400;
 }
 
 Game.prototype.stopGame = function(players){

@@ -120,7 +120,7 @@ function render() {
 
             player.modelObject.position.z = playerPosition;
             player.shadowObject.position.z = playerPosition - 150;
-            player.cameraObject.position.z = playerPosition + 1500;
+            player.cameraObject.position.z = playerPosition + 1250;
             player.modelObject.position.y += player.bounceValue;
 
             if(player.modelObject.position.y > playerBasePositionY)
@@ -183,7 +183,7 @@ function setupViews(){
                 width: 1/game.players.length(),
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
-                eye: [ -600 + (i*400), 350, 1500 ],
+                eye: [ -600 + (i*400), 350, 1250 ],
                 up: [ 0, 1, 0 ],
                 fov: 30,
                 updateCamera: function ( camera, scene, mouseX ) {
@@ -255,10 +255,10 @@ function createRunners(){
     }
 
     //Ground
-    var geometry = new THREE.PlaneGeometry( 22000, 22000, 32 );
+    var geometry = new THREE.PlaneGeometry( 88000, 88000, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0x567D46, side: THREE.DoubleSide} );
     var plane = new THREE.Mesh( geometry, material );
-    plane.position.z = -5500;
+    plane.position.z = -22000;
     plane.rotateX(-Math.PI/2);
     runningGroup.add( plane );
 
