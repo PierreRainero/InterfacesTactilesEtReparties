@@ -10,11 +10,12 @@ function Player(id, state) {
     this.cameraObject = null;
     this.bounceValue = 0;
     this.currentAnimation = null;
+    this.heartbeat = 0;
 
     this.updateTrait();
 }
 
-Player.prototype.update = function (id, state, progress, finish) {
+Player.prototype.update = function (id, state, progress, finish, heartbeat) {
     if(id)
         this.id = id;
     if(state)
@@ -23,8 +24,11 @@ Player.prototype.update = function (id, state, progress, finish) {
         this.progress = progress;
     if(finish)
         this.finish = finish;
+    if (heartbeat)
+        this.heartbeat = heartbeat;
 
     this.updateTrait();
+    this.updateHeartbeat();
 
     var animation = this.chooseAnimation();
     if(this.currentAnimation !== animation) {
@@ -48,6 +52,17 @@ Player.prototype.updateTrait = function () {
             this.model = "runner_base";
             this.backgroundColor = "rgb(0, 0, 0)";
             break;
+    }
+}
+
+Player.prototype.updateHeartbeat = function() {
+    var heartbeatDiv;
+    if (this.id == 1) {
+        heartbeatDiv = document.getElementById("heartbeatPlayer1");
+        heartbeatDiv.innerHTML = "♡" + this.heartbeat;
+    } else if (this.id == 2) {
+        heartbeatDiv = document.getElementById("heartbeatPlayer2");
+        heartbeatDiv.innerHTML = this.heartbeat + "♡";
     }
 }
 
