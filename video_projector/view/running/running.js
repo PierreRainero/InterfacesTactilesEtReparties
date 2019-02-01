@@ -193,7 +193,7 @@ function setupViews(){
                 top: 0,
                 width: 1/game.players.length(),
                 height: 1.0,
-                background: new THREE.Color(backgroundColor),
+                background: new THREE.Color("rgb(92, 205, 205)"),
                 eye: [ -450 + (i*220), 350, cameraPositionZ ],
                 up: [ 0, 1, 0 ],
                 fov: 30,

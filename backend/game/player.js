@@ -33,13 +33,13 @@ module.exports = class Player {
 
 
   checkCollision(map) {
-    let collision = false;
+    let collision = null;
     const nextHurdle = this.hurdlesAvoided.length;
 
     if (this.progress > (map.getHurdle(nextHurdle) - 0.5)) {
       if (!this.hasJumped) {
         this.hurdlesAvoided.push(false);
-        collision = true;
+        collision = nextHurdle;
       }
       else {
         this.hurdlesAvoided.push(true);

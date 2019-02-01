@@ -141,8 +141,9 @@ module.exports = {
                                     let everyoneFinished = true;
                                     for(let player of players){
                                         let result = player.addProgress(0.00275);
-                                        if(player.checkCollision(map)){
-                                            projector.emit('collision', {player:player});
+                                        let hurdleTouched = player.checkCollision(map);
+                                        if(hurdleTouched !== null){
+                                            projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
                                         }
                                         needUpdate = result !== null;
                                         if(!player.finish)
