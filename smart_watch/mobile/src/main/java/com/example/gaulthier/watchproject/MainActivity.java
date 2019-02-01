@@ -132,22 +132,22 @@ public class MainActivity extends AppCompatActivity  {
 
             if (typeMessage.equals("heartbeat")) {
                 String messageToSend = "[{" +
-                        "\"playerId\"" + ":" + "\"" + playerId + "\"," +
-                        "\"heartbeat\"" + ":" + "\"" + valueMessage + "\"" +
+                        "\"playerId\"" + ":" + playerId +"," +
+                        "\"heartbeat\"" + ":" + valueMessage +
                         "}]";
                 mSocket.emit("heartbeat", messageToSend);
             }
             else if (typeMessage.equals("configurationPlayerId")) {
                 String messageToSend = "[{" +
-                        "\"deviceId\"" + ":" + "\"" + playerId + "\"," +
-                        "\"playerId\"" + ":" + "\"" + valueMessage + "\"" +
+                        "\"deviceId\"" + ":" +playerId + "," +
+                        "\"playerId\"" + ":" + valueMessage +
                         "}]";
                 mSocket.emit("watchConfigurations", messageToSend);
             }
             else if (typeMessage.equals("configurationDataSharing")) {
                 String messageToSend = "[{" +
-                        "\"playerId\"" + ":" + "\"" + playerId + "\"," +
-                        "\"dataSharing\"" + ":" + "\"" + valueMessage + "\"" +
+                        "\"playerId\"" + ":" + playerId + "," +
+                        "\"dataSharing\"" + ":" + valueMessage +
                         "}]";
                 mSocket.emit("watchConfigurations", messageToSend);
             }
