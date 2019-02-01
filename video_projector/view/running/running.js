@@ -183,7 +183,7 @@ function setupViews(){
                 width: 1/game.players.length(),
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
-                eye: [ -600 + (i*400), 350, 1250 ],
+                eye: [ -450 + (i*220), 350, 1250 ],
                 up: [ 0, 1, 0 ],
                 fov: 30,
                 updateCamera: function ( camera, scene, mouseX ) {
@@ -256,9 +256,28 @@ function createRunners(){
 
     //Ground
     var geometry = new THREE.PlaneGeometry( 88000, 88000, 32 );
-    var material = new THREE.MeshBasicMaterial( {color: 0x567D46, side: THREE.DoubleSide} );
-    var plane = new THREE.Mesh( geometry, material );
+    var texture = new THREE.TextureLoader().load( "view/running/textures/grass.jpg" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = 400;
+    texture.repeat.y = 400;
+    var materialTexture = new THREE.MeshBasicMaterial( { map: texture } );
+    var plane = new THREE.Mesh( geometry, materialTexture );
     plane.position.z = -22000;
+    plane.rotateX(-Math.PI/2);
+    runningGroup.add( plane );
+
+    //RunningTrack
+    var geometry = new THREE.PlaneGeometry( 1500, 44500, 32 );
+    var texture = new THREE.TextureLoader().load( "view/running/textures/runningTrack.jpg" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = 1;
+    texture.repeat.y = 6;
+    var materialTexture = new THREE.MeshBasicMaterial( { map: texture } );
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = -22250;
+    plane.position.y = 1;
     plane.rotateX(-Math.PI/2);
     runningGroup.add( plane );
 
@@ -289,7 +308,7 @@ function createRunners(){
             var geometry = new THREE.PlaneGeometry(200, 300, 32);
             var material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
             var hurdleMesh = new THREE.Mesh(geometry, material);
-            hurdleMesh.position.x = -600 + (i * 400);
+            hurdleMesh.position.x = -457 + (i*224);
             hurdleMesh.position.z = game.getRelativePosition(hurdle);
             runningGroup.add(hurdleMesh);
         }
@@ -302,9 +321,9 @@ function createRunners(){
 
     for(var i = 0; i < game.players.length(); i++) {
         shadowMesh = new THREE.Mesh(shadowGeo, shadowMaterial);
-        shadowMesh.position.x = -600 + (i*400);
-        shadowMesh.position.y = 1;
+        shadowMesh.position.x = -457 + (i*224);
         shadowMesh.rotation.x = -Math.PI / 2;
+        shadowMesh.position.y = 1;
         game.players.get(i).setShadow(shadowMesh);
         runningGroup.add(shadowMesh);
     }
@@ -321,7 +340,7 @@ function createRunners(){
                 model.scale.x = 50;
                 model.scale.y = 50;
                 model.scale.z = 50;
-                model.position.x = -530 + (this.i*400);
+                model.position.x = -390 + (this.i*220);
                 model.position.z = -150;
                 model.position.y = playerBasePositionY;
                 model.rotation.y = Math.PI;

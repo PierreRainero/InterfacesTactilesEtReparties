@@ -24,6 +24,13 @@ setTimeout(() => {
                                 setTimeout(() => {
                                     game.playerJump(1);
                                 }, 3000);
+                                let position = 0;
+                                setInterval(() => {
+                                    if(position < 110){
+                                        position += 0.1;
+                                        game.setPlayers([{id: 1, state: 2, progress: position},{id: 2, state: 2, progress: position}]);
+                                    }
+                                }, 1);
                             }, 500);
                         }, 500);
                     }, 500);
