@@ -16,17 +16,21 @@ namespace Kinect.Gameplay
     /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
     class Game
     {
+        public GameStep Step { get; private set; }
         private KinectCaptorV1 kinectMotor;
         private SocketIOClient socketIO;
         private Player[] players;
-        public GameStep Step { get; private set; }
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private bool logMode;
+
 
         /// <summary>
         /// Normal constructor : Create the game for one or two players
         /// </summary>
-        public Game()
+        /// <param name="log">Activate logs (non activated by default)</param>
+        public Game(bool log=false)
         {
+            logMode = log;
             Int32.TryParse(ConfigurationManager.AppSettings["socketIO_port"], out int port);
             socketIO = new SocketIOClient(ConfigurationManager.AppSettings["socketIO_url"], port);
 
@@ -41,7 +45,10 @@ namespace Kinect.Gameplay
             kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
             socketIO.On("kinectStartRun", StartRun);
-            //log.Info(Step.ToString() + " : Open socket - Start Capture");
+            if (logMode)
+            {
+                log.Info(Step.ToString() + " : Open socket - Start Capture");
+            }
 
             SimpleObjectFormater objectToSend = new SimpleObjectFormater();
             objectToSend.AddString("state", kinectMotor.Status);
@@ -77,7 +84,10 @@ namespace Kinect.Gameplay
                 }
             }
             objectToSend.AddArray("players", playersArray);
-            //log.Info(Step.ToString() + " : Send available players = " + objectToSend.JSONFormat());
+            if (logMode)
+            {
+                log.Info(Step.ToString() + " : Send available players = " + objectToSend.JSONFormat());
+            }
 
             socketIO.Emit("players", objectToSend.JSONFormat());
         }
@@ -96,7 +106,12 @@ namespace Kinect.Gameplay
                 SimpleObjectFormater objectToSend = new SimpleObjectFormater();
                 objectToSend.AddInt("playerId", jumperId);
                 socketIO.Emit("kinectPlayerJump", objectToSend.JSONFormat());
-                //log.Info(Step.ToString() + " : Player " + jumperId + " has jumped");
+
+                if (logMode)
+                {
+                    log.Info(Step.ToString() + " : Player " + jumperId + " has jumped");
+                }
+
                 players[jumperId - 1].ValidateJump(DateTime.Now);
             }
         }
@@ -122,7 +137,10 @@ namespace Kinect.Gameplay
                 }
             }
             objectToSend.AddArray("players", playersArray);
-            //log.Info(Step.ToString() + " : Send players speed = " + objectToSend.JSONFormat());
+            if (logMode)
+            {
+                log.Info(Step.ToString() + " : Send players speed = " + objectToSend.JSONFormat());
+            }
 
             socketIO.Emit("kinectPlayerSpeed", objectToSend.JSONFormat());
         }
@@ -145,7 +163,10 @@ namespace Kinect.Gameplay
         /// <param name="message">Message emitted by the backend</param>
         private void StartRun(string message)
         {
-            //log.Info(Step.ToString() + " : Message received = \"" + message + "\"");
+            if (logMode)
+            {
+                log.Info(Step.ToString() + " : Message received = \"" + message + "\"");
+            }
             Step = GameStep.STARTED;
         }
     }

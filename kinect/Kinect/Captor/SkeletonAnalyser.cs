@@ -73,7 +73,7 @@ namespace Kinect.Captor
             Joint pKneeLeft = previousSkeleton.Joints[JointType.KneeLeft];
             Joint lKneeLeft = lastSkeleton.Joints[JointType.KneeLeft];
 
-            player.Speed.AddStamp(Math.Abs(lKneeRight.Position.Z - pKneeRight.Position.Z), Math.Abs(lKneeLeft.Position.Z - pKneeLeft.Position.Z));
+            player.Speed.AddShot(Math.Abs(lKneeRight.Position.Z - pKneeRight.Position.Z), Math.Abs(lKneeLeft.Position.Z - pKneeLeft.Position.Z));
         }
     }
 }
