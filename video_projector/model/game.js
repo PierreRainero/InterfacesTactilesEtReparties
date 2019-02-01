@@ -10,7 +10,9 @@ Game.prototype.setPlayers = function(players){
     for(var player of players){
         this.players.add(player);
     }
-    this.setPlayerReadyText();
+
+    if(this.startTime === null)
+        this.setPlayerReadyText();
 
     if(needUpdate){
         createRunners();
@@ -66,9 +68,8 @@ Game.prototype.setCountdown = function(value){
     var chrono = document.getElementById("chrono");
     if(value > 0)
         chrono.innerHTML = value;
-
     else if(value === 0){
-        chrono.innerHTML = "C'est parti !"
+        chrono.innerHTML = "C'est parti !";
 
         this.startTime = new Date();
         this.players.update();
