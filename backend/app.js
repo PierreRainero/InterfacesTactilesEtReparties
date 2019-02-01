@@ -44,6 +44,12 @@ io.on('connection', function (socket) {
     projectorSocket.emit('playerJump', jumper);
   });
 
+  socket.on('kinectPlayerSpeed', function (data) {
+    for(const player of data.players){
+      console.log("Player "+player.id+" run at "+player.speed+" m/s");
+    }
+  });
+
   socket.on('players', function (data) {
     game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });

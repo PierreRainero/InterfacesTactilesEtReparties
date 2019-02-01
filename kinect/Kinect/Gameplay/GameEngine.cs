@@ -1,6 +1,7 @@
 ﻿using Kinect.Captor;
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
+using log4net;
 using System.Collections.Generic;
 
 namespace Kinect.Gameplay
@@ -12,6 +13,8 @@ namespace Kinect.Gameplay
     /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
     abstract class GameEngine
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Check all players and update their state if needed
         /// </summary>
@@ -81,6 +84,27 @@ namespace Kinect.Gameplay
             }
 
             return playersWhoJumped;
+        }
+
+        /// <summary>
+        /// Detects and updates speed of all players
+        /// </summary>
+        /// <param name="players">Players of the game to control</param>
+        /// <returns>"true" if the speed have changed, "false" otherwise</returns>
+        public static bool DetectsPlayerSpeed(Player[] players)
+        {
+            bool needUpdate = false;
+            foreach (Player player in players)
+            {
+                SkeletonAnalyser.CalculateRunningSpeed(player);
+                if (player.Speed.IsCalculable())
+                {
+                    player.Speed.Caculate();
+                    needUpdate = true;
+                }
+            }
+
+            return needUpdate;
         }
     }
 }

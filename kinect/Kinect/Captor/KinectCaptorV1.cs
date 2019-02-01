@@ -91,6 +91,11 @@ namespace Kinect.Captor
                     break;
 
                 case GameStep.STARTED:
+                    if (GameEngine.DetectsPlayerSpeed(players))
+                    {
+                        gameHook.SendSpeed();
+                    }
+
                     List<int> jumpers = GameEngine.DetectsPlayerJump(players);
                     if(jumpers.Count > 0)
                     {

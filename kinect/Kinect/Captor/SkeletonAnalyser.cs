@@ -1,6 +1,7 @@
 ﻿using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
 using Microsoft.Kinect;
+using System;
 
 namespace Kinect.Captor
 {
@@ -53,5 +54,26 @@ namespace Kinect.Captor
             return (lFootRight - pFootRight) > 0.035 && (lFootLeft - pFootLeft) > 0.035;
         }
 
+        /// <summary>
+        /// Collects data to calculate the speed of a player
+        /// </summary>
+        /// <param name="player">Player to use</param>
+        public static void CalculateRunningSpeed(Player player)
+        {
+            Skeleton previousSkeleton = player.PreviousSkeleton;
+            Skeleton lastSkeleton = player.CurrentSkeleton;
+
+            if (previousSkeleton == null || lastSkeleton == null)
+            {
+                return;
+            }
+
+            Joint pKneeRight = previousSkeleton.Joints[JointType.KneeRight];
+            Joint lKneeRight = lastSkeleton.Joints[JointType.KneeRight];
+            Joint pKneeLeft = previousSkeleton.Joints[JointType.KneeLeft];
+            Joint lKneeLeft = lastSkeleton.Joints[JointType.KneeLeft];
+
+            player.Speed.AddStamp(Math.Abs(lKneeRight.Position.Z - pKneeRight.Position.Z), Math.Abs(lKneeLeft.Position.Z - pKneeLeft.Position.Z));
+        }
     }
 }

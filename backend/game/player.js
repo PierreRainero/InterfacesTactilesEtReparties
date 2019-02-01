@@ -52,9 +52,6 @@ module.exports = class Player {
   jump(map) {
     if (this.isApproachingHurdle(map)) {
       this.hasJumped = true;
-      console.log("haie proche");
-    }else{
-      console.log("saut useless");
     }
   }
 

@@ -41,6 +41,7 @@ namespace Kinect.Gameplay
             kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
             socketIO.On("kinectStartRun", StartRun);
+            //log.Info(Step.ToString() + " : Open socket - Start Capture");
 
             SimpleObjectFormater objectToSend = new SimpleObjectFormater();
             objectToSend.AddString("state", kinectMotor.Status);
@@ -76,6 +77,7 @@ namespace Kinect.Gameplay
                 }
             }
             objectToSend.AddArray("players", playersArray);
+            //log.Info(Step.ToString() + " : Send available players = " + objectToSend.JSONFormat());
 
             socketIO.Emit("players", objectToSend.JSONFormat());
         }
@@ -94,9 +96,35 @@ namespace Kinect.Gameplay
                 SimpleObjectFormater objectToSend = new SimpleObjectFormater();
                 objectToSend.AddInt("playerId", jumperId);
                 socketIO.Emit("kinectPlayerJump", objectToSend.JSONFormat());
-                log.Info("Player " + jumperId + " has jumped.");
+                //log.Info(Step.ToString() + " : Player " + jumperId + " has jumped");
                 players[jumperId - 1].ValidateJump(DateTime.Now);
             }
+        }
+
+        /// <summary>
+        /// Send all players speed to the backend
+        /// </summary>
+        /// <remarks>
+        /// Gameplay method : You shouldn't call it manually.
+        /// </remarks>
+        public void SendSpeed()
+        {
+            SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+            SimpleArray playersArray = new SimpleArray();
+            foreach (Player player in players)
+            {
+                if (player.IsDefined())
+                {
+                    SimpleObjectFormater playerObjectToSend = new SimpleObjectFormater();
+                    playerObjectToSend.AddInt("id", player.PlayerId);
+                    playerObjectToSend.AddFloat("speed", player.Speed.value);
+                    playersArray.AddMember(playerObjectToSend);
+                }
+            }
+            objectToSend.AddArray("players", playersArray);
+            //log.Info(Step.ToString() + " : Send players speed = " + objectToSend.JSONFormat());
+
+            socketIO.Emit("kinectPlayerSpeed", objectToSend.JSONFormat());
         }
 
         /// <summary>
@@ -117,7 +145,7 @@ namespace Kinect.Gameplay
         /// <param name="message">Message emitted by the backend</param>
         private void StartRun(string message)
         {
-            log.Info("Message received : \"" + message + "\".\tThe run can start.");
+            //log.Info(Step.ToString() + " : Message received = \"" + message + "\"");
             Step = GameStep.STARTED;
         }
     }

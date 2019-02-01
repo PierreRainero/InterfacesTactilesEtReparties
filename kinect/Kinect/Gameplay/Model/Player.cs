@@ -15,6 +15,7 @@ namespace Kinect.Gameplay.Model
         public PlayerState State { get; set; }
         public Skeleton PreviousSkeleton { get; set; }
         public Skeleton CurrentSkeleton { get; set; }
+        public Speed Speed { get; private set; }
         private Jump lastJump;
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace Kinect.Gameplay.Model
             CurrentSkeleton = null;
             State = PlayerState.NOTDETECTED;
             lastJump = new Jump();
+            Speed = new Speed();
         }
 
         /// <summary>

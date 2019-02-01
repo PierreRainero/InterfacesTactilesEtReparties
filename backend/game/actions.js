@@ -115,9 +115,7 @@ module.exports = {
     },
 
     startCountdown: function (){
-
         projector.emit('everyonesReady', players);
-
         projector.emit('countdown', {value:3});
 
         setTimeout(() => {
