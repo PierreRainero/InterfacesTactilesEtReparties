@@ -13,8 +13,7 @@
         android:id="@+id/talkButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Talk to the wearable"
-        android:onClick="talkClick"/>
+        android:text="Talk to the wearable" />
 
 
     <TextView
@@ -40,5 +39,17 @@
         android:layout_height="wrap_content"
         android:onClick="gameStart"
         android:text="Simulated start run" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Disconnect to server"
+        android:onClick="disconnectServer" />
 
 </LinearLayout>

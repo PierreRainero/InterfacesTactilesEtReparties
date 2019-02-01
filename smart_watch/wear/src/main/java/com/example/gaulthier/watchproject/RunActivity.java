@@ -9,26 +9,30 @@ import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.Wearable;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Random;
 
 public class RunActivity extends WearableActivity {
 
     TextView timer;
+    int playerId;
+    boolean acceptDataSharing;
 
+    /**
+     * On create
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.run);
 
         timer = findViewById(R.id.timerTextView);
+
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+            this.playerId = b.getInt("playerId");
+            this.acceptDataSharing = b.getBoolean("acceptDataSharing");
+        }
 
         new CountDownTimer(4000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -40,18 +44,37 @@ public class RunActivity extends WearableActivity {
             }
 
             public void onFinish() {
-                timer.setText("124 BPM");
-                RunActivity.this.sendBPMEachSeconds();
+                sendBPMEachSeconds();
             }
         }.start();
     }
 
+    /**
+     * On destroy
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    /**
+     * Send BPM to android device each seconds
+     */
     public void sendBPMEachSeconds() {
         new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished) {
                 String datapath = "/my_path";
-                int valueBPM = 124;
-                new RunActivity.SendMessage(datapath, "device " + android.os.Build.MODEL + " BPM: " + valueBPM).start();
+
+                Random r = new Random();
+                int valueBPM = r.nextInt(130 - 120) + 120;
+
+                timer.setText("♡ " + Integer.toString(valueBPM));
+
+                if (acceptDataSharing) {
+                    String message = "heartbeat:" + playerId + ":" + valueBPM;
+                    new SendMessageThread(RunActivity.this, getApplicationContext(),
+                            datapath, message).start();
+                }
             }
 
             @Override
@@ -61,6 +84,9 @@ public class RunActivity extends WearableActivity {
         }.start();
     }
 
+    /**
+     * A class to receive  message from android device
+     */
     public class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -68,38 +94,6 @@ public class RunActivity extends WearableActivity {
 
             if (message.equals("endGame")) {
                 System.out.println("endGame received");
-            }
-        }
-    }
-
-    class SendMessage extends Thread {
-        String path;
-        String message;
-
-        SendMessage(String p, String m) {
-            path = p;
-            message = m;
-        }
-
-        public void run() {
-            Task<List<Node>> nodeListTask =
-                    Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
-            try {
-
-                List<Node> nodes = Tasks.await(nodeListTask);
-                for (Node node : nodes) {
-
-                    Task<Integer> sendMessageTask =
-                            Wearable.getMessageClient(RunActivity.this).sendMessage(node.getId(), path, message.getBytes());
-
-                    try {
-                        Integer result = Tasks.await(sendMessageTask);
-                    } catch (ExecutionException exception) {
-                    } catch (InterruptedException exception) {
-                    }
-                }
-            } catch (ExecutionException exception) {
-            } catch (InterruptedException exception) {
             }
         }
     }

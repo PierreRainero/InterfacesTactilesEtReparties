@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var sessionRouter = require('./routes/session');
 
 let game = require('./game/actions.js');
+let map = require('./game/map.js')
 
 var app = express();
 
@@ -24,6 +25,7 @@ io.on('connection', function (socket) {
   socket.on('connectProjector', function (){
     console.log('Projector ready.');
     projectorSocket = socket;
+    projectorSocket.emit('hurdles', map.getHurdles());
   });
 
   socket.on('smartphoneConnect', function() {
@@ -38,22 +40,22 @@ io.on('connection', function (socket) {
   });
 
   socket.on('kinectPlayerJump', function (jumper) {
-    var received = new Date();
-    console.log(received.getDate() + "/"+received.getMonth() + "/"+received.getFullYear() + " "+received.getHours()+":"+received.getMinutes()+":"+received.getSeconds());
-    console.log("Player " + jumper.playerId + " jumps !");
+    game.playerJump(jumper.playerId);
+    projectorSocket.emit('playerJump', jumper);
   });
 
   socket.on('players', function (data) {
     game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });
 
-  socket.on('watch', function(data) {
-    console.log(data);
-  })
-
   socket.on('watchConfigurations', function(data) {
-    // setWatch(data);
-  })
+    console.log('watchConfigurations > Data received from smartphone: ' + data);
+    game.setWatch(data);
+  });
+
+  socket.on('heartbeat', function(data) {
+    game.heartbeatReceived(JSON.parse(data));
+  });
 });
 
 // view engine setup

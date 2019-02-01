@@ -20,7 +20,8 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
-var mixers = [], gltfs = [];
+var gravity = 1;
+var playerBasePositionY = -50;
 
 setupViews();
 init();
@@ -106,9 +107,26 @@ function render() {
     updateSize();
 
     var delta = clock.getDelta();
-    for(var i = 0; i < mixers.length; i++) {
-        if (mixers[i] != null) {
-            mixers[i].update(delta);
+    for(var i = 0; i < game.players.length(); i++) {
+        var player = game.players.get(i);
+
+        var mixer = player.mixer;
+        if (mixer != null) {
+            mixer.update(delta);
+        }
+
+        if(player.modelObject && player.shadowObject) {
+            let playerPosition = game.getRelativePosition(player.progress);
+
+            player.modelObject.position.z = playerPosition;
+            player.shadowObject.position.z = playerPosition - 150;
+            player.cameraObject.position.z = playerPosition + 1500;
+            player.modelObject.position.y += player.bounceValue;
+
+            if(player.modelObject.position.y > playerBasePositionY)
+                player.setBounceValue(player.bounceValue - gravity);
+            else
+                player.setBounceValue(0);
         }
     }
 
@@ -140,7 +158,7 @@ function render() {
 
 function setupViews(){
     views = [];
-    if(game.players.length === 0){
+    if(game.players.length() === 0){
         views.push({
             left: 0,
             top: 0,
@@ -155,17 +173,17 @@ function setupViews(){
             }
         });
     } else {
-        for(var i = 0; i < game.players.length; i++){
+        for(var i = 0; i < game.players.length(); i++){
 
-            var backgroundColor = game.getPlayerBackgroundColor(game.players[i].id);
+            var backgroundColor = game.players.get(i).backgroundColor;
 
             views.push({
-                left: (1/game.players.length) * i,
+                left: (1/game.players.length()) * i,
                 top: 0,
-                width: 1/game.players.length,
+                width: 1/game.players.length(),
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
-                eye: [ -600 + (i*400), 0, 1500 ],
+                eye: [ -600 + (i*400), 350, 1500 ],
                 up: [ 0, 1, 0 ],
                 fov: 30,
                 updateCamera: function ( camera, scene, mouseX ) {
@@ -182,6 +200,8 @@ function setupViews(){
         var camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.fromArray( view.eye );
         camera.up.fromArray( view.up );
+        if(game.players.length() !== 0)
+            game.players.get(ii).setCamera(camera);
         view.camera = camera;
     }
 }
@@ -228,8 +248,51 @@ function createWaitingScreen(){
 }
 
 function createRunners(){
+    scene.remove(waitingGroup);
+
     for (var i = runningGroup.children.length - 1; i >= 0; i--) {
         runningGroup.remove(runningGroup.children[i]);
+    }
+
+    //Ground
+    var geometry = new THREE.PlaneGeometry( 22000, 22000, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0x567D46, side: THREE.DoubleSide} );
+    var plane = new THREE.Mesh( geometry, material );
+    plane.position.z = -5500;
+    plane.rotateX(-Math.PI/2);
+    runningGroup.add( plane );
+
+    //Start Line
+    var linematerial = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+
+    var startgeometry = new THREE.Geometry();
+    startgeometry.vertices.push(new THREE.Vector3( -700, 0, -150) );
+    startgeometry.vertices.push(new THREE.Vector3( 700, 0, -150) );
+
+    var startline = new THREE.Line( startgeometry, linematerial );
+
+    runningGroup.add(startline);
+
+    //End Line
+
+    var endgeometry = new THREE.Geometry();
+    endgeometry.vertices.push(new THREE.Vector3( -700, 0, game.getRelativePosition(110)) );
+    endgeometry.vertices.push(new THREE.Vector3( 700, 0, game.getRelativePosition(110)) );
+
+    var endline = new THREE.Line( endgeometry, linematerial );
+
+    runningGroup.add(endline);
+
+    //Hurdles
+    for(let hurdle of game.hurdles) {
+        for (var i = 0; i < game.players.length(); i++) {
+            var geometry = new THREE.PlaneGeometry(200, 300, 32);
+            var material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
+            var hurdleMesh = new THREE.Mesh(geometry, material);
+            hurdleMesh.position.x = -600 + (i * 400);
+            hurdleMesh.position.z = game.getRelativePosition(hurdle);
+            runningGroup.add(hurdleMesh);
+        }
     }
 
     //Shadows
@@ -237,11 +300,12 @@ function createRunners(){
 
     var shadowMesh;
 
-    for(var i = 0; i < game.players.length; i++) {
+    for(var i = 0; i < game.players.length(); i++) {
         shadowMesh = new THREE.Mesh(shadowGeo, shadowMaterial);
         shadowMesh.position.x = -600 + (i*400);
-        shadowMesh.position.y = -250;
+        shadowMesh.position.y = 1;
         shadowMesh.rotation.x = -Math.PI / 2;
+        game.players.get(i).setShadow(shadowMesh);
         runningGroup.add(shadowMesh);
     }
 
@@ -250,34 +314,32 @@ function createRunners(){
     var loader = new THREE.GLTFLoader();
 
     // Load a glTF resource
-    for(var i = 0; i < game.players.length; i++) {
-        loader.load(`view/running/models/${game.getPlayerModel(game.players[i].id)}/scene.gltf`,
+    for(var i = 0; i < game.players.length(); i++) {
+        loader.load(`view/running/models/${game.players.get(i).model}/scene.gltf`,
             (function (gltf) {
-                gltfs.push(gltf);
-
                 var model = gltf.scene;
                 model.scale.x = 50;
                 model.scale.y = 50;
                 model.scale.z = 50;
                 model.position.x = -530 + (this.i*400);
                 model.position.z = -150;
-                model.position.y = -350;
+                model.position.y = playerBasePositionY;
                 model.rotation.y = Math.PI;
+
+                game.players.get(this.i).setModel(model);
+
                 runningGroup.add(model);
 
                 var mixer = new THREE.AnimationMixer(model);
-                var animation = game.startTime ? gltf.animations[2] : game.players[this.i].state === 1 ? gltf.animations[0] : gltf.animations[3];
+                var animation = game.startTime ? gltf.animations[0] : game.players.get(this.i).state === 1 ? gltf.animations[1] : gltf.animations[2];
                 mixer.clipAction(animation).play();
-                mixers.push(mixer);
+                game.players.get(this.i).setMixer(mixer);
+                game.players.get(this.i).setAnimations(gltf.animations);
 
                 render();
             }).bind({i: i}));
     }
-}
 
-function startRunning(){
-    scene.remove(waitingGroup);
-    createRunners();
     scene.add(runningGroup);
     animate();
 }

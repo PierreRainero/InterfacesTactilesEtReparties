@@ -20,7 +20,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="4"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="30sp" />
 
     </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>
