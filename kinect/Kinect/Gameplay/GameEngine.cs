@@ -1,7 +1,6 @@
 ﻿using Kinect.Captor;
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
-using log4net;
 using System.Collections.Generic;
 
 namespace Kinect.Gameplay
@@ -13,8 +12,6 @@ namespace Kinect.Gameplay
     /// <seealso> href="https://github.com/PierreRainero/InterfacesTactilesEtReparties">Repository GitHub</seealso>
     abstract class GameEngine
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         /// Check all players and update their state if needed
         /// </summary>

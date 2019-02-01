@@ -53,6 +53,10 @@ namespace Kinect.Gameplay.Model
                 (!lastJump.HasValue || DateTime.Now.Second != lastJump.Value.Second);
         }
 
+        /// <summary>
+        /// Mark the current jump as completed
+        /// </summary>
+        /// <param name="jumpTime">Validation time of the jump</param>
         public void Complete(DateTime jumpTime) {
             lastJump = jumpTime;
             Cancel();

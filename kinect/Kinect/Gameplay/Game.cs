@@ -84,6 +84,9 @@ namespace Kinect.Gameplay
         /// Send all players who jumped to the backend
         /// </summary>
         /// <param name="jumpers">List containing jumpers id</param>
+        /// <remarks>
+        /// Gameplay method : You shouldn't call it manually.
+        /// </remarks>
         public void SendJumpers(List<int> jumpers)
         {
             foreach (int jumperId in jumpers)
@@ -114,7 +117,7 @@ namespace Kinect.Gameplay
         /// <param name="message">Message emitted by the backend</param>
         private void StartRun(string message)
         {
-            log.Info("Message received : " + message + "\tThe run can start.");
+            log.Info("Message received : \"" + message + "\".\tThe run can start.");
             Step = GameStep.STARTED;
         }
     }

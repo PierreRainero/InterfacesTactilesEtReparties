@@ -35,7 +35,7 @@ Une fois une Kinect branchée et l'application lancée (voir [Technologies utili
 3. Une fois la partie démarrée, la kinect suivra autant que possible les joueurs (même s'ils inversent leur place). **⚠ Ceci n'est cependant pas conseillé**. A chaque fois qu'un joueur sautera (que ses deux pieds décolleront suffisamment du sol), cette application émettra un message de la sorte sur le canal `kinectPlayerJump` du "backend" :
 
     ```json
-    { "playerId": 1}
+    { "playerId": 1 }
     ```
 
 ## Technologies utilisées
@@ -44,3 +44,4 @@ Une fois une Kinect branchée et l'application lancée (voir [Technologies utili
 * [WebSocketSharp](https://www.nuget.org/packages/WebSocketSharp) 1.0.4.0
 * [Kinect for Windows SDK](https://www.microsoft.com/en-gb/download/details.aspx?id=40278) 1.8
 * [Kinect for Windows Developer Toolkit](https://www.microsoft.com/en-gb/download/details.aspx?id=40276) 1.8
+* [log4net](https://www.nuget.org/packages/log4net/) 2.0.8
