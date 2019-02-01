@@ -6,8 +6,6 @@ let state = "waiting_players";
 let kinect;
 let projector;
 let smartphone;
-let map = new Map();
-
 
 module.exports = {
 
