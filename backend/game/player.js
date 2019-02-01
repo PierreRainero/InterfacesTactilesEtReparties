@@ -16,23 +16,31 @@ module.exports = class Player {
     this.allowDataSharing = dataSharing;
   }
 
-  isApproachingHurdle(map){
-    let res = false;
-    for (let hurdle in map.hurdles){
-      if(this.progress > hurdle - 2 && this.progress < hurdle){
-        res = true;
-      }
+    isApproachingHurdle(map){
+        let res = false;
+        for (let hurdle in map.hurdles){
+            if(this.progress > hurdle - 2 && this.progress < hurdle){
+                res = true;
+            }
+        }
+        return res;
     }
-    return res;
-  }
 
-  addProgress(progress){
-    if(this.progress < 110) {
-        this.progress += progress;
-        return this.progress;
-    } else {
-      this.finish = true;
+    addProgress(progress){
+        if(this.progress < 110) {
+            this.progress += progress;
+            return this.progress;
+        } else {
+            this.finish = true;
+        }
+        return null;
     }
-    return null;
-  }
+
+    /**
+     * Update heartbeat to a player
+     * @param {*} heartbeat
+     */
+    setHeartbeat(heartbeat) {
+        this.heartbeat = heartbeat
+    }
 }
