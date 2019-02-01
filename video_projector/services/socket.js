@@ -59,12 +59,7 @@ socket.on('updatePlayers', function (data) {
     game.setPlayers(data);
 })
 
-socket.on('heartbeat', function (data) {
-    console.log("heartbeat received, data : ", data);
-    game.updateHeartbeat(data.playerId, data.heartbeatValue);
-});
-
 socket.on('gameFinished', function (data) {
     console.log("Game finished received, data : ", data);
-    game.setPlayers(data);
+    game.stopGame(data);
 })

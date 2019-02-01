@@ -2,6 +2,7 @@ function Game() {
     this.players = new Players();
     this.startTime = null;
     this.hurdles = [];
+    this.chronoJob = null;
 }
 
 Game.prototype.setPlayers = function(players){
@@ -75,7 +76,7 @@ Game.prototype.setCountdown = function(value){
         this.players.update();
         setTimeout(() => {
             this.clearPlayerReadyText();
-            setInterval(() => {
+            this.chronoJob = setInterval(() => {
                 chrono.innerHTML = this.getCurrentTime();
             }, 1);
         }, 500);
@@ -92,4 +93,10 @@ Game.prototype.playerJump = function (id) {
 
 Game.prototype.getRelativePosition = function(position){
     return - position * 100;
+}
+
+Game.prototype.stopGame = function(players){
+    clearInterval(this.chronoJob);
+    this.setPlayers(players);
+    document.getElementById("chrono").innerHTML = "Partie terminée";
 }
