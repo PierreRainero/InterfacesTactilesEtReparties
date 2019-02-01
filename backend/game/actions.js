@@ -1,5 +1,5 @@
 const Player = require('./player.js');
-const Map = require ('./map.js');
+const map = require ('./map.js');
 
 let players;
 let state = "waiting_players";
@@ -111,7 +111,7 @@ module.exports = {
     },
 
     playerJump: function (playerId){
-        players[playerId].jump(map);
+        players[this.findPlayerIndexById(playerId)].jump(map);
     },
 
     startCountdown: function (){

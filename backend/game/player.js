@@ -6,6 +6,7 @@ module.exports = class Player {
     this.hurdlesAvoided = [];
     this.finish = false;
     this.heartbeat = 0;
+    this.hasJumped = false;
   }
 
   /**
@@ -18,56 +19,60 @@ module.exports = class Player {
     this.allowDataSharing = dataSharing;
   }
 
-  isApproachingHurdle(map){
+  isApproachingHurdle(map) {
     const nextHurdle = this.hurdlesAvoided.length;
 
     // hurdle approaching
-    if (this.progress > map.hurdles[nextHurdle] - 2 && this.progress < map.hurdles[nextHurdle]){
+    if (this.progress > (map.getHurdle(nextHurdle) - 2) && this.progress < map.getHurdle(nextHurdle)) {
       return true;
     }
-    else return false;
+    else {
+      return false;
+    }
   }
 
 
-  checkCollision(map){
-    let res = false;
+  checkCollision(map) {
+    let collision = false;
     const nextHurdle = this.hurdlesAvoided.length;
 
-    if(this.progress >= map.hurdles[nextHurdle]){
-      if(!this.hasJumped) {
+    if (this.progress > (map.getHurdle(nextHurdle) - 0.5)) {
+      if (!this.hasJumped) {
         this.hurdlesAvoided.push(false);
-        res = true;
+        collision = true;
       }
-
       else {
         this.hurdlesAvoided.push(true);
       }
       this.hasJumped = false;
     }
-    return res;
+    return collision;
   }
 
-  jump(map){
-    if(this.isApproachingHurdle(map)){
+  jump(map) {
+    if (this.isApproachingHurdle(map)) {
       this.hasJumped = true;
+      console.log("haie proche");
+    }else{
+      console.log("saut useless");
     }
   }
 
-    addProgress(progress){
-        if(this.progress < 110) {
-            this.progress += progress;
-            return this.progress;
-        } else {
-            this.finish = true;
-        }
-        return null;
+  addProgress(progress) {
+    if (this.progress < 110) {
+      this.progress += progress;
+      return this.progress;
+    } else {
+      this.finish = true;
     }
+    return null;
+  }
 
-    /**
-     * Update heartbeat to a player
-     * @param {*} heartbeat
-     */
-    setHeartbeat(heartbeat) {
-        this.heartbeat = heartbeat
-    }
+  /**
+   * Update heartbeat to a player
+   * @param {*} heartbeat
+   */
+  setHeartbeat(heartbeat) {
+    this.heartbeat = heartbeat
+  }
 }
