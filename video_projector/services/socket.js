@@ -31,6 +31,9 @@ setTimeout(() => {
                                         game.setPlayers([{id: 1, state: 2, progress: position},{id: 2, state: 2, progress: position}]);
                                     }
                                 }, 1);
+                                setTimeout(() => {
+                                    hurdlesObject[0][0].fall = true;
+                                }, 5000);
                             }, 500);
                         }, 500);
                     }, 500);
@@ -68,6 +71,7 @@ socket.on('updatePlayers', function (data) {
 
 socket.on('collision', function (data) {
     console.log("collision detected, player : ", data);
+    hurdlesObject[data.playerId-1][data.hurdleId].fall = true;
 });
 
 socket.on('gameFinished', function (data) {

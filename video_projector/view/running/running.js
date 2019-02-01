@@ -23,6 +23,7 @@ var clock = new THREE.Clock();
 var gravity = 1;
 var playerBasePositionY = -50;
 var cameraPositionZ = 1250;
+var hurdlesObject = [];
 
 setupViews();
 init();
@@ -128,6 +129,15 @@ function render() {
                 player.setBounceValue(player.bounceValue - gravity);
             else
                 player.setBounceValue(0);
+        }
+
+        for(let hurdleTab of hurdlesObject){
+            for(let hurdle of hurdleTab){
+                if(hurdle.fall && hurdle.model.position.y < 20 && hurdle.model.rotation.x > -(Math.PI/2)){
+                    hurdle.model.position.y += 1.33;
+                    hurdle.model.rotation.x -= 0.1;
+                }
+            }
         }
     }
 
@@ -306,8 +316,10 @@ function createRunners(){
     runningGroup.add(endline);
 
     //Hurdles
-    for(let hurdle of game.hurdles) {
-        for (var i = 0; i < game.players.length(); i++) {
+    hurdlesObject = [];
+    for (var i = 0; i < game.players.length(); i++) {
+        hurdlesObject.push([]);
+        for(let hurdle of game.hurdles) {
             loader.load(`view/running/models/hurdle/scene.gltf`,
                 (function (gltf) {
                     var model = gltf.scene;
@@ -317,9 +329,8 @@ function createRunners(){
                     model.position.x = -445 + (this.i*225);
                     model.position.z = game.getRelativePosition(hurdle);
                     model.rotation.y = Math.PI;
-                    //Pour future animation
-                    //model.position.y = 20;
-                    //model.rotation.x = -(Math.PI/2);
+
+                    hurdlesObject[this.i].push({model: model, fall: false});
 
                     runningGroup.add(model);
 
