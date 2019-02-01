@@ -45,9 +45,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('kinectPlayerSpeed', function (data) {
-    for(const player of data.players){
-      console.log("Player "+player.id+" run at "+player.speed+" m/s");
-    }
+    game.updatePlayersSpeed(data.players);
   });
 
   socket.on('players', function (data) {

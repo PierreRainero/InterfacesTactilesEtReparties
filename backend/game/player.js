@@ -7,6 +7,7 @@ module.exports = class Player {
     this.finish = false;
     this.heartbeat = 0;
     this.hasJumped = false;
+    this.speed = 0;
   }
 
   /**
@@ -71,5 +72,9 @@ module.exports = class Player {
    */
   setHeartbeat(heartbeat) {
     this.heartbeat = heartbeat
+  }
+
+  updateSpeed(speed){
+    this.speed = speed;
   }
 }

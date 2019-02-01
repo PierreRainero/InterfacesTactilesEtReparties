@@ -114,6 +114,13 @@ module.exports = {
         players[this.findPlayerIndexById(playerId)].jump(map);
     },
 
+    updatePlayersSpeed: function(players){
+        for(const player of players){
+            console.log("Player "+player.id+" run at "+player.speed+" m/s");
+            players[this.findPlayerIndexById(player.id)].updateSpeed(player.speed);
+        }
+    },
+
     startCountdown: function (){
         projector.emit('everyonesReady', players);
         projector.emit('countdown', {value:3});
@@ -138,7 +145,7 @@ module.exports = {
                                     let needUpdate = false;
                                     let everyoneFinished = true;
                                     for(let player of players){
-                                        let result = player.addProgress(0.00275);
+                                        let result = player.addProgress(player.speed/1000);
                                         let hurdleTouched = player.checkCollision(map);
                                         if(hurdleTouched !== null){
                                             projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
