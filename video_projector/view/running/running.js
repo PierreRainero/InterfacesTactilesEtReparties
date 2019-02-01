@@ -22,6 +22,7 @@ var clock = new THREE.Clock();
 
 var gravity = 1;
 var playerBasePositionY = -50;
+var cameraPositionZ = 1250;
 
 setupViews();
 init();
@@ -120,7 +121,7 @@ function render() {
 
             player.modelObject.position.z = playerPosition;
             player.shadowObject.position.z = playerPosition - 150;
-            player.cameraObject.position.z = playerPosition + 1250;
+            player.cameraObject.position.z = playerPosition + cameraPositionZ;
             player.modelObject.position.y += player.bounceValue;
 
             if(player.modelObject.position.y > playerBasePositionY)
@@ -183,7 +184,7 @@ function setupViews(){
                 width: 1/game.players.length(),
                 height: 1.0,
                 background: new THREE.Color(backgroundColor),
-                eye: [ -450 + (i*220), 350, 1250 ],
+                eye: [ -450 + (i*220), 350, cameraPositionZ ],
                 up: [ 0, 1, 0 ],
                 fov: 30,
                 updateCamera: function ( camera, scene, mouseX ) {
@@ -248,6 +249,8 @@ function createWaitingScreen(){
 }
 
 function createRunners(){
+    var loader = new THREE.GLTFLoader();
+
     scene.remove(waitingGroup);
 
     for (var i = runningGroup.children.length - 1; i >= 0; i--) {
@@ -305,12 +308,23 @@ function createRunners(){
     //Hurdles
     for(let hurdle of game.hurdles) {
         for (var i = 0; i < game.players.length(); i++) {
-            var geometry = new THREE.PlaneGeometry(200, 300, 32);
-            var material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
-            var hurdleMesh = new THREE.Mesh(geometry, material);
-            hurdleMesh.position.x = -457 + (i*224);
-            hurdleMesh.position.z = game.getRelativePosition(hurdle);
-            runningGroup.add(hurdleMesh);
+            loader.load(`view/running/models/hurdle/scene.gltf`,
+                (function (gltf) {
+                    var model = gltf.scene;
+                    model.scale.x = 50;
+                    model.scale.y = 50;
+                    model.scale.z = 50;
+                    model.position.x = -445 + (this.i*225);
+                    model.position.z = game.getRelativePosition(hurdle);
+                    model.rotation.y = Math.PI;
+                    //Pour future animation
+                    //model.position.y = 20;
+                    //model.rotation.x = -(Math.PI/2);
+
+                    runningGroup.add(model);
+
+                    render();
+                }).bind({i: i}));
         }
     }
 
@@ -329,10 +343,6 @@ function createRunners(){
     }
 
     //Runners
-
-    var loader = new THREE.GLTFLoader();
-
-    // Load a glTF resource
     for(var i = 0; i < game.players.length(); i++) {
         loader.load(`view/running/models/${game.players.get(i).model}/scene.gltf`,
             (function (gltf) {
