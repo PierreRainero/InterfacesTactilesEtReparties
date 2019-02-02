@@ -3,7 +3,7 @@
     package="com.example.gaulthier.watchproject">
 
     <uses-feature android:name="android.hardware.type.watch" />
-    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application

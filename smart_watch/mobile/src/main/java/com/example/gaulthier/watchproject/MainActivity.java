@@ -8,9 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -25,6 +24,7 @@ public class MainActivity extends AppCompatActivity  {
     Button talkbutton;
     TextView textview;
     private Socket mSocket;
+    EditText ipAddress;
 
     /**
      * On create
@@ -37,26 +37,7 @@ public class MainActivity extends AppCompatActivity  {
 
         talkbutton = findViewById(R.id.talkButton);
         textview = findViewById(R.id.textView);
-
-        try {
-            mSocket = IO.socket("http://172.20.10.5:8282");
-        } catch (URISyntaxException e) {
-            System.out.println("error : " + e);
-        }
-
-        mSocket.on("gameStart", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
-            }
-        }).on("gameEnd", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
-            }
-        });
-
-        mSocket.connect();
+        ipAddress = findViewById(R.id.editTextIp);
 
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         Receiver messageReceiver = new Receiver();
@@ -89,6 +70,26 @@ public class MainActivity extends AppCompatActivity  {
      */
     public void connectToServer(View v) {
         System.out.println("Try to send to server");
+
+        try {
+            mSocket = IO.socket("http://" + ipAddress.getText());
+        } catch (URISyntaxException e) {
+            System.out.println("error : " + e);
+        }
+
+        mSocket.on("gameStart", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
+            }
+        }).on("gameEnd", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
+            }
+        });
+
+        mSocket.connect();
         mSocket.emit("smartphoneConnect", "");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "connectedToServer").start();
     }

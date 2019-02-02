@@ -28,10 +28,11 @@
         android:onClick="connectToServer"
         android:text="Connect to server" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
+    <EditText
+        android:id="@+id/editTextIp"
+        android:layout_width="367dp"
+        android:layout_height="40dp"
+        android:text="192.168.43.238:8282" />
 
     <Button
         android:id="@+id/button2"

@@ -3,19 +3,28 @@ package com.example.gaulthier.watchproject;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Vibrator;
+import android.os.Handler;
 import android.support.wearable.activity.WearableActivity;
 import android.widget.TextView;
 
 import java.util.Random;
 
-public class RunActivity extends WearableActivity {
+public class RunActivity extends WearableActivity implements SensorEventListener {
 
     TextView timer;
     int playerId;
     boolean acceptDataSharing;
+    Handler handler;
+    int delay;
+    SensorManager mSensorManager;
+    Sensor mHeartRateSensor;
+    int valueHeartRateSensor;
+    boolean needsToMockHeartbeat = false;
 
     /**
      * On create
@@ -26,7 +35,18 @@ public class RunActivity extends WearableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.run);
 
+        mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
+        mHeartRateSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+
+        if (mHeartRateSensor == null) {
+            this.needsToMockHeartbeat = true;
+        } else {
+            mSensorManager.registerListener(this, mHeartRateSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
         timer = findViewById(R.id.timerTextView);
+
+        this.valueHeartRateSensor = 0;
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
@@ -34,19 +54,7 @@ public class RunActivity extends WearableActivity {
             this.acceptDataSharing = b.getBoolean("acceptDataSharing");
         }
 
-        new CountDownTimer(4000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                long[] vibrationPattern = {0, 200};
-                final int indexInPatternToRepeat = -1;
-                vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
-                timer.setText(Integer.toString(Integer.parseInt(timer.getText().toString()) - 1));
-            }
-
-            public void onFinish() {
-                sendBPMEachSeconds();
-            }
-        }.start();
+        sendBPMEachSeconds();
     }
 
     /**
@@ -61,27 +69,44 @@ public class RunActivity extends WearableActivity {
      * Send BPM to android device each seconds
      */
     public void sendBPMEachSeconds() {
-        new CountDownTimer(60000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                String datapath = "/my_path";
 
-                Random r = new Random();
-                int valueBPM = r.nextInt(130 - 120) + 120;
+        this.handler = new Handler();
+        this.delay = 1000;
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                String datapath = "/my_path";
+                int valueBPM;
+
+                if (needsToMockHeartbeat) {
+                    Random r = new Random();
+                    valueBPM = r.nextInt(130 - 120) + 120;
+                } else {
+                    valueBPM = valueHeartRateSensor;
+                }
 
                 timer.setText("♡ " + Integer.toString(valueBPM));
 
-                if (acceptDataSharing) {
+                if (acceptDataSharing && valueBPM != 0) {
                     String message = "heartbeat:" + playerId + ":" + valueBPM;
                     new SendMessageThread(RunActivity.this, getApplicationContext(),
                             datapath, message).start();
                 }
+                handler.postDelayed(this, delay);
             }
+        }, delay);
+    }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        int value = (int)event.values[0];
+        if (value != 0) {
+            this.valueHeartRateSensor = value;
+        }
+    }
 
-            @Override
-            public void onFinish() {
-
-            }
-        }.start();
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        System.out.println("accuracy changed - accuracy" + accuracy);
     }
 
     /**
