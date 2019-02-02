@@ -43,7 +43,6 @@ module.exports = {
         projectorSocket.emit('playerChange', players);
 
         if(this.isPlayersReady() && projectorSocket && kinectSocket) {
-            kinect.emit('kinectStartRun', 'Ready');
             this.startCountdown();
         }
     },
