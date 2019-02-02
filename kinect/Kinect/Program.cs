@@ -12,7 +12,7 @@ namespace Kinect
     {
         static void Main(string[] args)
         {
-            Game game = new Game(true);
+            Game game = new Game();
             game.StartCapture();
 
             Console.WriteLine("--- Press enter to stop this program ---");

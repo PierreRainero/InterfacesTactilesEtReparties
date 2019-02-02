@@ -2,6 +2,7 @@
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
 using log4net;
+using System;
 using System.Collections.Generic;
 
 namespace Kinect.Gameplay
@@ -68,18 +69,13 @@ namespace Kinect.Gameplay
             List<int> playersWhoJumped = new List<int>();
             foreach (Player player in players)
             {
-                if (player.IsDefined() && SkeletonAnalyser.DidJump(player.PreviousSkeleton, player.CurrentSkeleton))
+                if (player.IsDefined())
                 {
-                    player.JumpDetected();
-                }
-                else
-                {
-                    player.CancelJump();
-                }
-
-                if (player.Jumped())
-                {
-                    playersWhoJumped.Add(player.PlayerId);
+                    player.JumpDetected(SkeletonAnalyser.CalculatePlayerJump(player.PreviousSkeleton, player.CurrentSkeleton));
+                    if (player.Jumped())
+                    {
+                        playersWhoJumped.Add(player.PlayerId);
+                    }
                 }
             }
 
