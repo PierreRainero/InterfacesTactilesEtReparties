@@ -107,19 +107,27 @@ module.exports = {
         }).indexOf(idToSearch);
     },
 
-    getState: function (){
-        return state;
-    },
-
+    /**
+     * Indicates to the system that a player have jumped
+     * @param {number} playerId identifier of the jumper
+     */
     playerJump: function (playerId){
         players[this.findPlayerIndexById(playerId)].jump(map);
     },
 
-    updatePlayersSpeed: function(players){
-        for(const player of players){
-            console.log("Player "+player.id+" run at "+player.speed+" m/s");
+    /**
+     * Update the current speed of a player
+     * @param {array} data object which contains all players id associates to a speed (m/s)
+     */
+    updatePlayersSpeed: function(data){
+        for(const player of data){
             players[this.findPlayerIndexById(player.id)].updateSpeed(player.speed);
         }
+    },
+
+    
+    getState: function (){
+        return state;
     },
 
     startCountdown: function (){
@@ -171,15 +179,15 @@ module.exports = {
                                 }, 1);
 
                             } else {
-                                // un joueur quite
+                                // un joueur quitte
                             }
                         }, 1000);
                     } else {
-                        // un joueur quite
+                        // un joueur quitte
                     }
                 }, 1000);
             } else {
-                // un joueur quite
+                // un joueur quitte
             }
         }, 1000);
     }

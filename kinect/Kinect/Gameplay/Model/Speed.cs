@@ -31,15 +31,16 @@ namespace Kinect.Gameplay.Model
         /// </summary>
         /// <param name="rigthDistance">Z distance for right knee</param>
         /// <param name="leftDistance">Z distance for left knee</param>
-        public void AddStamp(float rigthDistance, float leftDistance)
+        public void AddShot(float rigthDistance, float leftDistance)
         {
             if (indexer >= 10)
             {
                 return;
             }
 
-            ZDistanceRight[indexer] = rigthDistance;
-            ZDistanceLeft[indexer] = leftDistance;
+            ZDistanceRight[indexer] = rigthDistance > 0.1 ? (float)0.1 : rigthDistance;
+            ZDistanceLeft[indexer] = leftDistance > 0.1 ? (float)0.1 : leftDistance;
+
             indexer++;
         }
 
@@ -65,9 +66,29 @@ namespace Kinect.Gameplay.Model
 
             indexer = 0;
             float averageRunningSpeedFactor = (float)0.857836;
-            value = (((rigthSum + leftSum) / 2) * 16) * averageRunningSpeedFactor;
+            value = SpeedCorrector((rigthSum + leftSum) / 2 * 18 * averageRunningSpeedFactor);
 
             return value;
+        }
+
+        /// <summary>
+        /// Corrects speed by avoid the  kinect imprecision when the object doesn't move and cap maximum speed to 7 m/s
+        /// </summary>
+        /// <param name="estimatedSpeed">Estimate speed using ten last frame shots</param>
+        /// <returns>Corrected estimate speed</returns>
+        private float SpeedCorrector(float estimatedSpeed)
+        {
+            if(estimatedSpeed <= 0 || (estimatedSpeed > 0 && estimatedSpeed < 1))
+            {
+                return 0;
+            }
+
+            if(estimatedSpeed > 7)
+            {
+                return 7;
+            }
+
+            return estimatedSpeed;
         }
     }
 }

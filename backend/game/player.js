@@ -33,7 +33,6 @@ module.exports = class Player {
     }
   }
 
-
   checkCollision(map) {
     let collision = null;
     const nextHurdle = this.hurdlesAvoided.length;
@@ -80,12 +79,16 @@ module.exports = class Player {
 
   /**
    * Update heartbeat to a player
-   * @param {*} heartbeat
+   * @param {number} heartbeat current heartbeat
    */
   setHeartbeat(heartbeat) {
     this.heartbeat = heartbeat
   }
 
+  /**
+   * Update player speed
+   * @param {number} speed current speed (m/s)
+   */
   updateSpeed(speed){
     this.speed = speed;
   }

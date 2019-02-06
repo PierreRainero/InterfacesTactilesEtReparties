@@ -37,6 +37,11 @@ Une fois une Kinect branchée et l'application lancée (voir [Technologies utili
     ```json
     { "playerId": 1 }
     ```
+    En parallèle, la kinect va estimer une vitesse de course pour chaque joueur. Elle enverra de manière régulière des messages sur le canal `kinectPlayerSpeed` (pour informer le "backend" de la vitesse en mètre par seconde des joueurs) sous la forme suivante :  
+
+    ```json
+    { "players": [{"id": 1, "speed": 4.183282}, {"id": 2, "speed": 3.832008}] }
+    ```
 
 ## Technologies utilisées
 

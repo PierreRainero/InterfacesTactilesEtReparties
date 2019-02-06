@@ -53,7 +53,14 @@ namespace Kinect.Communication
         /// <param name="data">Data content as json object in a string</param>
         public void Emit(string chanel, string data)
         {
-            socket.Send("42[\"" + chanel + "\","+ data + "]");
+            if (socket.IsAlive)
+            {
+                socket.Send("42[\"" + chanel + "\"," + data + "]");
+            } else
+            {
+                socket.Connect();
+                socket.Send("42[\"" + chanel + "\"," + data + "]");
+            }
         }
 
         /// <summary>

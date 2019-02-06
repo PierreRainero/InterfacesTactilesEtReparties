@@ -63,19 +63,19 @@ namespace Kinect.Gameplay.Model
         }
 
         /// <summary>
-        /// Cancel in progress jump
-        /// </summary>
-        public void CancelJump()
-        {
-            lastJump.Cancel();
-        }
-
-        /// <summary>
         /// Notifies the system the player is jumping
         /// </summary>
-        public void JumpDetected()
+        /// <param name="heigthJumped">Last heigth jumped</param>
+        public void JumpDetected(float heigthJumped)
         {
-            lastJump.Increment();
+            if(heigthJumped > 0)
+            {
+                lastJump.Increment(heigthJumped);
+            }
+            else
+            {
+                lastJump.Cancel();
+            }
         }
 
         /// <summary>
