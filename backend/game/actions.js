@@ -151,6 +151,9 @@ module.exports = {
                                         projector.emit('updatePlayers', players);
                                     if(everyoneFinished) {
                                         projector.emit('gameFinished', players);
+                                        if (smartphone) {
+                                            smartphone.emit('gameFinished', players);
+                                        }
                                         clearInterval(updateJob);
                                     }
                                 }, 1);

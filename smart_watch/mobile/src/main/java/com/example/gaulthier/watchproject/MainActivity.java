@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity  {
             public void call(Object... args) {
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
             }
-        }).off("gameEnd", new Emitter.Listener() {
+        }).off("gameFinished", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity  {
             public void call(Object... args) {
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
             }
-        }).on("gameEnd", new Emitter.Listener() {
+        }).on("gameFinished", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
@@ -118,6 +118,13 @@ public class MainActivity extends AppCompatActivity  {
      */
     public void gameStart(View v) {
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
+    }
+
+    /**
+     *
+     */
+    public void gameEnd(View v) {
+        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
     }
 
     /**

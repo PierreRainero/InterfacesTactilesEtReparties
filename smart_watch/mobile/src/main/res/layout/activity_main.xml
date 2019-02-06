@@ -53,4 +53,16 @@
         android:text="Disconnect to server"
         android:onClick="disconnectServer" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="gameEnd"
+        android:text="Simulated end run" />
+
 </LinearLayout>

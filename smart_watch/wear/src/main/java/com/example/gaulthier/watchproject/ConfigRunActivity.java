@@ -109,13 +109,11 @@ public class ConfigRunActivity extends WearableActivity {
         String message = "configurationDataSharing:" + playerId + ":" + acceptDataSharingValue;
         new SendMessageThread(ConfigRunActivity.this, getApplicationContext(),
                 datapath, message).start();
-        this.setContentView(R.layout.waiting_run);
+
+        this.waitForRun();
     }
 
-    /**
-     * Received gameStart from backend
-     */
-    public void startRun() {
+    public void waitForRun() {
         Intent intentMain = new Intent(ConfigRunActivity.this , RunActivity.class);
         Bundle b = new Bundle();
         b.putInt("playerId", this.playerId);
@@ -132,10 +130,7 @@ public class ConfigRunActivity extends WearableActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("message");
-
-            if (message.equals("gameStart")) {
-                startRun();
-            }
+            System.out.println("Message received > message: " + message);
         }
     }
 

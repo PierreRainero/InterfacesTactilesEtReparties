@@ -22,6 +22,7 @@
         </activity>
         <activity android:name=".ConfigRunActivity"></activity>
         <activity android:name=".RunActivity"></activity>
+        <activity android:name=".ResultActivity"></activity>
 
         <service android:name=".MessageService">
 

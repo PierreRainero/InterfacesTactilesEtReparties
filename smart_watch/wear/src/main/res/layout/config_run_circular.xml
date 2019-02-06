@@ -22,16 +22,16 @@ android:padding="15dp">
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="bottom|left"
-        android:src="@android:color/holo_blue_light"
         android:background="@null"
-        android:onClick="selectColorBlue"/>
+        android:onClick="selectColorRed"
+        android:src="@android:color/holo_red_light" />
 
     <ImageButton
-        android:background="@null"
-        android:layout_gravity="bottom|right"
-        android:layout_height="50dp"
         android:layout_width="50dp"
-        android:src="@android:color/holo_red_light"
-        android:onClick="selectColorRed"/>
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|right"
+        android:background="@null"
+        android:onClick="selectColorRed"
+        android:src="@android:color/holo_blue_light" />
 </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>
