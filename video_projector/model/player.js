@@ -99,15 +99,17 @@ Player.prototype.setBounceValue = function (value) {
 }
 
 Player.prototype.chooseAnimation = function(){
+    if(this.bounceValue != 0)
+        return this.animations[0];
     if(game.startTime) {
         if(this.finish)
-            return this.animations[2];
-        else
             return this.animations[3];
+        else
+            return this.animations[4];
     } else {
         if(this.state === 1)
             return this.animations[1];
         else
-            return this.animations[0];
+            return this.animations[2];
     }
 }

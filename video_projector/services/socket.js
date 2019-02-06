@@ -2,7 +2,7 @@ var socket = io('http://localhost:8282');
 
 socket.emit('connectProjector');
 
-
+/*
 //TEST ZONE
 game.setHurdles([13.72, 22.86, 32, 41.14, 50.28, 59.42, 68.56, 77.7, 86.84, 95.98]);
 setTimeout(() => {
@@ -42,7 +42,7 @@ setTimeout(() => {
         }, 5000);
     }, 5000);
 }, 5000);
-
+*/
 
 socket.on('playerChange', function (data) {
     console.log("Player change received, data : ", data);
