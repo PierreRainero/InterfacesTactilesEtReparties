@@ -21,8 +21,8 @@ var shadowMaterial;
 var clock = new THREE.Clock();
 
 var gravity = 2.5;
-var playerBasePositionY = -50;
-var cameraPositionZ = 1250;
+var playerBasePositionY = 15;
+var cameraPositionZ = 1400;
 var hurdlesObject = [];
 
 setupViews();
@@ -122,7 +122,7 @@ function render() {
 
             player.modelObject.position.z = playerPosition;
             player.modelObject.position.y += player.bounceValue;
-            player.shadowObject.position.z = playerPosition - 150;
+            player.shadowObject.position.z = playerPosition - 50;
             if(!player.bot)
                 player.cameraObject.position.z = playerPosition + cameraPositionZ;
 
@@ -281,7 +281,7 @@ function createRunners(){
     runningGroup.add( plane );
 
     //RunningTrack
-    var geometry = new THREE.PlaneGeometry( 1500, 44500, 32 );
+    var geometry = new THREE.PlaneGeometry( 1500, 45000, 32 );
     var texture = new THREE.TextureLoader().load( "view/running/textures/runningTrack.jpg" );
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -304,14 +304,14 @@ function createRunners(){
     var materialTexture = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
     var plane = new THREE.Mesh( geometry, materialTexture );
     plane.position.z = -260;
-    plane.position.y = 1;
+    plane.position.y = 1.1;
     plane.rotateX(-Math.PI/2);
     runningGroup.add( plane );
 
-    //StartLine
+    //EndLine
     var plane = new THREE.Mesh( geometry, materialTexture );
     plane.position.z = game.getRelativePosition(110);
-    plane.position.y = 1;
+    plane.position.y = 1.1;
     plane.rotateX(-Math.PI/2);
     runningGroup.add( plane );
 
@@ -324,7 +324,7 @@ function createRunners(){
                 (function (gltf) {
                     var model = gltf.scene;
                     model.scale.x = 50;
-                    model.scale.y = 50;
+                    model.scale.y = 59;
                     model.scale.z = 50;
                     model.position.x = -445 + (this.i*225);
                     model.position.z = game.getRelativePosition(hurdle);
@@ -348,7 +348,8 @@ function createRunners(){
         shadowMesh = new THREE.Mesh(shadowGeo, shadowMaterial);
         shadowMesh.position.x = -457 + (i*224);
         shadowMesh.rotation.x = -Math.PI / 2;
-        shadowMesh.position.y = 1;
+        shadowMesh.position.y = 1.1;
+        shadowMesh.position.z = -50;
         game.players.get(i).setShadow(shadowMesh);
         runningGroup.add(shadowMesh);
     }
@@ -358,10 +359,10 @@ function createRunners(){
         loader.load(`view/running/models/${game.players.get(i).model}/scene.gltf`,
             (function (gltf) {
                 var model = gltf.scene;
-                model.scale.x = 50;
-                model.scale.y = 50;
-                model.scale.z = 50;
-                model.position.x = -390 + (this.i*220);
+                model.scale.x = 190;
+                model.scale.y = 190;
+                model.scale.z = 190;
+                model.position.x = -450 + (this.i*220);
                 model.position.z = -150;
                 model.position.y = playerBasePositionY;
                 model.rotation.y = Math.PI;
@@ -370,11 +371,11 @@ function createRunners(){
 
                 runningGroup.add(model);
 
+                game.players.get(this.i).setAnimations(gltf.animations);
                 var mixer = new THREE.AnimationMixer(model);
-                var animation = game.startTime ? gltf.animations[0] : game.players.get(this.i).state === 1 ? gltf.animations[1] : gltf.animations[2];
+                var animation = game.players.get(this.i).chooseAnimation();
                 mixer.clipAction(animation).play();
                 game.players.get(this.i).setMixer(mixer);
-                game.players.get(this.i).setAnimations(gltf.animations);
 
                 render();
             }).bind({i: i}));
