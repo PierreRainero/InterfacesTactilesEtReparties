@@ -1,5 +1,5 @@
 module.exports = class Player {
-  constructor(id, state) {
+  constructor(id, state, bot) {
     this.id = id;
     this.state = state;
     this.progress = 0;
@@ -8,6 +8,7 @@ module.exports = class Player {
     this.heartbeat = 0;
     this.hasJumped = false;
     this.speed = 0;
+    this.bot = bot;
   }
 
   /**
@@ -48,6 +49,17 @@ module.exports = class Player {
       this.hasJumped = false;
     }
     return collision;
+  }
+
+  needToJump(map){
+      const nextHurdle = this.hurdlesAvoided.length;
+
+      if (this.progress < (map.getHurdle(nextHurdle) - 0.5) && this.progress > (map.getHurdle(nextHurdle) - 1)) {
+          this.hurdlesAvoided.push(true);
+          return true;
+      }
+
+      return false;
   }
 
   jump(map) {

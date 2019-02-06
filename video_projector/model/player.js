@@ -1,4 +1,4 @@
-function Player(id, state) {
+function Player(id, state, bot) {
     this.id = id;
     this.state = state;
     this.progress = 0;
@@ -11,11 +11,12 @@ function Player(id, state) {
     this.bounceValue = 0;
     this.currentAnimation = null;
     this.heartbeat = 0;
+    this.bot = bot;
 
     this.updateTrait();
 }
 
-Player.prototype.update = function (id, state, progress, finish, heartbeat) {
+Player.prototype.update = function (id, state, progress, finish, heartbeat, bot) {
     if(id)
         this.id = id;
     if(state)
@@ -26,6 +27,8 @@ Player.prototype.update = function (id, state, progress, finish, heartbeat) {
         this.finish = finish;
     if (heartbeat)
         this.heartbeat = heartbeat;
+    if(bot)
+        this.bot = bot;
 
     this.updateTrait();
     this.updateHeartbeat();
@@ -40,17 +43,17 @@ Player.prototype.update = function (id, state, progress, finish, heartbeat) {
 
 Player.prototype.updateTrait = function () {
     switch(this.id){
+        case 0:
+            this.model = "runner_record";
+            break;
         case 1:
             this.model = "runner_red";
-            this.backgroundColor = "rgb(92, 205, 205)";
             break;
         case 2:
             this.model = "runner_blue";
-            this.backgroundColor = "rgb(255, 141, 30)";
             break;
         default:
             this.model = "runner_base";
-            this.backgroundColor = "rgb(0, 0, 0)";
             break;
     }
 }

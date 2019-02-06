@@ -20,7 +20,7 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
-var gravity = 1;
+var gravity = 2.5;
 var playerBasePositionY = -50;
 var cameraPositionZ = 1250;
 var hurdlesObject = [];
@@ -121,9 +121,10 @@ function render() {
             let playerPosition = game.getRelativePosition(player.progress);
 
             player.modelObject.position.z = playerPosition;
-            player.shadowObject.position.z = playerPosition - 150;
-            player.cameraObject.position.z = playerPosition + cameraPositionZ;
             player.modelObject.position.y += player.bounceValue;
+            player.shadowObject.position.z = playerPosition - 150;
+            if(!player.bot)
+                player.cameraObject.position.z = playerPosition + cameraPositionZ;
 
             if(player.modelObject.position.y > playerBasePositionY)
                 player.setBounceValue(player.bounceValue - gravity);
@@ -184,23 +185,22 @@ function setupViews(){
             }
         });
     } else {
-        for(var i = 0; i < game.players.length(); i++){
-
-            var backgroundColor = game.players.get(i).backgroundColor;
-
-            views.push({
-                left: (1/game.players.length()) * i,
-                top: 0,
-                width: 1/game.players.length(),
-                height: 1.0,
-                background: new THREE.Color("rgb(92, 205, 205)"),
-                eye: [ -450 + (i*220), 350, cameraPositionZ ],
-                up: [ 0, 1, 0 ],
-                fov: 30,
-                updateCamera: function ( camera, scene, mouseX ) {
-                    //camera.position.z += mouseY * 0.05;
-                }
-            });
+        for(var i = 0; i < game.players.playerNumber(); i++){
+            if(!game.players.getPlayer(i).bot) {
+                views.push({
+                    left: (1 / game.players.playerNumber()) * i,
+                    top: 0,
+                    width: 1 / game.players.playerNumber(),
+                    height: 1.0,
+                    background: new THREE.Color("rgb(92, 205, 205)"),
+                    eye: [-450 + ((i+1) * 220), 350, cameraPositionZ],
+                    up: [0, 1, 0],
+                    fov: 30,
+                    updateCamera: function (camera, scene, mouseX) {
+                        //camera.position.z += mouseY * 0.05;
+                    }
+                });
+            }
         }
     }
 
@@ -211,8 +211,8 @@ function setupViews(){
         var camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.fromArray( view.eye );
         camera.up.fromArray( view.up );
-        if(game.players.length() !== 0)
-            game.players.get(ii).setCamera(camera);
+        if(game.players.playerNumber() !== 0)
+            game.players.getPlayer(ii).setCamera(camera);
         view.camera = camera;
     }
 }
@@ -294,26 +294,26 @@ function createRunners(){
     plane.rotateX(-Math.PI/2);
     runningGroup.add( plane );
 
-    //Start Line
-    var linematerial = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+    //StartLine
+    var geometry = new THREE.PlaneGeometry( 1500, 60, 32 );
+    var texture = new THREE.TextureLoader().load( "view/running/textures/line.png" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = 40;
+    texture.repeat.y = 1;
+    var materialTexture = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = -260;
+    plane.position.y = 1;
+    plane.rotateX(-Math.PI/2);
+    runningGroup.add( plane );
 
-    var startgeometry = new THREE.Geometry();
-    startgeometry.vertices.push(new THREE.Vector3( -700, 0, -150) );
-    startgeometry.vertices.push(new THREE.Vector3( 700, 0, -150) );
-
-    var startline = new THREE.Line( startgeometry, linematerial );
-
-    runningGroup.add(startline);
-
-    //End Line
-
-    var endgeometry = new THREE.Geometry();
-    endgeometry.vertices.push(new THREE.Vector3( -700, 0, game.getRelativePosition(110)) );
-    endgeometry.vertices.push(new THREE.Vector3( 700, 0, game.getRelativePosition(110)) );
-
-    var endline = new THREE.Line( endgeometry, linematerial );
-
-    runningGroup.add(endline);
+    //StartLine
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = game.getRelativePosition(110);
+    plane.position.y = 1;
+    plane.rotateX(-Math.PI/2);
+    runningGroup.add( plane );
 
     //Hurdles
     hurdlesObject = [];

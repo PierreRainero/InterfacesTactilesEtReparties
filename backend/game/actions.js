@@ -18,6 +18,7 @@ module.exports = {
      */
     setup: function () {
         players = new Array();
+        players.push(new Player(0, 2, true));
     },
 
     /**
@@ -145,10 +146,17 @@ module.exports = {
                                     let needUpdate = false;
                                     let everyoneFinished = true;
                                     for(let player of players){
-                                        let result = player.addProgress(player.speed/1000);
-                                        let hurdleTouched = player.checkCollision(map);
-                                        if(hurdleTouched !== null){
-                                            projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
+                                        let result = null;
+                                        if(!player.bot) {
+                                            result = player.addProgress((player.speed / 1000) * 2);
+                                            let hurdleTouched = player.checkCollision(map);
+                                            if(hurdleTouched !== null){
+                                                projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
+                                            }
+                                        } else {
+                                            result = player.addProgress(0.00859375 * 2);
+                                            if(player.needToJump(map))
+                                                projector.emit('playerJump', {playerId: player.id});
                                         }
                                         needUpdate = result !== null;
                                         if(!player.finish)
