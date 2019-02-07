@@ -49,11 +49,11 @@ Game.prototype.getCurrentTime = function(){
 
 Game.prototype.setPlayerReadyText = function(){
     var playersReadyContent = "";
-    for(var i = 0; i < this.players.length(); i++){
-        var taille = 100 / this.players.length();
+    for(var i = 0; i < this.players.playerNumber(); i++){
+        var taille = 100 / this.players.playerNumber();
         var position = 0 + taille*i;
         var style = `width: ${taille}%; left: ${position}%`;
-        if(this.players.get(i).state === 2)
+        if(this.players.getPlayer(i).state === 2)
             playersReadyContent += `<div style="${style}">Joueur prêt !</div>`;
         else
             playersReadyContent += `<div style="${style}">Levez la main droite quand vous êtes prêt à jouer</div>`;
@@ -92,7 +92,7 @@ Game.prototype.playerJump = function (id) {
 }
 
 Game.prototype.getRelativePosition = function(position){
-    return - position * 100;
+    return - position * 400;
 }
 
 Game.prototype.stopGame = function(players){

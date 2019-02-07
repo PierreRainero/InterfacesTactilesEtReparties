@@ -2,6 +2,7 @@
 using Kinect.Gameplay.Exception;
 using Kinect.Gameplay.Model;
 using log4net;
+using System;
 using System.Collections.Generic;
 
 namespace Kinect.Gameplay
@@ -68,22 +69,38 @@ namespace Kinect.Gameplay
             List<int> playersWhoJumped = new List<int>();
             foreach (Player player in players)
             {
-                if (player.IsDefined() && SkeletonAnalyser.DidJump(player.PreviousSkeleton, player.CurrentSkeleton))
+                if (player.IsDefined())
                 {
-                    player.JumpDetected();
-                }
-                else
-                {
-                    player.CancelJump();
-                }
-
-                if (player.Jumped())
-                {
-                    playersWhoJumped.Add(player.PlayerId);
+                    player.JumpDetected(SkeletonAnalyser.CalculatePlayerJump(player.PreviousSkeleton, player.CurrentSkeleton));
+                    if (player.Jumped())
+                    {
+                        playersWhoJumped.Add(player.PlayerId);
+                    }
                 }
             }
 
             return playersWhoJumped;
+        }
+
+        /// <summary>
+        /// Detects and updates speed of all players
+        /// </summary>
+        /// <param name="players">Players of the game to control</param>
+        /// <returns>"true" if the speed have changed, "false" otherwise</returns>
+        public static bool DetectsPlayerSpeed(Player[] players)
+        {
+            bool needUpdate = false;
+            foreach (Player player in players)
+            {
+                SkeletonAnalyser.CalculateRunningSpeed(player);
+                if (player.Speed.IsCalculable())
+                {
+                    player.Speed.Caculate();
+                    needUpdate = true;
+                }
+            }
+
+            return needUpdate;
         }
     }
 }

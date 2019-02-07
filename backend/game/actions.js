@@ -1,5 +1,5 @@
 const Player = require('./player.js');
-const Map = require ('./map.js');
+const map = require ('./map.js');
 
 let players;
 let state = "waiting_players";
@@ -18,6 +18,7 @@ module.exports = {
      */
     setup: function () {
         players = new Array();
+        players.push(new Player(0, 2, true));
     },
 
     /**
@@ -106,20 +107,34 @@ module.exports = {
         }).indexOf(idToSearch);
     },
 
+    /**
+     * Indicates to the system that a player have jumped
+     * @param {number} playerId identifier of the jumper
+     */
+    playerJump: function (playerId){
+        players[this.findPlayerIndexById(playerId)].jump(map);
+    },
+
+    /**
+     * Update the current speed of a player
+     * @param {array} data object which contains all players id associates to a speed (m/s)
+     */
+    updatePlayersSpeed: function(data){
+        for(const player of data){
+            const playerObtained = players[this.findPlayerIndexById(player.id)];
+            if(!playerObtained.hasJumped){
+                playerObtained.updateSpeed(player.speed);
+            }
+        }
+    },
+
+    
     getState: function (){
         return state;
     },
 
-    checkJump: function (playerId){
-        if(players[playerId].isApproachingHurdle(map)){
-
-        }
-    },
-
     startCountdown: function (){
-
         projector.emit('everyonesReady', players);
-
         projector.emit('countdown', {value:3});
 
         setTimeout(() => {
@@ -142,7 +157,18 @@ module.exports = {
                                     let needUpdate = false;
                                     let everyoneFinished = true;
                                     for(let player of players){
-                                        let result = player.addProgress(0.00275);
+                                        let result = null;
+                                        if(!player.bot) {
+                                            result = player.addProgress((player.speed / 1000) * 2);
+                                            let hurdleTouched = player.checkCollision(map);
+                                            if(hurdleTouched !== null){
+                                                projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
+                                            }
+                                        } else {
+                                            result = player.addProgress(0.00859375 * 2);
+                                            if(player.needToJump(map))
+                                                projector.emit('playerJump', {playerId: player.id});
+                                        }
                                         needUpdate = result !== null;
                                         if(!player.finish)
                                             everyoneFinished = false;
@@ -159,15 +185,15 @@ module.exports = {
                                 }, 1);
 
                             } else {
-                                // un joueur quite
+                                // un joueur quitte
                             }
                         }, 1000);
                     } else {
-                        // un joueur quite
+                        // un joueur quitte
                     }
                 }, 1000);
             } else {
-                // un joueur quite
+                // un joueur quitte
             }
         }, 1000);
     }

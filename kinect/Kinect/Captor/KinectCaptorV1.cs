@@ -5,6 +5,7 @@ using Microsoft.Kinect.Toolkit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Kinect.Captor
 {
@@ -91,11 +92,10 @@ namespace Kinect.Captor
                     break;
 
                 case GameStep.STARTED:
-                    List<int> jumpers = GameEngine.DetectsPlayerJump(players);
-                    if(jumpers.Count > 0)
-                    {
-                        gameHook.SendJumpers(jumpers);
-                    }
+                    Thread speedThread = new Thread(new ThreadStart(SpeedDetection));
+                    Thread jumpThread = new Thread(new ThreadStart(JumpDetection));
+                    speedThread.Start();
+                    jumpThread.Start();
                     break;
 
                 default:
@@ -237,6 +237,29 @@ namespace Kinect.Captor
                 default:
                     Status = "Undefined";
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Manage the speed detection
+        /// </summary>
+        private void SpeedDetection()
+        {
+            if (GameEngine.DetectsPlayerSpeed(players))
+            {
+                gameHook.SendSpeed();
+            }
+        }
+
+        /// <summary>
+        /// Manage the jump detection
+        /// </summary>
+        private void JumpDetection()
+        {
+            List<int> jumpers = GameEngine.DetectsPlayerJump(players);
+            if (jumpers.Count > 0)
+            {
+                gameHook.SendJumpers(jumpers);
             }
         }
     }

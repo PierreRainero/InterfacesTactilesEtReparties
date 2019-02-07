@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Communication\Formater\SimpleArray.cs" />
+    <Compile Include="Communication\Formater\SimpleFloatPair.cs" />
     <Compile Include="Communication\Formater\SimpleIntPair.cs" />
     <Compile Include="Communication\Formater\SimpleMember.cs" />
     <Compile Include="Communication\Formater\SimpleObjectFormater.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Gameplay\Model\Jump.cs" />
     <Compile Include="Gameplay\Model\Player.cs" />
     <Compile Include="Gameplay\Model\PlayerState.cs" />
+    <Compile Include="Gameplay\Model\Speed.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

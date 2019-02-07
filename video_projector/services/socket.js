@@ -1,4 +1,4 @@
-var socket = io('http://192.168.43.238:8282');
+var socket = io('http://localhost:8282');
 
 socket.emit('connectProjector');
 
@@ -6,13 +6,13 @@ socket.emit('connectProjector');
 //TEST ZONE
 game.setHurdles([13.72, 22.86, 32, 41.14, 50.28, 59.42, 68.56, 77.7, 86.84, 95.98]);
 setTimeout(() => {
-    game.setPlayers([{id: 1, state: 1}]);
+    game.setPlayers([{id: 0, state: 2, bot: true},{id: 1, state: 1}]);
     setTimeout(() => {
-        game.setPlayers([{id: 1, state: 1},{id: 2, state: 1}]);
+        game.setPlayers([{id: 0, state: 2, bot: true},{id: 1, state: 1},{id: 2, state: 1}]);
         setTimeout(() => {
-            game.setPlayers([{id: 1, state: 2},{id: 2, state: 1}]);
+            game.setPlayers([{id: 0, state: 2, bot: true},{id: 1, state: 2},{id: 2, state: 1}]);
             setTimeout(() => {
-                game.setPlayers([{id: 1, state: 2},{id: 2, state: 2}]);
+                game.setPlayers([{id: 0, state: 2, bot: true},{id: 1, state: 2},{id: 2, state: 2}]);
                 setTimeout(() => {
                     game.setCountdown(3);
                     setTimeout(() => {
@@ -24,6 +24,16 @@ setTimeout(() => {
                                 setTimeout(() => {
                                     game.playerJump(1);
                                 }, 3000);
+                                let position = 0;
+                                setInterval(() => {
+                                    if(position < 110){
+                                        position += 0.4;
+                                        game.setPlayers([{id: 0, state: 2, bot: true, progress: position},{id: 1, state: 2, progress: position},{id: 2, state: 2, progress: position}]);
+                                    }
+                                }, 1);
+                                setTimeout(() => {
+                                    hurdlesObject[1][0].fall = true;
+                                }, 5000);
                             }, 500);
                         }, 500);
                     }, 500);
@@ -57,9 +67,14 @@ socket.on('playerJump', function (data){
 socket.on('updatePlayers', function (data) {
     //console.log("updatePlayers received, data : ", data);
     game.setPlayers(data);
-})
+});
+
+socket.on('collision', function (data) {
+    console.log("collision detected, player : ", data);
+    hurdlesObject[data.playerId][data.hurdleId].fall = true;
+});
 
 socket.on('gameFinished', function (data) {
     console.log("Game finished received, data : ", data);
     game.stopGame(data);
-})
+});

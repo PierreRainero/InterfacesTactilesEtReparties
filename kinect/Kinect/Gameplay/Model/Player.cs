@@ -15,6 +15,7 @@ namespace Kinect.Gameplay.Model
         public PlayerState State { get; set; }
         public Skeleton PreviousSkeleton { get; set; }
         public Skeleton CurrentSkeleton { get; set; }
+        public Speed Speed { get; private set; }
         private Jump lastJump;
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace Kinect.Gameplay.Model
             CurrentSkeleton = null;
             State = PlayerState.NOTDETECTED;
             lastJump = new Jump();
+            Speed = new Speed();
         }
 
         /// <summary>
@@ -61,19 +63,19 @@ namespace Kinect.Gameplay.Model
         }
 
         /// <summary>
-        /// Cancel in progress jump
-        /// </summary>
-        public void CancelJump()
-        {
-            lastJump.Cancel();
-        }
-
-        /// <summary>
         /// Notifies the system the player is jumping
         /// </summary>
-        public void JumpDetected()
+        /// <param name="heigthJumped">Last heigth jumped</param>
+        public void JumpDetected(float heigthJumped)
         {
-            lastJump.Increment();
+            if(heigthJumped > 0)
+            {
+                lastJump.Increment(heigthJumped);
+            }
+            else
+            {
+                lastJump.Cancel();
+            }
         }
 
         /// <summary>

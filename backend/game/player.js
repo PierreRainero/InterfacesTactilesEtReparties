@@ -1,10 +1,14 @@
 module.exports = class Player {
-  constructor(id, state) {
+  constructor(id, state, bot) {
     this.id = id;
     this.state = state;
     this.progress = 0;
+    this.hurdlesAvoided = [];
     this.finish = false;
     this.heartbeat = 0;
+    this.hasJumped = false;
+    this.speed = 0;
+    this.bot = bot;
   }
 
   /**
@@ -17,31 +21,75 @@ module.exports = class Player {
     this.allowDataSharing = dataSharing;
   }
 
-    isApproachingHurdle(map){
-        let res = false;
-        for (let hurdle in map.hurdles){
-            if(this.progress > hurdle - 2 && this.progress < hurdle){
-                res = true;
-            }
-        }
-        return res;
-    }
+  isApproachingHurdle(map) {
+    const nextHurdle = this.hurdlesAvoided.length;
 
-    addProgress(progress){
-        if(this.progress < 110) {
-            this.progress += progress;
-            return this.progress;
-        } else {
-            this.finish = true;
-        }
-        return null;
+    // hurdle approaching
+    if (this.progress > (map.getHurdle(nextHurdle) - 2) && this.progress < map.getHurdle(nextHurdle)) {
+      return true;
     }
+    else {
+      return false;
+    }
+  }
 
-    /**
-     * Update heartbeat to a player
-     * @param {*} heartbeat
-     */
-    setHeartbeat(heartbeat) {
-        this.heartbeat = heartbeat
+  checkCollision(map) {
+    let collision = null;
+    const nextHurdle = this.hurdlesAvoided.length;
+
+    if (this.progress > (map.getHurdle(nextHurdle) - 0.5)) {
+      if (!this.hasJumped) {
+        this.hurdlesAvoided.push(false);
+        collision = nextHurdle;
+      }
+      else {
+        this.hurdlesAvoided.push(true);
+      }
+      this.hasJumped = false;
     }
+    return collision;
+  }
+
+  needToJump(map){
+      const nextHurdle = this.hurdlesAvoided.length;
+
+      if (this.progress < (map.getHurdle(nextHurdle) - 0.5) && this.progress > (map.getHurdle(nextHurdle) - 1)) {
+          this.hurdlesAvoided.push(true);
+          return true;
+      }
+
+      return false;
+  }
+
+  jump(map) {
+    if (this.isApproachingHurdle(map)) {
+      this.hasJumped = true;
+    }
+  }
+
+  addProgress(progress) {
+    if (this.progress < 110) {
+      this.progress += progress;
+      return this.progress;
+    } else {
+      this.finish = true;
+    }
+    return null;
+  }
+
+  /**
+   * Update heartbeat to a player
+   * @param {number} heartbeat current heartbeat
+   */
+  setHeartbeat(heartbeat) {
+    this.heartbeat = heartbeat
+  }
+
+  /**
+   * Update player speed
+   * @param {number} speed current speed (m/s)
+   */
+  updateSpeed(speed){
+    this.speed = speed;
+  }
 }
