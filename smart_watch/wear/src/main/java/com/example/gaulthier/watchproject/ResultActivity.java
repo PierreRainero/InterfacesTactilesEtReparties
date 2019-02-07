@@ -2,6 +2,8 @@ package com.example.gaulthier.watchproject;
 
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 public class ResultActivity extends WearableActivity {
@@ -24,6 +26,7 @@ public class ResultActivity extends WearableActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Bundle b = getIntent().getExtras();
         if(b != null) {
@@ -54,5 +57,13 @@ public class ResultActivity extends WearableActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    /**
+     * End game
+     * @param v
+     */
+    public void exit(View v) {
+        finish();
     }
 }

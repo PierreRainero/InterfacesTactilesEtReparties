@@ -39,5 +39,12 @@
             android:gravity="center"
             android:text="Heartbeat average : " />
 
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="exit"
+            android:text="Quitter" />
+
     </LinearLayout>
 </android.support.wear.widget.BoxInsetLayout>

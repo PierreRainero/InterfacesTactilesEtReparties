@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.waiting_run);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
         mHeartRateSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
@@ -83,6 +85,7 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
     /**
@@ -103,18 +106,18 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                     valueBPM = r.nextInt(130 - 120) + 120;
                 } else {
                     valueBPM = valueHeartRateSensor;
-                    if (heartbeatMax == 0) {
-                        heartbeatMax = valueHeartRateSensor;
-                    }
-                    if (heartbeatMin == 0) {
-                        heartbeatMin = valueHeartRateSensor;
-                    }
-                    if (valueHeartRateSensor > heartbeatMax) {
-                        heartbeatMax = valueHeartRateSensor;
-                    }
-                    if (valueHeartRateSensor < heartbeatMin) {
-                        heartbeatMin = valueHeartRateSensor;
-                    }
+                }
+                if (heartbeatMax == 0) {
+                    heartbeatMax = valueBPM;
+                }
+                if (heartbeatMin == 0) {
+                    heartbeatMin = valueBPM;
+                }
+                if (valueBPM > heartbeatMax) {
+                    heartbeatMax = valueBPM;
+                }
+                if (valueBPM < heartbeatMin) {
+                    heartbeatMin = valueBPM;
                 }
                 if (valueBPM != 0) {
                     valuesHeartbeat.add(valueBPM);
@@ -185,8 +188,8 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         b.putInt("heartbeatAverage", this.heartbeatAverage);
         intentMain.putExtras(b);
         handler.removeCallbacksAndMessages(null);
-        RunActivity.this.startActivity(intentMain);
         finish();
+        RunActivity.this.startActivity(intentMain);
     }
 
     /**

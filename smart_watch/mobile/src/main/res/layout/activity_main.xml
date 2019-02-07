@@ -9,17 +9,6 @@
     android:paddingTop="@dimen/vertical_margin"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/talkButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Talk to the wearable" />
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
 
     <Button
         android:id="@+id/button"
@@ -41,10 +30,12 @@
         android:onClick="gameStart"
         android:text="Simulated start run" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <Button
+        android:id="@+id/button3"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="wrap_content"
+        android:onClick="gameEnd"
+        android:text="Simulated end run" />
 
     <Button
         android:id="@+id/button4"
@@ -54,15 +45,57 @@
         android:onClick="disconnectServer" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView9"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="38dp" />
 
-    <Button
-        android:id="@+id/button3"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="gameEnd"
-        android:text="Simulated end run" />
+        android:text="Message recu de la montre"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/receivedFromWear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message envoyé à la montre"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sentToWear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message recu du serveur"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/receivedFromServer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message envoyé au serveur"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sentToServer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

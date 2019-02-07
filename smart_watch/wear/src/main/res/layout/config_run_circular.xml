@@ -31,7 +31,7 @@ android:padding="15dp">
         android:layout_height="50dp"
         android:layout_gravity="bottom|right"
         android:background="@null"
-        android:onClick="selectColorRed"
+        android:onClick="selectColorBlue"
         android:src="@android:color/holo_blue_light" />
 </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>

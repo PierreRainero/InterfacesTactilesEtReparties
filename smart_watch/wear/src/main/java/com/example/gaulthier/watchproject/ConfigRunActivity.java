@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.View;
+import android.view.WindowManager;
 
 public class ConfigRunActivity extends WearableActivity {
 
@@ -24,6 +25,7 @@ public class ConfigRunActivity extends WearableActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.config_run_circular);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         newFilter = new IntentFilter(Intent.ACTION_SEND);
         messageReceiver = new Receiver();
@@ -119,8 +121,8 @@ public class ConfigRunActivity extends WearableActivity {
         b.putInt("playerId", this.playerId);
         b.putBoolean("acceptDataSharing", this.acceptDataSharing);
         intentMain.putExtras(b);
-        ConfigRunActivity.this.startActivity(intentMain);
         finish();
+        ConfigRunActivity.this.startActivity(intentMain);
     }
 
     /**

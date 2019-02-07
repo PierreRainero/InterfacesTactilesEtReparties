@@ -2,7 +2,6 @@ package com.example.gaulthier.watchproject;
 
 import android.support.v7.app.AppCompatActivity;
 import android.content.BroadcastReceiver;
-import android.widget.Button;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,10 +20,13 @@ import com.github.nkzawa.socketio.client.Socket;
 
 public class MainActivity extends AppCompatActivity  {
 
-    Button talkbutton;
-    TextView textview;
     private Socket mSocket;
     EditText ipAddress;
+    TextView receivedFromWear;
+    TextView sentToWear;
+    TextView receivedFromServer;
+    TextView sentToServer;
+    Receiver messageReceiver;
 
     /**
      * On create
@@ -35,12 +37,14 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        talkbutton = findViewById(R.id.talkButton);
-        textview = findViewById(R.id.textView);
         ipAddress = findViewById(R.id.editTextIp);
+        receivedFromWear = findViewById(R.id.receivedFromWear);
+        sentToWear = findViewById(R.id.sentToWear);
+        receivedFromServer = findViewById(R.id.receivedFromServer);
+        sentToServer = findViewById(R.id.sentToServer);
 
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
-        Receiver messageReceiver = new Receiver();
+        messageReceiver = new Receiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
@@ -50,27 +54,14 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         mSocket.disconnect();
-        mSocket.off("gameStart", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
-            }
-        }).off("gameFinished", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
-            }
-        });
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
     /**
      * Connect to the backend to initiate web socket
      */
     public void connectToServer(View v) {
-        System.out.println("Try to send to server");
-
         try {
             mSocket = IO.socket("http://" + ipAddress.getText());
         } catch (URISyntaxException e) {
@@ -80,17 +71,23 @@ public class MainActivity extends AppCompatActivity  {
         mSocket.on("gameStart", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                receivedFromServer.setText("gameStart received");
+                sentToWear.setText("gameStart sent");
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
             }
         }).on("gameFinished", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                receivedFromServer.setText("gameFinished received");
+                sentToWear.setText("gameEnd sent");
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
             }
         });
 
         mSocket.connect();
+        sentToServer.setText("smartphoneConnect sent");
         mSocket.emit("smartphoneConnect", "");
+        sentToWear.setText("connectedToServer sent");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "connectedToServer").start();
     }
 
@@ -99,17 +96,7 @@ public class MainActivity extends AppCompatActivity  {
      */
     public void disconnectServer(View v) {
         mSocket.disconnect();
-        mSocket.off("gameStart", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
-            }
-        }).off("gameEnd", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
-            }
-        });
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
 
@@ -117,6 +104,7 @@ public class MainActivity extends AppCompatActivity  {
      *
      */
     public void gameStart(View v) {
+        sentToWear.setText("gameStart sent");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
     }
 
@@ -124,6 +112,7 @@ public class MainActivity extends AppCompatActivity  {
      *
      */
     public void gameEnd(View v) {
+        sentToWear.setText("gameEnd sent");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
     }
 
