@@ -121,7 +121,10 @@ module.exports = {
      */
     updatePlayersSpeed: function(data){
         for(const player of data){
-            players[this.findPlayerIndexById(player.id)].updateSpeed(player.speed);
+            const playerObtained = players[this.findPlayerIndexById(player.id)];
+            if(!playerObtained.hasJumped){
+                playerObtained.updateSpeed(player.speed);
+            }
         }
     },
 
