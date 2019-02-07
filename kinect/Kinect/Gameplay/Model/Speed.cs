@@ -66,7 +66,7 @@ namespace Kinect.Gameplay.Model
 
             indexer = 0;
             float averageRunningSpeedFactor = (float)0.857836;
-            value = SpeedCorrector((rigthSum + leftSum) / 2 * 18 * averageRunningSpeedFactor);
+            value = SpeedCorrector((rigthSum + leftSum) / 2 * 19 * averageRunningSpeedFactor);
 
             return value;
         }
