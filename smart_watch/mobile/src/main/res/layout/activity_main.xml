@@ -44,6 +44,13 @@
         android:text="Disconnect to server"
         android:onClick="disconnectServer" />
 
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="restartGame"
+        android:text="Restart game" />
+
     <TextView
         android:id="@+id/textView9"
         android:layout_width="match_parent"

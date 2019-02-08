@@ -179,6 +179,9 @@ module.exports = {
 
             setTimeout(function(){
                 kinect.emit('kinectRestart', "Ready");
+                if (smartphone) {
+                    smartphone.emit('watchRestart', "Ready");
+                }
             }, 45000);
         }
 

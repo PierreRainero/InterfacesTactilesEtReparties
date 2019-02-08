@@ -82,6 +82,13 @@ public class MainActivity extends AppCompatActivity  {
                 sentToWear.setText("gameEnd sent");
                 new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
             }
+        }).on("watchRestart", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                receivedFromServer.setText("watchRestart received");
+                sentToWear.setText("watchRestart sent");
+                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "watchRestart").start();
+            }
         });
 
         mSocket.connect();
@@ -97,6 +104,14 @@ public class MainActivity extends AppCompatActivity  {
     public void disconnectServer(View v) {
         mSocket.disconnect();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    }
+
+    /**
+     * Restart game
+     */
+    public void restartGame(View v) {
+        sentToWear.setText("watchRestart sent");
+        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "watchRestart").start();
     }
 
 

@@ -1,7 +1,11 @@
 package com.example.gaulthier.watchproject;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +25,8 @@ public class ResultActivity extends WearableActivity {
     TextView textHeartbeatAverage;
 
     ImageView heartbeatImage;
+    IntentFilter newFilter;
+    Receiver messageReceiver;
 
     /**
      * On create
@@ -60,6 +66,11 @@ public class ResultActivity extends WearableActivity {
         textHeartbeatMax.setText(heartbeatMaxText+ " max    ");
         textHeartbeatAverage.setText(heartbeatAverageText + " moyen");
 
+        messageReceiver = new Receiver();
+
+        newFilter = new IntentFilter(Intent.ACTION_SEND);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
+
     }
 
     /**
@@ -75,9 +86,30 @@ public class ResultActivity extends WearableActivity {
      * @param v
      */
     public void newGame(View v) {
+        restartGame();
+    }
+
+    public void restartGame() {
         Intent intentMain = new Intent(this , ConfigRunActivity.class);
         finish();
         this.startActivity(intentMain);
         finish();
+    }
+
+    /**
+     * A class to receive  message from android device
+     */
+    public class Receiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+
+            System.out.println("Message received");
+
+            if (message.equals("watchRestart")) {
+                System.out.println("watchRestart received");
+                restartGame();
+            }
+        }
     }
 }
