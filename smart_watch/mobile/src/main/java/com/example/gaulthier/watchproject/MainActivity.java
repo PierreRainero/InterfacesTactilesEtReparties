@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity  {
         try {
             mSocket = IO.socket("http://" + ipAddress.getText());
         } catch (URISyntaxException e) {
-            System.out.println("error : " + e);
+            sentToServer.setText("ERROR: " + e);
         }
 
         mSocket.on("gameStart", new Emitter.Listener() {
