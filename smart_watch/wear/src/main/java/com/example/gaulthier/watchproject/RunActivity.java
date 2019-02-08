@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -31,9 +32,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     Handler handler;
     int delay;
 
-    // textview
-    TextView timer;
-
     // sensor
     SensorManager mSensorManager;
     Sensor mHeartRateSensor;
@@ -45,6 +43,8 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     int heartbeatMax;
     int heartbeatAverage;
     List<Integer> valuesHeartbeat = new ArrayList<>();
+    TextView textViewHeartbeat;
+    ImageView heartbeatImageView;
 
     /**
      * On create
@@ -123,7 +123,7 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                     valuesHeartbeat.add(valueBPM);
                 }
 
-                timer.setText("♡ " + Integer.toString(valueBPM));
+                textViewHeartbeat.setText(Integer.toString(valueBPM));
 
                 if (acceptDataSharing && valueBPM != 0) {
                     String message = "heartbeat:" + playerId + ":" + valueBPM;
@@ -162,7 +162,13 @@ public class RunActivity extends WearableActivity implements SensorEventListener
      */
     public void startRun() {
         setContentView(R.layout.run);
-        timer = findViewById(R.id.timerTextView);
+        heartbeatImageView = findViewById(R.id.heartbeatImageView);
+        textViewHeartbeat = findViewById(R.id.textViewHeartbeat);
+        if (this.playerId == 2) {
+            heartbeatImageView.setImageDrawable(getResources().getDrawable(R.drawable.heartbeat_blue));
+        } else {
+            heartbeatImageView.setImageDrawable(getResources().getDrawable(R.drawable.heartbeat_red));
+        }
         sendBPMEachSeconds();
     }
 
