@@ -20,7 +20,7 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
-var gravity = 2.5;
+var gravity = 2;
 var playerBasePositionY = 15;
 var cameraPositionZ = 1400;
 var hurdlesObject = [];
