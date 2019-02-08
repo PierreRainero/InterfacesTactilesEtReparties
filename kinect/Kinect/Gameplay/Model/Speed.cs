@@ -65,8 +65,8 @@ namespace Kinect.Gameplay.Model
             Array.ForEach(ZDistanceLeft, delegate (float i) { leftSum += i; });
 
             indexer = 0;
-            float averageRunningSpeedFactor = (float)0.86;
-            value = SpeedCorrector((rigthSum + leftSum) / 2 * 19.2 * averageRunningSpeedFactor);
+            float averageRunningSpeedFactor = (float)0.85;
+            value = SpeedCorrector((rigthSum + leftSum) / 2 * (float)18.8 * averageRunningSpeedFactor);
 
             return value;
         }
