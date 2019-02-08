@@ -42,6 +42,10 @@ Une fois une Kinect branchée et l'application lancée (voir [Technologies utili
     ```json
     { "players": [{"id": 1, "speed": 4.183282}, {"id": 2, "speed": 3.832008}] }
     ```
+4. Pendant la phase de jeu l'application va écouter les messages émis sur les canaux suivants :
+
+    * `gameFinished` : Si un message est émis, l'application passe en mode "_run finished_", elle ne détecte plus les joueurs (ni les sauts et ni la vitesse de course).
+    * `kinectRestart` : Si un message est émis, l'application retourne dans son état initial (1.).
 
 ## Technologies utilisées
 

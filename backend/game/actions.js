@@ -151,8 +151,7 @@ module.exports = {
         let everyoneFinished = true;
         for(let player of players){
             if(!player.bot) {
-                //player.addProgress((player.speed / 1000*6));
-                player.addProgress(0.008596*6);
+                player.addProgress((player.speed / 1000*6));
                 let hurdleTouched = player.checkCollision(map);
                 if(hurdleTouched !== null){
                     projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
