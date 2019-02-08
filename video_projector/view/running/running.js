@@ -177,7 +177,7 @@ function setupViews(){
             width: 1,
             height: 1,
             background: new THREE.Color(0.5, 0.5, 0.5),
-            eye: [ 0, 0, 2000 ],
+            eye: [ 0, 0, 2200 ],
             up: [ 0, 1, 0 ],
             fov: 30,
             updateCamera: function ( camera, scene, mouseX ) {
@@ -223,7 +223,7 @@ function createWaitingScreen(){
     var loader = new THREE.FontLoader();
 
     loader.load('node_modules/three/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-        var textGeo = new THREE.TextGeometry("En attente de joueurs...", {
+        var textGeo = new THREE.TextGeometry("Placez-vous dans un couloir de course", {
             font: font,
             size: 80,
             height: 5,
@@ -247,7 +247,7 @@ function createWaitingScreen(){
 
     //Shadow
 
-    var shadowGeo = new THREE.PlaneBufferGeometry( 1300, 300, 1, 1 );
+    var shadowGeo = new THREE.PlaneBufferGeometry( 2000, 300, 1, 1 );
 
     var shadowMesh;
 

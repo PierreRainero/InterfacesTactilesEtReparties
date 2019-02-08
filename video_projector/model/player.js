@@ -91,7 +91,6 @@ Player.prototype.setCamera = function (camera) {
 
 Player.prototype.jump = function () {
     this.bounceValue = 25;
-    console.log("JUMP");
 }
 
 Player.prototype.setBounceValue = function (value) {

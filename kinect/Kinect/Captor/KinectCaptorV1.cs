@@ -98,6 +98,9 @@ namespace Kinect.Captor
                     jumpThread.Start();
                     break;
 
+                case GameStep.FINISHED:
+                    gameHook.KeepConnectionAlive();
+                    break;
                 default:
                     break;
             }

@@ -1,4 +1,4 @@
-var socket = io('http://localhost:8282');
+var socket = io('http://192.168.43.238:8282');
 
 socket.emit('connectProjector');
 
@@ -45,22 +45,22 @@ setTimeout(() => {
 */
 
 socket.on('playerChange', function (data) {
-    console.log("Player change received, data : ", data);
+    //console.log("Player change received, data : ", data);
     game.setPlayers(data);
 });
 
 socket.on('countdown', function (data){
-    console.log("Countdown received, data : ", data);
+    //console.log("Countdown received, data : ", data);
     game.setCountdown(data.value);
 });
 
 socket.on('hurdles', function (data){
-    console.log("Hurdles received : ", data);
+    //console.log("Hurdles received : ", data);
     game.setHurdles(data);
 });
 
 socket.on('playerJump', function (data){
-    console.log("Player jump received, data : ", data);
+    //console.log("Player jump received, data : ", data);
     game.playerJump(data.playerId);
 });
 
@@ -70,11 +70,11 @@ socket.on('updatePlayers', function (data) {
 });
 
 socket.on('collision', function (data) {
-    console.log("collision detected, player : ", data);
+    //console.log("collision detected, player : ", data);
     hurdlesObject[data.playerId][data.hurdleId].fall = true;
 });
 
 socket.on('gameFinished', function (data) {
-    console.log("Game finished received, data : ", data);
+    //console.log("Game finished received, data : ", data);
     game.stopGame(data);
 });

@@ -70,11 +70,9 @@ module.exports = class Player {
   addProgress(progress) {
     if (this.progress < 110) {
       this.progress += progress;
-      return this.progress;
     } else {
       this.finish = true;
     }
-    return null;
   }
 
   /**
