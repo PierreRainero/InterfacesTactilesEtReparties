@@ -35,6 +35,7 @@ namespace Kinect.Gameplay
             Int32.TryParse(ConfigurationManager.AppSettings["socketIO_port"], out int port);
             socketIO = new SocketIOClient(ConfigurationManager.AppSettings["socketIO_url"], port);
 
+            kinectMotor = new KinectCaptorV1(this);
             StartNewGame();
         }
 
@@ -43,7 +44,6 @@ namespace Kinect.Gameplay
         /// </summary>
         public void StartCapture()
         {
-            kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
             socketIO.On("kinectStartRun", StartRun);
             socketIO.On("gameFinished", FinishRun);
@@ -139,6 +139,7 @@ namespace Kinect.Gameplay
                     playersArray.AddMember(playerObjectToSend);
                 }
             }
+
             objectToSend.AddArray("players", playersArray);
             if (logMode)
             {
@@ -148,6 +149,10 @@ namespace Kinect.Gameplay
             socketIO.Emit("kinectPlayerSpeed", objectToSend.JSONFormat());
         }
 
+        /// <summary>
+        /// Send ping request to keep the connection alive
+        /// </summary>
+        /// <param name="frequence">Frequence to send a request in second (1 by default)</param>
         public void KeepConnectionAlive(int frequence=1)
         {
             if (pingCounter >= 30*frequence)
@@ -159,7 +164,6 @@ namespace Kinect.Gameplay
             {
                 pingCounter++;
             }
-            
         }
 
         /// <summary>
@@ -176,6 +180,7 @@ namespace Kinect.Gameplay
             players[0] = new Player(1);
             players[1] = new Player(2);
             pingCounter = 0;
+            kinectMotor.Players = players;
 
             Step = GameStep.WAITING;
         }

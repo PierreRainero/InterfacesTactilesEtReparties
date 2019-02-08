@@ -34,7 +34,6 @@ io.on('connection', function (socket) {
   })
 
   socket.on('kinectConnected', function (kinect) {
-    console.log('Kinect '+kinect.state+'.');
     game.setup();
     kinectSocket = socket;
   });
@@ -49,6 +48,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('players', function (data) {
+    console.log(data);
     game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });
 

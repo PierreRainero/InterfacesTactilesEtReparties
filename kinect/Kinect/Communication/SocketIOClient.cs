@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kinect.Communication.Formater;
+using System;
 using System.Text.RegularExpressions;
 using WebSocketSharp;
 
@@ -89,17 +90,18 @@ namespace Kinect.Communication
         }
 
         /// <summary>
-        /// 
+        /// Send a message containing the current DateTime to the chanel "PING" to test the viability of the socket
         /// </summary>
-        /// <returns></returns>
-        public bool Ping()
+        public void Ping()
         {
             if (!socket.IsAlive)
             {
                 socket.Connect();
             }
 
-            return socket.Ping();
+            SimpleObjectFormater objectToSend = new SimpleObjectFormater();
+            objectToSend.AddString("time", DateTime.Now.TimeOfDay.ToString());
+            Emit("PING", objectToSend.JSONFormat());
         }
     }
 }
