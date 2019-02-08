@@ -75,13 +75,31 @@ namespace Kinect.Communication
 
                 if (data.Substring(0,2) == "42")
                 {
-                    Regex pattern = new Regex(@"\[" + doublequote + chanel + doublequote + @"," + doublequote + @"(?<message>\w+)" + doublequote + @"\]");
+                    Regex pattern = new Regex(@"\[" + doublequote + @"(?<chanel>\w+)" + doublequote + @"," + doublequote + @"(?<message>\w+)" + doublequote + @"\]");
                     Match match = pattern.Match(e.Data);
+                    string chanelUsed = match.Groups["chanel"].Value;
                     string message = match.Groups["message"].Value;
 
-                    callback(message);
+                    if (chanelUsed.Equals(chanel))
+                    {
+                        callback(message);
+                    }
                 }
             };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool Ping()
+        {
+            if (!socket.IsAlive)
+            {
+                socket.Connect();
+            }
+
+            return socket.Ping();
         }
     }
 }

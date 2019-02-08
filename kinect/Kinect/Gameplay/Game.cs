@@ -22,6 +22,7 @@ namespace Kinect.Gameplay
         private Player[] players;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private bool logMode;
+        private int pingCounter;
 
 
         /// <summary>
@@ -45,6 +46,8 @@ namespace Kinect.Gameplay
             kinectMotor = new KinectCaptorV1(players, this);
             socketIO.Connect();
             socketIO.On("kinectStartRun", StartRun);
+            socketIO.On("gameFinished", FinishRun);
+            socketIO.On("kinectRestart", StartNewGame);
             if (logMode)
             {
                 log.Info(Step.ToString() + " : Open socket - Start Capture");
@@ -106,7 +109,7 @@ namespace Kinect.Gameplay
                 SimpleObjectFormater objectToSend = new SimpleObjectFormater();
                 objectToSend.AddInt("playerId", jumperId);
                 socketIO.Emit("kinectPlayerJump", objectToSend.JSONFormat());
-
+                
                 if (logMode)
                 {
                     log.Info(Step.ToString() + " : Player " + jumperId + " has jumped");
@@ -145,14 +148,34 @@ namespace Kinect.Gameplay
             socketIO.Emit("kinectPlayerSpeed", objectToSend.JSONFormat());
         }
 
+        public void KeepConnectionAlive(int frequence=1)
+        {
+            if (pingCounter >= 30*frequence)
+            {
+                socketIO.Ping();
+                pingCounter = 0;
+            }
+            else
+            {
+                pingCounter++;
+            }
+            
+        }
+
         /// <summary>
         /// Stop for good the previous game and start a new one (return to the initial state)
         /// </summary>
-        private void StartNewGame()
+        /// <param name="message">Message emitted by the backend (empty by default)</param>
+        private void StartNewGame(string message="")
         {
+            if (logMode)
+            {
+                log.Info(Step.ToString() + " : Message received = \"" + message + "\"");
+            }
             players = new Player[2];
             players[0] = new Player(1);
             players[1] = new Player(2);
+            pingCounter = 0;
 
             Step = GameStep.WAITING;
         }
@@ -168,6 +191,19 @@ namespace Kinect.Gameplay
                 log.Info(Step.ToString() + " : Message received = \"" + message + "\"");
             }
             Step = GameStep.STARTED;
+        }
+
+        /// <summary>
+        /// Stop the run step (stop jump and speed detection until next run)
+        /// </summary>
+        /// <param name="message">Message emitted by the backend</param>
+        private void FinishRun(string message)
+        {
+            if (logMode)
+            {
+                log.Info(Step.ToString() + " : Message = \"" + message + "\"");
+            }
+            Step = GameStep.FINISHED;
         }
     }
 }

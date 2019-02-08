@@ -133,67 +133,81 @@ module.exports = {
         return state;
     },
 
+    /**
+     * Loop for a run
+     */
+    gameLoop: function () {
+        let updateJob = setInterval(() => {
+            if(this.gameIteration()){
+                clearInterval(updateJob);
+            }
+        }, 6);
+    },
+
+    /**
+     * Speed and jump detection for each loop game iteration
+     */
+    gameIteration: function (){
+        let everyoneFinished = true;
+        for(let player of players){
+            if(!player.bot) {
+                //player.addProgress((player.speed / 1000*6));
+                player.addProgress(0.008596*6);
+                let hurdleTouched = player.checkCollision(map);
+                if(hurdleTouched !== null){
+                    projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
+                }
+            } else {
+                player.addProgress(0.008596*6);
+                if(player.needToJump(map)){
+                    projector.emit('playerJump', {playerId: player.id});
+                } 
+            }
+            if(!player.finish){
+                everyoneFinished = false;
+            }   
+        }
+        
+        if(!everyoneFinished){
+            projector.emit('updatePlayers', players);
+        }else{
+            projector.emit('gameFinished', players);
+            kinect.emit('gameFinished', "Finished");
+            if (smartphone) {
+                smartphone.emit('gameFinished', players);
+            }
+
+            setTimeout(function(){
+                kinect.emit('kinectRestart', "Ready");
+            }, 45000);
+        }
+
+        return everyoneFinished;
+    },
+
+    /**
+     * Launch countdown and start the game after 3 seconds
+     */
     startCountdown: function (){
         projector.emit('everyonesReady', players);
-        projector.emit('countdown', {value:3});
 
-        setTimeout(() => {
-            if (this.isPlayersReady()) {
-                projector.emit('countdown', {value:2});
+        let counter = 3;
+        let starter = setInterval(() => {
+            if(this.isPlayersReady() && counter===0){
+                projector.emit('countdown', {value:counter});
+                if (smartphone) {
+                    smartphone.emit('gameStart', players);
+                }
+                kinect.emit('kinectStartRun', 'Ready');
+                clearInterval(starter);
+                this.gameLoop();
+            }else if(!this.isPlayersReady()){
+                clearInterval(starter);
+            }
 
-                setTimeout(() => {
-                    if (this.isPlayersReady()) {
-                        projector.emit('countdown', {value:1});
-
-                        setTimeout(() => {
-                            if (this.isPlayersReady()) {
-                                if (smartphone) {
-                                    smartphone.emit('gameStart', players);
-                                }
-                                kinect.emit('kinectStartRun', 'Ready');
-                                projector.emit('countdown', {value:0});
-
-                                let updateJob = setInterval(() => {
-                                    let needUpdate = false;
-                                    let everyoneFinished = true;
-                                    for(let player of players){
-                                        let result = null;
-                                        if(!player.bot) {
-                                            result = player.addProgress((player.speed / 1000) * 2);
-                                            let hurdleTouched = player.checkCollision(map);
-                                            if(hurdleTouched !== null){
-                                                projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
-                                            }
-                                        } else {
-                                            result = player.addProgress(0.00859375 * 2);
-                                            if(player.needToJump(map))
-                                                projector.emit('playerJump', {playerId: player.id});
-                                        }
-                                        needUpdate = result !== null;
-                                        if(!player.finish)
-                                            everyoneFinished = false;
-                                    }
-                                    if(needUpdate)
-                                        projector.emit('updatePlayers', players);
-                                    if(everyoneFinished) {
-                                        projector.emit('gameFinished', players);
-                                        if (smartphone) {
-                                            smartphone.emit('gameFinished', players);
-                                        }
-                                        clearInterval(updateJob);
-                                    }
-                                }, 1);
-
-                            } else {
-                                // un joueur quitte
-                            }
-                        }, 1000);
-                    } else {
-                        // un joueur quitte
-                    }
-                }, 1000);
-            } else {
-                // un joueur quitte
+            if(counter>0){
+                projector.emit('countdown', {value:counter});
+                counter--;
             }
         }, 1000);
     }

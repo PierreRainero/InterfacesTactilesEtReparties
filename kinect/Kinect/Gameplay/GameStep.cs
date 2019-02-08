@@ -8,6 +8,7 @@
     enum GameStep
     {
         WAITING,
-        STARTED
+        STARTED,
+        FINISHED
     };
 }
