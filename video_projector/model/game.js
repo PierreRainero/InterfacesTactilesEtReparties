@@ -98,5 +98,5 @@ Game.prototype.getRelativePosition = function(position){
 Game.prototype.stopGame = function(players){
     clearInterval(this.chronoJob);
     this.setPlayers(players);
-    document.getElementById("chrono").innerHTML = "Partie terminée";
+    //document.getElementById("chrono").innerHTML = "Partie terminée";
 }

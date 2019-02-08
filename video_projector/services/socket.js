@@ -1,8 +1,8 @@
-var socket = io('http://localhost:8282');
+var socket = io('http://172.20.10.7:8282');
 
 socket.emit('connectProjector');
 
-/*
+
 //TEST ZONE
 game.setHurdles([13.72, 22.86, 32, 41.14, 50.28, 59.42, 68.56, 77.7, 86.84, 95.98]);
 setTimeout(() => {
@@ -42,25 +42,25 @@ setTimeout(() => {
         }, 5000);
     }, 5000);
 }, 5000);
-*/
+
 
 socket.on('playerChange', function (data) {
-    console.log("Player change received, data : ", data);
+    //console.log("Player change received, data : ", data);
     game.setPlayers(data);
 });
 
 socket.on('countdown', function (data){
-    console.log("Countdown received, data : ", data);
+    //console.log("Countdown received, data : ", data);
     game.setCountdown(data.value);
 });
 
 socket.on('hurdles', function (data){
-    console.log("Hurdles received : ", data);
+    //console.log("Hurdles received : ", data);
     game.setHurdles(data);
 });
 
 socket.on('playerJump', function (data){
-    console.log("Player jump received, data : ", data);
+    //console.log("Player jump received, data : ", data);
     game.playerJump(data.playerId);
 });
 
@@ -70,11 +70,11 @@ socket.on('updatePlayers', function (data) {
 });
 
 socket.on('collision', function (data) {
-    console.log("collision detected, player : ", data);
+    //console.log("collision detected, player : ", data);
     hurdlesObject[data.playerId][data.hurdleId].fall = true;
 });
 
 socket.on('gameFinished', function (data) {
-    console.log("Game finished received, data : ", data);
+    //console.log("Game finished received, data : ", data);
     game.stopGame(data);
 });
