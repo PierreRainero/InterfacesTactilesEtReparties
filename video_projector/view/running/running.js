@@ -121,12 +121,11 @@ function render() {
             let playerPosition = game.getRelativePosition(player.progress);
 
             player.modelObject.position.z = playerPosition;
-            player.modelObject.position.y += player.bounceValue;
             player.shadowObject.position.z = playerPosition - 50;
             if(!player.bot)
                 player.cameraObject.position.z = playerPosition + cameraPositionZ;
 
-            if(player.modelObject.position.y > playerBasePositionY)
+            if(player.bounceValue > 0)
                 player.setBounceValue(player.bounceValue - gravity);
             else
                 player.setBounceValue(0);
@@ -323,10 +322,10 @@ function createRunners(){
             loader.load(`view/running/models/hurdle/scene.gltf`,
                 (function (gltf) {
                     var model = gltf.scene;
-                    model.scale.x = 50;
-                    model.scale.y = 59;
-                    model.scale.z = 50;
-                    model.position.x = -445 + (this.i*225);
+                    model.scale.x = 190;
+                    model.scale.y = 190;
+                    model.scale.z = 190;
+                    model.position.x = -450 + (this.i*220);
                     model.position.z = game.getRelativePosition(hurdle);
                     model.rotation.y = Math.PI;
 

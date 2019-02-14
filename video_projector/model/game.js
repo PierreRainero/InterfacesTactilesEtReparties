@@ -31,7 +31,6 @@ Game.prototype.getCurrentTime = function(){
     var msec = diff.getMilliseconds()
     var sec = diff.getSeconds()
     var min = diff.getMinutes()
-    var hr = diff.getHours()-1
     if (min < 10){
         min = "0" + min
     }
@@ -44,7 +43,7 @@ Game.prototype.getCurrentTime = function(){
     else if(msec < 100){
         msec = "0" +msec
     }
-    return `${hr}:${min}:${sec}:${msec}`;
+    return `${min}:${sec}:${msec}`;
 };
 
 Game.prototype.setPlayerReadyText = function(){
