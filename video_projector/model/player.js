@@ -12,11 +12,12 @@ function Player(id, state, bot) {
     this.currentAnimation = null;
     this.heartbeat = 0;
     this.bot = bot;
+    this.speed = 0;
 
     this.updateTrait();
 }
 
-Player.prototype.update = function (id, state, progress, finish, heartbeat, bot) {
+Player.prototype.update = function (id, state, progress, finish, heartbeat, bot, speed) {
     if(id)
         this.id = id;
     if(state)
@@ -29,6 +30,8 @@ Player.prototype.update = function (id, state, progress, finish, heartbeat, bot)
         this.heartbeat = heartbeat;
     if(bot)
         this.bot = bot;
+    if(speed)
+        this.speed = speed;
 
     this.updateTrait();
     this.updateHeartbeat();
@@ -90,7 +93,7 @@ Player.prototype.setCamera = function (camera) {
 }
 
 Player.prototype.jump = function () {
-    this.bounceValue = 100;
+    this.bounceValue = 25;
 }
 
 Player.prototype.setBounceValue = function (value) {
@@ -103,6 +106,8 @@ Player.prototype.chooseAnimation = function(){
     if(game.startTime) {
         if(this.finish)
             return this.animations[4];
+        else if(!this.bot && this.speed === 0)
+            return this.animations[2];
         else
             return this.animations[1];
     } else {

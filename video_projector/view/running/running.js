@@ -20,7 +20,7 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
-var gravity = 2;
+var gravity = 0.5;
 var playerBasePositionY = 15;
 var cameraPositionZ = 1400;
 var hurdlesObject = [];
@@ -121,6 +121,7 @@ function render() {
             let playerPosition = game.getRelativePosition(player.progress);
 
             player.modelObject.position.z = playerPosition;
+            player.modelObject.position.z += player.bounceValue;
             player.shadowObject.position.z = playerPosition - 50;
             if(!player.bot)
                 player.cameraObject.position.z = playerPosition + cameraPositionZ;

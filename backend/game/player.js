@@ -53,7 +53,7 @@ module.exports = class Player {
   needToJump(map){
       const nextHurdle = this.hurdlesAvoided.length;
 
-      if (this.progress < (map.getHurdle(nextHurdle) - 0.5) && this.progress > (map.getHurdle(nextHurdle) - 1)) {
+      if (this.progress < (map.getHurdle(nextHurdle) - 0.5) && this.progress > (map.getHurdle(nextHurdle) - 2)) {
           this.hurdlesAvoided.push(true);
           return true;
       }
