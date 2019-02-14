@@ -99,3 +99,14 @@ Game.prototype.stopGame = function(players){
     this.setPlayers(players);
     //document.getElementById("chrono").innerHTML = "Partie terminée";
 }
+
+Game.prototype.playerNeedToJump = function (id) {
+    var taille = 100 / this.players.playerNumber();
+    var position = 0 + taille*(this.players.positionOf(id)-1);
+    var style = `width: ${taille}%; left: ${position}%`;
+    document.getElementById("playersReady").innerHTML += `<div id="jump${id}" style="${style}">Sautez !</div>`;
+    setTimeout(() => {
+        let element = document.getElementById(`jump${id}`);
+        element.parentNode.removeChild(element);
+    }, 750);
+}

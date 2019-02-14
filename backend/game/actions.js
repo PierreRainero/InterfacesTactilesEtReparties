@@ -153,13 +153,16 @@ module.exports = {
             if(!player.bot) {
                 //player.addProgress((player.speed / 1000*6));
                 player.addProgress(0.008596*6);
+                if(player.needToJump(map)){
+                    projector.emit('playerNeedToJump', {playerId: player.id});
+                }
                 let hurdleTouched = player.checkCollision(map);
                 if(hurdleTouched !== null){
                     projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
                 }
             } else {
                 player.addProgress(0.008596*6);
-                if(player.needToJump(map)){
+                if(player.needToJumpBot(map)){
                     projector.emit('playerJump', {playerId: player.id});
                 } 
             }

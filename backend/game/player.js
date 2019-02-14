@@ -50,13 +50,22 @@ module.exports = class Player {
     return collision;
   }
 
-  needToJump(map){
+  needToJumpBot(map){
       const nextHurdle = this.hurdlesAvoided.length;
 
       if (this.progress < (map.getHurdle(nextHurdle) - 0.5) && this.progress > (map.getHurdle(nextHurdle) - 2)) {
           this.hurdlesAvoided.push(true);
           return true;
       }
+
+      return false;
+  }
+
+  needToJump(map){
+      const nextHurdle = this.hurdlesAvoided.length;
+
+      if (this.progress < (map.getHurdle(nextHurdle) - 0.5) && this.progress > (map.getHurdle(nextHurdle) - 2))
+          return true;
 
       return false;
   }
