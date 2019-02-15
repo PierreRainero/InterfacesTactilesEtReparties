@@ -20,6 +20,9 @@ import java.net.URISyntaxException;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity  {
 
     private Socket mSocket;
@@ -122,6 +125,20 @@ public class MainActivity extends AppCompatActivity  {
                 @Override
                 public void call(Object... args) {
                     new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "watchRestart").start();
+                }
+            }).on("collision", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject player = (JSONObject)args[0];
+                    int playerId = -1;
+                    try {
+                        playerId = player.getInt("playerId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (playerId != -1) {
+                        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "collision:" + playerId).start();
+                    }
                 }
             });
             connected = true;
