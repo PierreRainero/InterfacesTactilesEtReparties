@@ -15,7 +15,6 @@ import android.widget.TextView;
 public class ResultActivity extends WearableActivity {
 
     int playerId;
-    boolean acceptDataSharing;
     int heartbeatMin = 0;
     int heartbeatMax = 0;
     int heartbeatAverage = 0;
@@ -41,7 +40,6 @@ public class ResultActivity extends WearableActivity {
         Bundle b = getIntent().getExtras();
         if(b != null) {
             this.playerId = b.getInt("playerId");
-            this.acceptDataSharing = b.getBoolean("acceptDataSharing");
             this.heartbeatMin = b.getInt("heartbeatMin");
             this.heartbeatMax = b.getInt("heartbeatMax");
             this.heartbeatAverage = b.getInt("heartbeatAverage");
@@ -90,7 +88,10 @@ public class ResultActivity extends WearableActivity {
     }
 
     public void restartGame() {
-        Intent intentMain = new Intent(this , ConfigRunActivity.class);
+        Intent intentMain = new Intent(this , RunActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("playerId", this.playerId);
+        intentMain.putExtras(b);
         finish();
         this.startActivity(intentMain);
         finish();

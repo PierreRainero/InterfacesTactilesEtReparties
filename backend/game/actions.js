@@ -57,7 +57,7 @@ module.exports = {
             for (const player of players) {
                 // red === 1, blue === 2
                 if (player.id == watch.playerId) {
-                    player.setWatchCaptor(watch.deviceID, watch.dataSharing);
+                    player.setWatchCaptor(watch.deviceID);
                 }
             }
         }

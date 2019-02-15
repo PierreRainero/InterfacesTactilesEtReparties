@@ -24,7 +24,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
 
     // player
     int playerId;
-    boolean acceptDataSharing;
     int valueHeartRateSensor;
     boolean needsToMockHeartbeat;
 
@@ -70,7 +69,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         Bundle b = getIntent().getExtras();
         if(b != null) {
             this.playerId = b.getInt("playerId");
-            this.acceptDataSharing = b.getBoolean("acceptDataSharing");
         }
 
         newFilter = new IntentFilter(Intent.ACTION_SEND);
@@ -125,7 +123,7 @@ public class RunActivity extends WearableActivity implements SensorEventListener
 
                 textViewHeartbeat.setText(Integer.toString(valueBPM));
 
-                if (acceptDataSharing && valueBPM != 0) {
+                if (valueBPM != 0) {
                     String message = "heartbeat:" + playerId + ":" + valueBPM;
                     new SendMessageThread(RunActivity.this, getApplicationContext(),
                             datapath, message).start();
@@ -188,7 +186,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
         Bundle b = new Bundle();
         b.putInt("playerId", this.playerId);
-        b.putBoolean("acceptDataSharing", this.acceptDataSharing);
         b.putInt("heartbeatMin", this.heartbeatMin);
         b.putInt("heartbeatMax", this.heartbeatMax);
         b.putInt("heartbeatAverage", this.heartbeatAverage);

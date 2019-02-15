@@ -15,7 +15,6 @@ public class ConfigRunActivity extends WearableActivity {
     IntentFilter newFilter;
     Receiver messageReceiver;
     int playerId;
-    boolean acceptDataSharing;
 
     /**
      * On create
@@ -78,40 +77,6 @@ public class ConfigRunActivity extends WearableActivity {
         new SendMessageThread(ConfigRunActivity.this, getApplicationContext(),
                 datapath, message).start();
         this.setContentView(R.layout.config_data);
-    }
-
-    /**
-     * Refuse data sharing
-     * @param v
-     */
-    public void refuseData(View v) {
-        heartDataSharing(false);
-    }
-
-    /**
-     * Accept data sharing
-     * @param v
-     */
-    public void acceptData(View v) {
-        heartDataSharing(true);
-    }
-
-    /**
-     * Assign data sharing choice to a player
-     * @param acceptHeartDataSharing
-     */
-    public void heartDataSharing(boolean acceptHeartDataSharing) {
-        String datapath = "/my_path";
-        int acceptDataSharingValue = 0;
-        this.acceptDataSharing = false;
-        if (acceptHeartDataSharing) {
-            acceptDataSharingValue = 1;
-            this.acceptDataSharing = true;
-        }
-        String message = "configurationDataSharing:" + playerId + ":" + acceptDataSharingValue;
-        new SendMessageThread(ConfigRunActivity.this, getApplicationContext(),
-                datapath, message).start();
-
         this.waitForRun();
     }
 
@@ -119,7 +84,6 @@ public class ConfigRunActivity extends WearableActivity {
         Intent intentMain = new Intent(ConfigRunActivity.this , RunActivity.class);
         Bundle b = new Bundle();
         b.putInt("playerId", this.playerId);
-        b.putBoolean("acceptDataSharing", this.acceptDataSharing);
         intentMain.putExtras(b);
         finish();
         ConfigRunActivity.this.startActivity(intentMain);
