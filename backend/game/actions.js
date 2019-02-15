@@ -1,5 +1,5 @@
 const Player = require('./player.js');
-const map = require ('./map.js');
+const map = require('./map.js');
 
 let players;
 let state = "waiting_players";
@@ -11,6 +11,10 @@ module.exports = {
 
     start: function () {
         state = "running";
+    },
+
+    setSmartPhone(smarphoneSocket) {
+        smartphone=smarphoneSocket;
     },
 
     /**
@@ -33,17 +37,17 @@ module.exports = {
         projector = projectorSocket;
         smartphone = smartphoneSocket;
 
-        for(const newPlayer of data){
+        for (const newPlayer of data) {
             const playerId = this.findPlayerIndexById(newPlayer.id);
-            if(playerId !== -1){
+            if (playerId !== -1) {
                 players[playerId].state = newPlayer.state;
-            }else{
+            } else {
                 players.push(new Player(newPlayer.id, newPlayer.state));
             }
         }
-        projectorSocket.emit('playerChange', players);
+        projectorSocket.emit('playerChange', this.playersToDTO());
 
-        if(this.isPlayersReady() && projectorSocket && kinectSocket) {
+        if (this.isPlayersReady() && projectorSocket && kinectSocket) {
             this.startCountdown();
         }
     },
@@ -53,6 +57,11 @@ module.exports = {
      * @param {array} data object which contains all watchs
      */
     setWatch: function (data) {
+        if(!players || players.length===0){
+            smartphone.emit('BACKEND_ERROR', 'Players not ready.');
+            return;
+        }
+
         for (const watch of data) {
             for (const player of players) {
                 // red === 1, blue === 2
@@ -61,14 +70,15 @@ module.exports = {
                 }
             }
         }
+        smartphone.emit('playersReady', 'Players are ready.');
     },
 
     /**
      * Received heartbeat from smartphone and send it to projector
      * @param {array} data 
      */
-    heartbeatReceived: function(data) {
-        if(!players){
+    heartbeatReceived: function (data) {
+        if (!players) {
             return;
         }
 
@@ -76,6 +86,11 @@ module.exports = {
             for (const player of players) {
                 if (player.id === watch.playerId) {
                     player.setHeartbeat(watch.heartbeat);
+                    player.heartbeatAverage.value += watch.heartbeat;
+                    player.heartbeatAverage.heartbeats++;
+
+                    player.heartbeatAverage.max = watch.heartbeat > player.heartbeatAverage.max ? watch.heartbeat : player.heartbeatAverage;
+                    player.heartbeatAverage.min = watch.heartbeat < player.heartbeatAverage.min ? watch.heartbeat : player.heartbeatAverage;
                 }
             }
         }
@@ -101,7 +116,7 @@ module.exports = {
      * @param {number} idToSearch of the player to search
      * @return {number} number corresponding of his index if this player exists, -1 otherwise
      */
-    findPlayerIndexById: function(idToSearch) {
+    findPlayerIndexById: function (idToSearch) {
         return players.map(function (player) {
             return player.id;
         }).indexOf(idToSearch);
@@ -111,7 +126,7 @@ module.exports = {
      * Indicates to the system that a player have jumped
      * @param {number} playerId identifier of the jumper
      */
-    playerJump: function (playerId){
+    playerJump: function (playerId) {
         players[this.findPlayerIndexById(playerId)].jump(map);
     },
 
@@ -119,17 +134,18 @@ module.exports = {
      * Update the current speed of a player
      * @param {array} data object which contains all players id associates to a speed (m/s)
      */
-    updatePlayersSpeed: function(data){
-        for(const player of data){
+    updatePlayersSpeed: function (data) {
+        for (const player of data) {
             const playerObtained = players[this.findPlayerIndexById(player.id)];
-            if(!playerObtained.hasJumped){
+            if (!playerObtained.hasJumped) {
                 playerObtained.updateSpeed(player.speed);
+                playerObtained.speedAverage.value += player.speed;
+                playerObtained.speedAverage.speeds++;
             }
         }
     },
 
-    
-    getState: function (){
+    getState: function () {
         return state;
     },
 
@@ -138,7 +154,7 @@ module.exports = {
      */
     gameLoop: function () {
         let updateJob = setInterval(() => {
-            if(this.gameIteration()){
+            if (this.gameIteration()) {
                 clearInterval(updateJob);
             }
         }, 6);
@@ -147,44 +163,43 @@ module.exports = {
     /**
      * Speed and jump detection for each loop game iteration
      */
-    gameIteration: function (){
+    gameIteration: function () {
         let everyoneFinished = true;
-        for(let player of players){
-            if(!player.bot) {
-                player.addProgress((player.speed / 1000*6));
-                if(player.needToJump(map)){
-                    projector.emit('playerNeedToJump', {playerId: player.id});
-                }
+
+        for (let player of players) {
+            if (!player.bot) {
+                player.addProgress((player.speed / 1000 * 6));
                 let hurdleTouched = player.checkCollision(map);
-                if(hurdleTouched !== null){
-                    projector.emit('collision', {playerId:player.id, hurdleId: hurdleTouched});
+                if (hurdleTouched !== null) {
+                    projector.emit('collision', { playerId: player.id, hurdleId: hurdleTouched });
                 }
             } else {
-                player.addProgress(0.008596*6);
-                if(player.needToJumpBot(map)){
-                    projector.emit('playerJump', {playerId: player.id});
-                } 
+                player.addProgress(0.008596 * 6);
+                if (player.needToJump(map)) {
+                    projector.emit('playerJump', { playerId: player.id });
+                }
             }
-            if(!player.finish){
+            if (!player.finish) {
                 everyoneFinished = false;
-            }   
+            }
         }
-        
-        if(!everyoneFinished){
-            projector.emit('updatePlayers', players);
-        }else{
-            projector.emit('gameFinished', players);
+
+        if (!everyoneFinished) {
+            projector.emit('updatePlayers', this.playersToDTO());
+        } else {
+            projector.emit('gameFinished', this.calculateAverages());
             kinect.emit('gameFinished', "Finished");
             if (smartphone) {
-                smartphone.emit('gameFinished', players);
+                smartphone.emit('gameFinished', this.calculateAverages());
             }
 
-            setTimeout(function(){
+            setTimeout(function () {
                 kinect.emit('kinectRestart', "Ready");
                 if (smartphone) {
                     smartphone.emit('watchRestart', "Ready");
                 }
-            }, 45000);
+                players = new Array();
+            }, 60000);
         }
 
         return everyoneFinished;
@@ -193,27 +208,57 @@ module.exports = {
     /**
      * Launch countdown and start the game after 3 seconds
      */
-    startCountdown: function (){
-        projector.emit('everyonesReady', players);
+    startCountdown: function () {
+        projector.emit('everyonesReady', this.playersToDTO());
 
         let counter = 3;
         let starter = setInterval(() => {
-            if(this.isPlayersReady() && counter===0){
-                projector.emit('countdown', {value:counter});
+            if (this.isPlayersReady() && counter === 0) {
+                projector.emit('countdown', { value: counter });
                 if (smartphone) {
-                    smartphone.emit('gameStart', players);
+                    smartphone.emit('gameStart', this.playersToDTO());
                 }
                 kinect.emit('kinectStartRun', 'Ready');
                 clearInterval(starter);
                 this.gameLoop();
-            }else if(!this.isPlayersReady()){
+            } else if (!this.isPlayersReady()) {
                 clearInterval(starter);
             }
 
-            if(counter>0){
-                projector.emit('countdown', {value:counter});
+            if (counter > 0) {
+                projector.emit('countdown', { value: counter });
                 counter--;
             }
         }, 1000);
+    },
+
+    /**
+     * Remove arrays of data of players
+     */
+    playersToDTO: function () {
+        const res = [];
+        for (let player of players) {
+            res.push(player.toDTO());
+        }
+        return res;
+    },
+
+    /**
+     * Calculs averages for each player
+     */
+    calculateAverages() {
+        const res = [];
+        for(let player of players){
+            res.push({
+                playerId: player.id,
+                averageSpeed: player.speedAverage.value/player.speedAverage.speeds,
+                averageHearthbeat: player.heartbeatAverage.value/player.heartbeatAverage.heartbeats,
+                maxHearthBeat: player.heartbeatAverage.max,
+                minHearthBeat: player.heartbeatAverage.min,
+                hurdlesAvoided: player.hurdlesAvoided
+            });
+        }
+
+        return res;
     }
 };
