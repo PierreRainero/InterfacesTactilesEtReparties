@@ -89,7 +89,18 @@ module.exports = class Player {
    * @param {number} heartbeat current heartbeat
    */
   setHeartbeat(heartbeat) {
-    this.heartbeat = heartbeat
+    this.heartbeat = heartbeat;
+    this.heartbeatAverage.value += heartbeat;
+    this.heartbeatAverage.heartbeats++;
+
+    if(heartbeat > this.heartbeatAverage.max ){
+      this.heartbeatAverage.max = heartbeat;
+    }
+    if(this.heartbeatAverage.min===0){
+      this.heartbeatAverage.min = heartbeat;
+    }else if(heartbeat < this.heartbeatAverage.min ){
+      this.heartbeatAverage.min = heartbeat;
+    }
   }
 
   /**
@@ -98,6 +109,8 @@ module.exports = class Player {
    */
   updateSpeed(speed){
     this.speed = speed;
+    this.speedAverage.value += speed;
+    this.speedAverage.speeds++;
   }
 
   /**

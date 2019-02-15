@@ -80,11 +80,6 @@ module.exports = {
             for (const player of players) {
                 if (player.id === watch.playerId) {
                     player.setHeartbeat(watch.heartbeat);
-                    player.heartbeatAverage.value += watch.heartbeat;
-                    player.heartbeatAverage.heartbeats++;
-
-                    player.heartbeatAverage.max = watch.heartbeat > player.heartbeatAverage.max ? watch.heartbeat : player.heartbeatAverage;
-                    player.heartbeatAverage.min = watch.heartbeat < player.heartbeatAverage.min ? watch.heartbeat : player.heartbeatAverage;
                 }
             }
         }
@@ -133,8 +128,6 @@ module.exports = {
             const playerObtained = players[this.findPlayerIndexById(player.id)];
             if (!playerObtained.hasJumped) {
                 playerObtained.updateSpeed(player.speed);
-                playerObtained.speedAverage.value += player.speed;
-                playerObtained.speedAverage.speeds++;
             }
         }
     },
@@ -163,18 +156,19 @@ module.exports = {
         for (let player of players) {
             if (!player.bot) {
                 player.addProgress((player.speed / 1000*6));
+                //player.addProgress(0.008596 * 6);
                 if (player.needToJump(map)) {
                     projector.emit('playerNeedToJump', { playerId: player.id });
-                    if (smartphone) {
-                        smartphone.emit('playerNeedToJump', { playerId: player.id });
-                    }
                 }
                 let hurdleTouched = player.checkCollision(map);
                 if (hurdleTouched !== null) {
                     projector.emit('collision', { playerId: player.id, hurdleId: hurdleTouched });
+                    if (smartphone) {
+                        smartphone.emit('collision', { playerId: player.id });
+                    }
                 }
             } else {
-                player.addProgress(0.008596 * 6);
+                player.addProgress(0.0086 * 6);
                 if (player.needToJumpBot(map)) {
                     projector.emit('playerJump', { playerId: player.id });
                 }
@@ -249,10 +243,18 @@ module.exports = {
     calculateAverages() {
         const res = [];
         for (let player of players) {
+            let averageSpeed = 0;
+            if(player.speedAverage.speeds > 0){
+                averageSpeed = player.speedAverage.value / player.speedAverage.speeds;
+            }
+            let averageHearthbeat = 0;
+            if(player.heartbeatAverage.heartbeats > 0){
+                averageHearthbeat = player.heartbeatAverage.value / player.heartbeatAverage.heartbeats;
+            }
             res.push({
                 playerId: player.id,
-                averageSpeed: player.speedAverage.value / player.speedAverage.speeds,
-                averageHearthbeat: player.heartbeatAverage.value / player.heartbeatAverage.heartbeats,
+                averageSpeed: averageSpeed,
+                averageHearthbeat: averageHearthbeat,
                 maxHearthBeat: player.heartbeatAverage.max,
                 minHearthBeat: player.heartbeatAverage.min,
                 hurdlesAvoided: player.hurdlesAvoided
