@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var sessionRouter = require('./routes/session');
 
 let game = require('./game/actions.js');
-let map = require('./game/map.js')
+let map = require('./game/map.js');
 
 var app = express();
 

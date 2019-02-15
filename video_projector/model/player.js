@@ -34,6 +34,7 @@ Player.prototype.update = function (id, state, progress, finish, heartbeat, bot,
 
     this.updateTrait();
     this.updateHeartbeat();
+    this.updateMinimap();
 
     var animation = this.chooseAnimation();
     if(this.currentAnimation !== animation) {
@@ -69,6 +70,21 @@ Player.prototype.updateHeartbeat = function() {
         heartbeatDiv = document.getElementById("heartbeatPlayer2");
         heartbeatDiv.innerHTML = this.heartbeat + "♡";
     }
+}
+
+Player.prototype.updateMinimap = function() {
+    var percent = (this.progress*95)/110;
+
+    if (this.id === 0){
+        document.getElementById("minimap-player1").style.bottom = percent+"%";
+    }
+    else if (this.id === 1) {
+        document.getElementById("minimap-player2").style.bottom = percent+"%";
+    }
+    else if (this.id === 2) {
+        document.getElementById("minimap-player3").style.bottom = percent+"%";
+    }
+
 }
 
 Player.prototype.setAnimations = function (animations) {
