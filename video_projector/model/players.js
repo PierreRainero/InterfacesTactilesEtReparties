@@ -53,3 +53,9 @@ Players.prototype.update = function () {
         player.update();
     }
 }
+
+Players.prototype.finishAll = function () {
+    for(var player of this.players){
+        player.finish = true;
+    }
+}

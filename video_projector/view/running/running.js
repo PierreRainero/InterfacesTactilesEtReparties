@@ -12,7 +12,7 @@ var mouseX = 0, mouseY = 0;
 
 var windowWidth, windowHeight;
 
-var waitingGroup, runningGroup;
+var sceneryGroup, waitingGroup, runningGroup;
 
 var views = [];
 
@@ -35,11 +35,12 @@ function init() {
 
     scene = new THREE.Scene();
 
+    sceneryGroup = new THREE.Group();
     waitingGroup = new THREE.Group();
     runningGroup = new THREE.Group();
 
+    scene.add(sceneryGroup);
     scene.add(waitingGroup);
-    //scene.add(runningGroup);
 
     var light = new THREE.DirectionalLight( 0xffffff );
     light.position.set( 0, 0, 1 );
@@ -63,6 +64,7 @@ function init() {
 
     shadowMaterial = new THREE.MeshBasicMaterial( { map: shadowTexture, transparent: true } );
 
+    createScenery();
     createWaitingScreen();
 
     renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -176,8 +178,8 @@ function setupViews(){
             top: 0,
             width: 1,
             height: 1,
-            background: new THREE.Color(0.5, 0.5, 0.5),
-            eye: [ 0, 0, 2200 ],
+            background: new THREE.Color("rgb(92, 205, 205)"),
+            eye: [ 0, 350, 1400 ],
             up: [ 0, 1, 0 ],
             fov: 30,
             updateCamera: function ( camera, scene, mouseX ) {
@@ -197,7 +199,7 @@ function setupViews(){
                     up: [0, 1, 0],
                     fov: 30,
                     updateCamera: function (camera, scene, mouseX) {
-                        //camera.position.z += mouseY * 0.05;
+
                     }
                 });
             }
@@ -215,6 +217,56 @@ function setupViews(){
             game.players.getPlayer(ii).setCamera(camera);
         view.camera = camera;
     }
+}
+
+function createScenery(){
+    //Ground
+    var geometry = new THREE.PlaneGeometry( 88000, 88000, 32 );
+    var texture = new THREE.TextureLoader().load( "view/running/textures/grass.jpg" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = 400;
+    texture.repeat.y = 400;
+    var materialTexture = new THREE.MeshBasicMaterial( { map: texture } );
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = -22000;
+    plane.rotateX(-Math.PI/2);
+    sceneryGroup.add( plane );
+
+    //RunningTrack
+    var geometry = new THREE.PlaneGeometry( 1500, 45000, 32 );
+    var texture = new THREE.TextureLoader().load( "view/running/textures/runningTrack.jpg" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = 1;
+    texture.repeat.y = 6;
+    var materialTexture = new THREE.MeshBasicMaterial( { map: texture } );
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = -22250;
+    plane.position.y = 1;
+    plane.rotateX(-Math.PI/2);
+    sceneryGroup.add( plane );
+
+    //StartLine
+    var geometry = new THREE.PlaneGeometry( 1500, 60, 32 );
+    var texture = new THREE.TextureLoader().load( "view/running/textures/line.png" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x = 40;
+    texture.repeat.y = 1;
+    var materialTexture = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = -260;
+    plane.position.y = 1.1;
+    plane.rotateX(-Math.PI/2);
+    sceneryGroup.add( plane );
+
+    //EndLine
+    var plane = new THREE.Mesh( geometry, materialTexture );
+    plane.position.z = game.getRelativePosition(110);
+    plane.position.y = 1.1;
+    plane.rotateX(-Math.PI/2);
+    sceneryGroup.add( plane );
 }
 
 function createWaitingScreen(){
@@ -241,7 +293,8 @@ function createWaitingScreen(){
         );
 
         var mesh = new THREE.Mesh(textGeo, textMaterial);
-        mesh.position.y = 100;
+        mesh.position.y = 500;
+        mesh.position.z = -700;
         waitingGroup.add(mesh);
     });
 
@@ -253,7 +306,8 @@ function createWaitingScreen(){
 
     shadowMesh = new THREE.Mesh( shadowGeo, shadowMaterial );
     shadowMesh.position.x = 0;
-    shadowMesh.position.y = - 250;
+    shadowMesh.position.y = 2;
+    shadowMesh.position.z = -700;
     shadowMesh.rotation.x = - Math.PI / 2;
     waitingGroup.add( shadowMesh );
 }
@@ -266,54 +320,6 @@ function createRunners(){
     for (var i = runningGroup.children.length - 1; i >= 0; i--) {
         runningGroup.remove(runningGroup.children[i]);
     }
-
-    //Ground
-    var geometry = new THREE.PlaneGeometry( 88000, 88000, 32 );
-    var texture = new THREE.TextureLoader().load( "view/running/textures/grass.jpg" );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.x = 400;
-    texture.repeat.y = 400;
-    var materialTexture = new THREE.MeshBasicMaterial( { map: texture } );
-    var plane = new THREE.Mesh( geometry, materialTexture );
-    plane.position.z = -22000;
-    plane.rotateX(-Math.PI/2);
-    runningGroup.add( plane );
-
-    //RunningTrack
-    var geometry = new THREE.PlaneGeometry( 1500, 45000, 32 );
-    var texture = new THREE.TextureLoader().load( "view/running/textures/runningTrack.jpg" );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.x = 1;
-    texture.repeat.y = 6;
-    var materialTexture = new THREE.MeshBasicMaterial( { map: texture } );
-    var plane = new THREE.Mesh( geometry, materialTexture );
-    plane.position.z = -22250;
-    plane.position.y = 1;
-    plane.rotateX(-Math.PI/2);
-    runningGroup.add( plane );
-
-    //StartLine
-    var geometry = new THREE.PlaneGeometry( 1500, 60, 32 );
-    var texture = new THREE.TextureLoader().load( "view/running/textures/line.png" );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.x = 40;
-    texture.repeat.y = 1;
-    var materialTexture = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
-    var plane = new THREE.Mesh( geometry, materialTexture );
-    plane.position.z = -260;
-    plane.position.y = 1.1;
-    plane.rotateX(-Math.PI/2);
-    runningGroup.add( plane );
-
-    //EndLine
-    var plane = new THREE.Mesh( geometry, materialTexture );
-    plane.position.z = game.getRelativePosition(110);
-    plane.position.y = 1.1;
-    plane.rotateX(-Math.PI/2);
-    runningGroup.add( plane );
 
     //Hurdles
     hurdlesObject = [];

@@ -12,6 +12,12 @@ Game.prototype.setPlayers = function(players){
         this.players.add(player);
     }
 
+    if(this.players.playerNumber() === 2){
+        document.getElementById("middleSeparation").classList.remove("hidden");
+    } else if(!document.getElementById("middleSeparation").classList.contains("hidden")){
+        document.getElementById("middleSeparation").classList.add("hidden");
+    }
+
     if(this.startTime === null)
         this.setPlayerReadyText();
 
@@ -94,9 +100,9 @@ Game.prototype.getRelativePosition = function(position){
     return - position * 400;
 }
 
-Game.prototype.stopGame = function(players){
+Game.prototype.stopGame = function(){
     clearInterval(this.chronoJob);
-    this.setPlayers(players);
+    this.players.finishAll();
     //document.getElementById("chrono").innerHTML = "Partie terminée";
     setTimeout(() => {
         document.getElementById("running").classList.add("hidden");

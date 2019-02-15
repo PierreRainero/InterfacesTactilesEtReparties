@@ -61,3 +61,12 @@ a {
     color: white;
     font-size: 35pt;
 }
+
+#middleSeparation{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-right: 4px solid black;
+}
