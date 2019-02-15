@@ -98,6 +98,10 @@ Game.prototype.stopGame = function(players){
     clearInterval(this.chronoJob);
     this.setPlayers(players);
     //document.getElementById("chrono").innerHTML = "Partie terminée";
+    setTimeout(() => {
+        document.getElementById("running").classList.add("hidden");
+        document.getElementById("results").classList.remove("hidden");
+    }, 1000);
 }
 
 Game.prototype.playerNeedToJump = function (id) {
