@@ -5,7 +5,7 @@ function Players() {
 Players.prototype.add = function(player){
     var position = this.positionOf(player.id);
     if(position !== null)
-        this.players[position].update(player.id, player.state, player.progress, player.finish, player.heartbeat, player.bot);
+        this.players[position].update(player.id, player.state, player.progress, player.finish, player.heartbeat, player.bot, player.speed);
     else
         this.players.push(new Player(player.id, player.state, player.bot));
 }

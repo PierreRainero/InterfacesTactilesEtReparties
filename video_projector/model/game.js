@@ -105,6 +105,7 @@ Game.prototype.stopGame = function(){
     this.players.finishAll();
     //document.getElementById("chrono").innerHTML = "Partie terminée";
     setTimeout(() => {
+        this.displayResults();
         document.getElementById("running").classList.add("hidden");
         document.getElementById("results").classList.remove("hidden");
     }, 1000);
@@ -119,4 +120,20 @@ Game.prototype.playerNeedToJump = function (id) {
         let element = document.getElementById(`jump${id}`);
         element.parentNode.removeChild(element);
     }, 750);
+}
+
+Game.prototype.displayResults = function () {
+    var container = document.getElementById("results");
+    container.innerHTML = "";
+    for(var i = 0; i < this.players.length(); i++){
+        var taille = 100 / this.players.length();
+        var position = 0 + taille*i;
+        var style = `width: ${taille}%; left: ${position}%`;
+        container.innerHTML += `<div style="${style}" class="resultsCol">
+            <div class="resultsCard">
+                <div>Nom</div>
+                <div></div>
+            </div>
+        </div>`;
+    }
 }
