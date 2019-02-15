@@ -74,6 +74,10 @@ socket.on('collision', function (data) {
     hurdlesObject[data.playerId][data.hurdleId].fall = true;
 });
 
+socket.on('playerNeedToJump', function (data) {
+    game.playerNeedToJump(data.playerId);
+});
+
 socket.on('gameFinished', function (data) {
     //console.log("Game finished received, data : ", data);
     game.stopGame(data);
