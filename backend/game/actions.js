@@ -166,7 +166,7 @@ module.exports = {
                 if (player.needToJump(map)) {
                     projector.emit('playerNeedToJump', { playerId: player.id });
                     if (smartphone) {
-                        projector.emit('playerNeedToJump', { playerId: player.id });
+                        smartphone.emit('playerNeedToJump', { playerId: player.id });
                     }
                 }
                 let hurdleTouched = player.checkCollision(map);
