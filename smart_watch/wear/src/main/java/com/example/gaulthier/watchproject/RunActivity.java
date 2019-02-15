@@ -40,10 +40,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     IntentFilter newFilter;
 
     // heartbeat
-    int heartbeatMin;
-    int heartbeatMax;
-    int heartbeatAverage;
-    List<Integer> valuesHeartbeat = new ArrayList<>();
     TextView textViewHeartbeat;
     ImageView heartbeatImageView;
 
@@ -111,21 +107,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                 } else {
                     valueBPM = valueHeartRateSensor;
                 }
-                if (heartbeatMax == 0) {
-                    heartbeatMax = valueBPM;
-                }
-                if (heartbeatMin == 0) {
-                    heartbeatMin = valueBPM;
-                }
-                if (valueBPM > heartbeatMax) {
-                    heartbeatMax = valueBPM;
-                }
-                if (valueBPM < heartbeatMin) {
-                    heartbeatMin = valueBPM;
-                }
-                if (valueBPM != 0) {
-                    valuesHeartbeat.add(valueBPM);
-                }
 
                 textViewHeartbeat.setText(Integer.toString(valueBPM));
 
@@ -179,22 +160,21 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     /**
      * Received gameEnd from backend
      */
-    public void gameEnd() {
-        // calculate average heartbeat
-        Integer sum = 0;
-        if (!valuesHeartbeat.isEmpty()) {
-            for (Integer mark : this.valuesHeartbeat) {
-                sum += mark;
-            }
-            this.heartbeatAverage = (int) sum.doubleValue() / this.valuesHeartbeat.size();
-        }
+    public void gameEnd(String players) {
+
+        int heartbeatMin = 0;
+        int heartbeatMax = 0;
+        int heartbeatAverage = 0;
+
+        //TODO HERE
+
 
         Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
         Bundle b = new Bundle();
         b.putInt("playerId", this.playerId);
-        b.putInt("heartbeatMin", this.heartbeatMin);
-        b.putInt("heartbeatMax", this.heartbeatMax);
-        b.putInt("heartbeatAverage", this.heartbeatAverage);
+        b.putInt("heartbeatMin", heartbeatMin);
+        b.putInt("heartbeatMax", heartbeatMax);
+        b.putInt("heartbeatAverage", heartbeatAverage);
         intentMain.putExtras(b);
         handler.removeCallbacksAndMessages(null);
         finish();
@@ -227,8 +207,9 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                 System.out.println("gameStart received");
                 startRun();
             } if (message.equals("gameEnd")) {
-                System.out.println("endGame received");
-                gameEnd();
+                String players = intent.getStringExtra("message").split(":")[1];
+                System.out.println("endGame received : "+ players);
+                gameEnd(players);
             } if (message.equals("collision")) {
                 int idPlayer = Integer.parseInt(intent.getStringExtra("message").split(":")[1]);
                 playerCollision(idPlayer);

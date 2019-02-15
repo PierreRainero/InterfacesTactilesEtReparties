@@ -119,7 +119,8 @@ public class MainActivity extends AppCompatActivity  {
             }).on("gameFinished", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
+                    JSONObject player = (JSONObject)args[0];
+                    new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd:" + player.toString()).start();
                 }
             }).on("watchRestart", new Emitter.Listener() {
                 @Override
