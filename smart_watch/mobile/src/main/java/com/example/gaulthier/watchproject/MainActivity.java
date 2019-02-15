@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -119,8 +120,13 @@ public class MainActivity extends AppCompatActivity  {
             }).on("gameFinished", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    JSONObject player = (JSONObject)args[0];
-                    new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd:" + player.toString()).start();
+                    try {
+                        String array = args[0] + "";
+                        JSONArray jsonArr = new JSONArray(array);
+                        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd_" + jsonArr.toString()).start();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }).on("watchRestart", new Emitter.Listener() {
                 @Override
@@ -138,7 +144,7 @@ public class MainActivity extends AppCompatActivity  {
                         e.printStackTrace();
                     }
                     if (playerId != -1) {
-                        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "collision:" + playerId).start();
+                        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "collision_" + playerId).start();
                     }
                 }
             });

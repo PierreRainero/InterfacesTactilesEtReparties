@@ -18,6 +18,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -166,19 +170,34 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         int heartbeatMax = 0;
         int heartbeatAverage = 0;
 
-        //TODO HERE
+        try {
+            JSONArray jsonArr = new JSONArray(players);
+            Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
 
+            for (int i = 0; i < jsonArr.length(); i++) {
+                JSONObject jsonObj = jsonArr.getJSONObject(i);
+                System.out.println(jsonObj);
+                int playerId = jsonObj.getInt("playerId");
 
-        Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
-        Bundle b = new Bundle();
-        b.putInt("playerId", this.playerId);
-        b.putInt("heartbeatMin", heartbeatMin);
-        b.putInt("heartbeatMax", heartbeatMax);
-        b.putInt("heartbeatAverage", heartbeatAverage);
-        intentMain.putExtras(b);
-        handler.removeCallbacksAndMessages(null);
-        finish();
-        RunActivity.this.startActivity(intentMain);
+                if (playerId == this.playerId) {
+                    heartbeatAverage = jsonObj.getInt("averageHearthbeat");
+                    heartbeatMax = jsonObj.getInt("maxHearthBeat");
+                    heartbeatMin = jsonObj.getInt("minHearthBeat");
+                }
+            }
+
+            Bundle b = new Bundle();
+            b.putInt("playerId", this.playerId);
+            b.putInt("heartbeatMin", heartbeatMin);
+            b.putInt("heartbeatMax", heartbeatMax);
+            b.putInt("heartbeatAverage", heartbeatAverage);
+            intentMain.putExtras(b);
+            handler.removeCallbacksAndMessages(null);
+            finish();
+            RunActivity.this.startActivity(intentMain);
+        } catch (JSONException e) {
+            System.out.println("error: " + e);
+        }
     }
 
     public void playerCollision(int playerIdReceived) {
@@ -199,7 +218,7 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     public class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message").split(":")[0];
+            String message = intent.getStringExtra("message").split("_")[0];
 
             System.out.println("Message received : " + message);
 
@@ -207,11 +226,11 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                 System.out.println("gameStart received");
                 startRun();
             } if (message.equals("gameEnd")) {
-                String players = intent.getStringExtra("message").split(":")[1];
+                String players = intent.getStringExtra("message").split("_")[1];
                 System.out.println("endGame received : "+ players);
                 gameEnd(players);
             } if (message.equals("collision")) {
-                int idPlayer = Integer.parseInt(intent.getStringExtra("message").split(":")[1]);
+                int idPlayer = Integer.parseInt(intent.getStringExtra("message").split("_")[1]);
                 playerCollision(idPlayer);
             }
         }
