@@ -5,10 +5,12 @@ module.exports = class Player {
     this.progress = 0;
     this.hurdlesAvoided = [];
     this.finish = false;
-    this.heartbeat = 0;
     this.hasJumped = false;
+    this.heartbeat = 0;
     this.speed = 0;
     this.bot = bot;
+    this.heartbeatAverage = { value: 0, heartbeats: 0, max: 0, min: 0 };
+    this.speedAverage = { value: 0, speeds: 0 };
   }
 
   /**
@@ -89,5 +91,22 @@ module.exports = class Player {
    */
   updateSpeed(speed){
     this.speed = speed;
+  }
+
+  /**
+   * Remove arrays of data of player
+   */
+  toDTO() {
+    return {
+      id: this.id,
+      state: this.state,
+      progress: this.progress,
+      hurdlesAvoided: this.hurdlesAvoided,
+      finish: this.finish,
+      hasJumped: this.hasJumped,
+      heartbeat: this.heartbeat,
+      speed: this.speed,
+      bot: this.bot
+    };
   }
 }

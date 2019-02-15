@@ -31,9 +31,11 @@ io.on('connection', function (socket) {
   socket.on('smartphoneConnect', function() {
     console.log('Smartphone connected.');
     smartphoneSocket = socket;
+    game.setSmartPhone(smartphoneSocket);
   })
 
   socket.on('kinectConnected', function (kinect) {
+    console.log('Kinect '+kinect.state+'.');
     game.setup();
     kinectSocket = socket;
   });
@@ -48,7 +50,6 @@ io.on('connection', function (socket) {
   });
 
   socket.on('players', function (data) {
-    console.log(data);
     game.definePlayers(data.players, kinectSocket, projectorSocket, smartphoneSocket);
   });
 
