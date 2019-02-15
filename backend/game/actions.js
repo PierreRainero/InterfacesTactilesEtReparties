@@ -14,7 +14,7 @@ module.exports = {
     },
 
     setSmartPhone(smarphoneSocket) {
-        smartphone=smarphoneSocket;
+        smartphone = smarphoneSocket;
     },
 
     /**
@@ -57,7 +57,7 @@ module.exports = {
      * @param {array} data object which contains all watchs
      */
     setWatch: function (data) {
-        if(!players || players.length===0){
+        if (!players || players.length === 0) {
             smartphone.emit('BACKEND_ERROR', 'Players not ready.');
             return;
         }
@@ -168,14 +168,20 @@ module.exports = {
 
         for (let player of players) {
             if (!player.bot) {
-                player.addProgress((player.speed / 1000 * 6));
+                player.addProgress((player.speed / 1000*6));
+                if (player.needToJump(map)) {
+                    projector.emit('playerNeedToJump', { playerId: player.id });
+                    if (smartphone) {
+                        projector.emit('playerNeedToJump', { playerId: player.id });
+                    }
+                }
                 let hurdleTouched = player.checkCollision(map);
                 if (hurdleTouched !== null) {
                     projector.emit('collision', { playerId: player.id, hurdleId: hurdleTouched });
                 }
             } else {
                 player.addProgress(0.008596 * 6);
-                if (player.needToJump(map)) {
+                if (player.needToJumpBot(map)) {
                     projector.emit('playerJump', { playerId: player.id });
                 }
             }
@@ -248,11 +254,11 @@ module.exports = {
      */
     calculateAverages() {
         const res = [];
-        for(let player of players){
+        for (let player of players) {
             res.push({
                 playerId: player.id,
-                averageSpeed: player.speedAverage.value/player.speedAverage.speeds,
-                averageHearthbeat: player.heartbeatAverage.value/player.heartbeatAverage.heartbeats,
+                averageSpeed: player.speedAverage.value / player.speedAverage.speeds,
+                averageHearthbeat: player.heartbeatAverage.value / player.heartbeatAverage.heartbeats,
                 maxHearthBeat: player.heartbeatAverage.max,
                 minHearthBeat: player.heartbeatAverage.min,
                 hurdlesAvoided: player.hurdlesAvoided
