@@ -57,11 +57,6 @@ module.exports = {
      * @param {array} data object which contains all watchs
      */
     setWatch: function (data) {
-        if (!players || players.length === 0) {
-            smartphone.emit('BACKEND_ERROR', 'Players not ready.');
-            return;
-        }
-
         for (const watch of data) {
             for (const player of players) {
                 // red === 1, blue === 2
@@ -70,7 +65,6 @@ module.exports = {
                 }
             }
         }
-        smartphone.emit('playersReady', 'Players are ready.');
     },
 
     /**
