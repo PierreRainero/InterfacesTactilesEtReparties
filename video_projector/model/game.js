@@ -70,12 +70,18 @@ Game.prototype.clearPlayerReadyText = function(){
     document.getElementById("playersReady").innerHTML = "";
 };
 
+
+
+
 Game.prototype.setCountdown = function(value){
     var chrono = document.getElementById("chrono");
     if(value > 0)
         chrono.innerHTML = value;
     else if(value === 0){
         chrono.innerHTML = "C'est parti !";
+
+        var minimap = document.getElementById("minimap");
+        minimap.classList.remove("hidden");
 
         this.startTime = new Date();
         this.players.update();
