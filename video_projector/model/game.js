@@ -101,8 +101,8 @@ Game.prototype.getRelativePosition = function(position){
 }
 
 Game.prototype.stopGame = function(){
-    clearInterval(this.chronoJob);
     this.players.finishAll();
+    clearInterval(this.chronoJob);
     //document.getElementById("chrono").innerHTML = "Partie terminée";
     setTimeout(() => {
         this.displayResults();

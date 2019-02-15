@@ -30,8 +30,7 @@ Player.prototype.update = function (id, state, progress, finish, heartbeat, bot,
         this.heartbeat = heartbeat;
     if(bot)
         this.bot = bot;
-    if(speed)
-        this.speed = speed;
+    this.speed = speed;
 
     this.updateTrait();
     this.updateHeartbeat();
