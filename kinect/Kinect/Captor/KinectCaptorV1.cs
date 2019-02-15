@@ -18,20 +18,18 @@ namespace Kinect.Captor
     {
         private KinectSensor sensor;
         public string Status { get; private set; }
-        private Player[] players;
+        public Player[] Players { get; set; }
         private Game gameHook;
 
         /// <summary>
         /// Normal constructor : Detect and start the kinect
         /// </summary>
-        /// <param name="players">Maximum players of the game to use</param>
         /// <param name="game">Game linked to the captor</param>
-        public KinectCaptorV1(Player[] players, Game game)
+        public KinectCaptorV1(Game game)
         {
             gameHook = game;
             KinectSensorChooser sensorStatus = new KinectSensorChooser();
             sensorStatus.KinectChanged += KinectSensorChooserKinectChanged;
-            this.players = players;
 
             sensorStatus.Start();
         }
@@ -85,7 +83,7 @@ namespace Kinect.Captor
             switch (gameHook.Step)
             {
                 case GameStep.WAITING:
-                    if (GameEngine.DidPlayersStateChange(players))
+                    if (GameEngine.DidPlayersStateChange(Players))
                     {
                         gameHook.SendPlayers();
                     }
@@ -99,8 +97,9 @@ namespace Kinect.Captor
                     break;
 
                 case GameStep.FINISHED:
-                    gameHook.KeepConnectionAlive();
+                    gameHook.KeepConnectionAlive(10);
                     break;
+                
                 default:
                     break;
             }
@@ -145,7 +144,7 @@ namespace Kinect.Captor
         {
             List<Skeleton> nonAssociatedSkeletons = skeletons.Select(skeleton => skeleton).ToList();
 
-            foreach (Player player in players)
+            foreach (Player player in Players)
             {
                 if (!player.IsDefined())
                 {
@@ -181,7 +180,7 @@ namespace Kinect.Captor
         {
             foreach (Skeleton skeleton in skeletons)
             {
-                foreach (Player player in players)
+                foreach (Player player in Players)
                 {
                     if (!player.IsDefined())
                     {
@@ -204,9 +203,9 @@ namespace Kinect.Captor
             for (int i=0; i<orderedSkeletons.Count; i++)
             {
                 Skeleton currentSkeleton = orderedSkeletons.ElementAt(i);
-                if (players[i].IsDefined() || players[i].TackedId != currentSkeleton.TrackingId)
+                if (Players[i].IsDefined() || Players[i].TackedId != currentSkeleton.TrackingId)
                 {
-                    players[i].Defined(currentSkeleton);
+                    Players[i].Defined(currentSkeleton);
                 }
             }
         }
@@ -248,7 +247,7 @@ namespace Kinect.Captor
         /// </summary>
         private void SpeedDetection()
         {
-            if (GameEngine.DetectsPlayerSpeed(players))
+            if (GameEngine.DetectsPlayerSpeed(Players))
             {
                 gameHook.SendSpeed();
             }
@@ -259,7 +258,7 @@ namespace Kinect.Captor
         /// </summary>
         private void JumpDetection()
         {
-            List<int> jumpers = GameEngine.DetectsPlayerJump(players);
+            List<int> jumpers = GameEngine.DetectsPlayerJump(Players);
             if (jumpers.Count > 0)
             {
                 gameHook.SendJumpers(jumpers);

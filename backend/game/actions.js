@@ -57,7 +57,7 @@ module.exports = {
             for (const player of players) {
                 // red === 1, blue === 2
                 if (player.id == watch.playerId) {
-                    player.setWatchCaptor(watch.deviceID, watch.dataSharing);
+                    player.setWatchCaptor(watch.deviceID);
                 }
             }
         }
@@ -151,8 +151,7 @@ module.exports = {
         let everyoneFinished = true;
         for(let player of players){
             if(!player.bot) {
-                //player.addProgress((player.speed / 1000*6));
-                player.addProgress(0.008596*6);
+                player.addProgress((player.speed / 1000*6));
                 if(player.needToJump(map)){
                     projector.emit('playerNeedToJump', {playerId: player.id});
                 }
@@ -182,6 +181,9 @@ module.exports = {
 
             setTimeout(function(){
                 kinect.emit('kinectRestart', "Ready");
+                if (smartphone) {
+                    smartphone.emit('watchRestart', "Ready");
+                }
             }, 45000);
         }
 

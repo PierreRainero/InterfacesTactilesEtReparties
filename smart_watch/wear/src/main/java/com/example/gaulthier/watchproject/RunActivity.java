@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,16 +24,12 @@ public class RunActivity extends WearableActivity implements SensorEventListener
 
     // player
     int playerId;
-    boolean acceptDataSharing;
     int valueHeartRateSensor;
     boolean needsToMockHeartbeat;
 
     // time
     Handler handler;
     int delay;
-
-    // textview
-    TextView timer;
 
     // sensor
     SensorManager mSensorManager;
@@ -45,6 +42,8 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     int heartbeatMax;
     int heartbeatAverage;
     List<Integer> valuesHeartbeat = new ArrayList<>();
+    TextView textViewHeartbeat;
+    ImageView heartbeatImageView;
 
     /**
      * On create
@@ -70,7 +69,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         Bundle b = getIntent().getExtras();
         if(b != null) {
             this.playerId = b.getInt("playerId");
-            this.acceptDataSharing = b.getBoolean("acceptDataSharing");
         }
 
         newFilter = new IntentFilter(Intent.ACTION_SEND);
@@ -123,9 +121,9 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                     valuesHeartbeat.add(valueBPM);
                 }
 
-                timer.setText("♡ " + Integer.toString(valueBPM));
+                textViewHeartbeat.setText(Integer.toString(valueBPM));
 
-                if (acceptDataSharing && valueBPM != 0) {
+                if (valueBPM != 0) {
                     String message = "heartbeat:" + playerId + ":" + valueBPM;
                     new SendMessageThread(RunActivity.this, getApplicationContext(),
                             datapath, message).start();
@@ -162,7 +160,13 @@ public class RunActivity extends WearableActivity implements SensorEventListener
      */
     public void startRun() {
         setContentView(R.layout.run);
-        timer = findViewById(R.id.timerTextView);
+        heartbeatImageView = findViewById(R.id.heartbeatImageView);
+        textViewHeartbeat = findViewById(R.id.textViewHeartbeat);
+        if (this.playerId == 2) {
+            heartbeatImageView.setImageDrawable(getResources().getDrawable(R.drawable.heartbeat_blue));
+        } else {
+            heartbeatImageView.setImageDrawable(getResources().getDrawable(R.drawable.heartbeat_red));
+        }
         sendBPMEachSeconds();
     }
 
@@ -182,7 +186,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
         Bundle b = new Bundle();
         b.putInt("playerId", this.playerId);
-        b.putBoolean("acceptDataSharing", this.acceptDataSharing);
         b.putInt("heartbeatMin", this.heartbeatMin);
         b.putInt("heartbeatMax", this.heartbeatMax);
         b.putInt("heartbeatAverage", this.heartbeatAverage);

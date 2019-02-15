@@ -8,43 +8,71 @@
     android:layout_height="match_parent"
     tools:deviceIds="wear">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textResult"
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="Résultats" />
-        <TextView
-        android:id="@+id/textHeartbeatMin"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:text="Heartbeat min : " />
-        <TextView
-            android:id="@+id/textHeartbeatMax"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="Heartbeat max : " />
-        <TextView
-            android:id="@+id/textHeartbeatAverage"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="Heartbeat average : " />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="exit"
-            android:text="Quitter" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="Votre ryhme cardiaque"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/heartbeatImage"
+            android:layout_width="78dp"
+            android:layout_height="79dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/heartbeat"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/tvHeartbeatMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="8dp"
+            android:text="min"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.312"
+            app:layout_constraintStart_toEndOf="@+id/heartbeatImage"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/tvHeartbeatAverage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="moyen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.332"
+            app:layout_constraintStart_toEndOf="@+id/heartbeatImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeartbeatMin" />
+
+        <TextView
+            android:id="@+id/tvHeartbeatMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="max"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.312"
+            app:layout_constraintStart_toEndOf="@+id/heartbeatImage"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeartbeatAverage" />
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.wear.widget.BoxInsetLayout>

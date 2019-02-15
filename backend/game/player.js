@@ -14,11 +14,9 @@ module.exports = class Player {
   /**
    * Associates a captor (watch) to a player
    * @param {number} deviceId captor identifier
-   * @param {boolean} dataSharing permission to display sensory data
    */
-  setWatchCaptor(deviceId, dataSharing) {
+  setWatchCaptor(deviceId) {
     this.deviceId = deviceId;
-    this.allowDataSharing = dataSharing;
   }
 
   isApproachingHurdle(map) {
