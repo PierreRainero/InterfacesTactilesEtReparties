@@ -8,7 +8,9 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -22,11 +24,15 @@ public class MainActivity extends AppCompatActivity  {
 
     private Socket mSocket;
     EditText ipAddress;
-    TextView receivedFromWear;
-    TextView sentToWear;
-    TextView receivedFromServer;
-    TextView sentToServer;
     Receiver messageReceiver;
+    ImageView imageView;
+    Button buttonStartRun;
+    Button buttonEndRun;
+    Button buttonRestart;
+    Button buttonConnect;
+    TextView labelIpAddress;
+    boolean hide = true;
+    boolean connected = false;
 
     /**
      * On create
@@ -38,10 +44,33 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         ipAddress = findViewById(R.id.editTextIp);
-        receivedFromWear = findViewById(R.id.receivedFromWear);
-        sentToWear = findViewById(R.id.sentToWear);
-        receivedFromServer = findViewById(R.id.receivedFromServer);
-        sentToServer = findViewById(R.id.sentToServer);
+        imageView = findViewById(R.id.imageView);
+        buttonStartRun = findViewById(R.id.buttonStartRun);
+        buttonEndRun = findViewById(R.id.buttonEndRun);
+        buttonRestart = findViewById(R.id.buttonRestart);
+        buttonConnect = findViewById(R.id.buttonConnect);
+        labelIpAddress = findViewById(R.id.labelIpAddress);
+
+        buttonStartRun.setVisibility(View.GONE);
+        buttonEndRun.setVisibility(View.GONE);
+        buttonRestart.setVisibility(View.GONE);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!hide) {
+                    buttonStartRun.setVisibility(View.GONE);
+                    buttonEndRun.setVisibility(View.GONE);
+                    buttonRestart.setVisibility(View.GONE);
+                    hide = true;
+                } else {
+                    buttonStartRun.setVisibility(View.VISIBLE);
+                    buttonEndRun.setVisibility(View.VISIBLE);
+                    buttonRestart.setVisibility(View.VISIBLE);
+                    hide = false;
+                }
+            }
+        });
 
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         messageReceiver = new Receiver();
@@ -62,55 +91,50 @@ public class MainActivity extends AppCompatActivity  {
      * Connect to the backend to initiate web socket
      */
     public void connectToServer(View v) {
-        try {
-            mSocket = IO.socket("http://" + ipAddress.getText());
-        } catch (URISyntaxException e) {
-            sentToServer.setText("ERROR: " + e);
+        if (connected) {
+            labelIpAddress.setVisibility(View.VISIBLE);
+            ipAddress.setVisibility(View.VISIBLE);
+            buttonConnect.setText("Se connecter");
+            mSocket.disconnect();
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+            connected = false;
+        } else {
+            try {
+                mSocket = IO.socket("http://" + ipAddress.getText());
+                buttonConnect.setText("Se déconnecter");
+                labelIpAddress.setVisibility(View.GONE);
+                ipAddress.setVisibility(View.GONE);
+            } catch (URISyntaxException e) {
+                System.out.println("ERROR: " + e);
+            }
+
+            mSocket.on("gameStart", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
+                }
+            }).on("gameFinished", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
+                }
+            }).on("watchRestart", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "watchRestart").start();
+                }
+            });
+            connected = true;
+            mSocket.connect();
+            mSocket.emit("smartphoneConnect", "");
+            new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "connectedToServer").start();
         }
-
-        mSocket.on("gameStart", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                receivedFromServer.setText("gameStart received");
-                sentToWear.setText("gameStart sent");
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
-            }
-        }).on("gameFinished", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                receivedFromServer.setText("gameFinished received");
-                sentToWear.setText("gameEnd sent");
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
-            }
-        }).on("watchRestart", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                receivedFromServer.setText("watchRestart received");
-                sentToWear.setText("watchRestart sent");
-                new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "watchRestart").start();
-            }
-        });
-
-        mSocket.connect();
-        sentToServer.setText("smartphoneConnect sent");
-        mSocket.emit("smartphoneConnect", "");
-        sentToWear.setText("connectedToServer sent");
-        new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "connectedToServer").start();
-    }
-
-    /**
-     * Disconnect to the backend
-     */
-    public void disconnectServer(View v) {
-        mSocket.disconnect();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
     /**
      * Restart game
      */
     public void restartGame(View v) {
-        sentToWear.setText("watchRestart sent");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "watchRestart").start();
     }
 
@@ -119,7 +143,6 @@ public class MainActivity extends AppCompatActivity  {
      *
      */
     public void gameStart(View v) {
-        sentToWear.setText("gameStart sent");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameStart").start();
     }
 
@@ -127,7 +150,6 @@ public class MainActivity extends AppCompatActivity  {
      *
      */
     public void gameEnd(View v) {
-        sentToWear.setText("gameEnd sent");
         new SendMessageThread(MainActivity.this, getApplicationContext(), "/my_path", "gameEnd").start();
     }
 
