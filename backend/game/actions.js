@@ -231,9 +231,16 @@ module.exports = {
      */
     playersToDTO: function () {
         const res = [];
+        let botPlayer;
         for (let player of players) {
-            res.push(player.toDTO());
+            if(player.bot){
+                botPlayer = player.toDTO();
+            } else {
+                res.push(player.toDTO());
+            }
         }
+
+        res.splice(Math.floor(players.length/2), 0, botPlayer);
         return res;
     },
 
