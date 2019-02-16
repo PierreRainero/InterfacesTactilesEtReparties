@@ -8,13 +8,19 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +44,11 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     IntentFilter newFilter;
 
     // heartbeat
-    int heartbeatMin;
-    int heartbeatMax;
-    int heartbeatAverage;
-    List<Integer> valuesHeartbeat = new ArrayList<>();
     TextView textViewHeartbeat;
     ImageView heartbeatImageView;
+
+    // Vibrator
+    Vibrator v;
 
     /**
      * On create
@@ -54,6 +59,7 @@ public class RunActivity extends WearableActivity implements SensorEventListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.waiting_run);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
         mHeartRateSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
@@ -104,21 +110,6 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                     valueBPM = r.nextInt(130 - 120) + 120;
                 } else {
                     valueBPM = valueHeartRateSensor;
-                }
-                if (heartbeatMax == 0) {
-                    heartbeatMax = valueBPM;
-                }
-                if (heartbeatMin == 0) {
-                    heartbeatMin = valueBPM;
-                }
-                if (valueBPM > heartbeatMax) {
-                    heartbeatMax = valueBPM;
-                }
-                if (valueBPM < heartbeatMin) {
-                    heartbeatMin = valueBPM;
-                }
-                if (valueBPM != 0) {
-                    valuesHeartbeat.add(valueBPM);
                 }
 
                 textViewHeartbeat.setText(Integer.toString(valueBPM));
@@ -173,26 +164,52 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     /**
      * Received gameEnd from backend
      */
-    public void gameEnd() {
-        // calculate average heartbeat
-        Integer sum = 0;
-        if (!valuesHeartbeat.isEmpty()) {
-            for (Integer mark : this.valuesHeartbeat) {
-                sum += mark;
-            }
-            this.heartbeatAverage = (int) sum.doubleValue() / this.valuesHeartbeat.size();
-        }
+    public void gameEnd(String players) {
 
-        Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
-        Bundle b = new Bundle();
-        b.putInt("playerId", this.playerId);
-        b.putInt("heartbeatMin", this.heartbeatMin);
-        b.putInt("heartbeatMax", this.heartbeatMax);
-        b.putInt("heartbeatAverage", this.heartbeatAverage);
-        intentMain.putExtras(b);
-        handler.removeCallbacksAndMessages(null);
-        finish();
-        RunActivity.this.startActivity(intentMain);
+        int heartbeatMin = 0;
+        int heartbeatMax = 0;
+        int heartbeatAverage = 0;
+
+        try {
+            JSONArray jsonArr = new JSONArray(players);
+            Intent intentMain = new Intent(RunActivity.this , ResultActivity.class);
+
+            for (int i = 0; i < jsonArr.length(); i++) {
+                JSONObject jsonObj = jsonArr.getJSONObject(i);
+                System.out.println(jsonObj);
+                int playerId = jsonObj.getInt("playerId");
+
+                if (playerId == this.playerId) {
+                    heartbeatAverage = jsonObj.getInt("averageHearthbeat");
+                    heartbeatMax = jsonObj.getInt("maxHearthBeat");
+                    heartbeatMin = jsonObj.getInt("minHearthBeat");
+                }
+            }
+
+            Bundle b = new Bundle();
+            b.putInt("playerId", this.playerId);
+            b.putInt("heartbeatMin", heartbeatMin);
+            b.putInt("heartbeatMax", heartbeatMax);
+            b.putInt("heartbeatAverage", heartbeatAverage);
+            intentMain.putExtras(b);
+            handler.removeCallbacksAndMessages(null);
+            finish();
+            RunActivity.this.startActivity(intentMain);
+        } catch (JSONException e) {
+            System.out.println("error: " + e);
+        }
+    }
+
+    public void playerCollision(int playerIdReceived) {
+        if (playerIdReceived == this.playerId) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                long[] vibrationPattern = {50};
+                final int indexInPatternToRepeat = -1;
+                v.vibrate(vibrationPattern, indexInPatternToRepeat);
+            } else {
+                v.vibrate(50);
+            }
+        }
     }
 
     /**
@@ -201,16 +218,20 @@ public class RunActivity extends WearableActivity implements SensorEventListener
     public class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message");
+            String message = intent.getStringExtra("message").split("_")[0];
 
-            System.out.println("Message received");
+            System.out.println("Message received : " + message);
 
             if (message.equals("gameStart")) {
                 System.out.println("gameStart received");
                 startRun();
-            } else if (message.equals("gameEnd")) {
-                System.out.println("endGame received");
-                gameEnd();
+            } if (message.equals("gameEnd")) {
+                String players = intent.getStringExtra("message").split("_")[1];
+                System.out.println("endGame received : "+ players);
+                gameEnd(players);
+            } if (message.equals("collision")) {
+                int idPlayer = Integer.parseInt(intent.getStringExtra("message").split("_")[1]);
+                playerCollision(idPlayer);
             }
         }
     }
