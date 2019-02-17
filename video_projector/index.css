@@ -14,7 +14,7 @@
 #minimap{
     width: 100px;
     height: 300px;
-    background-color: darkgreen;
+    background-color: black;
     position:absolute;
     left:47.05%;
     top:58px;
@@ -27,7 +27,7 @@
 }
 
 #way1,#way2,#way3{
-    background-color: indianred;
+    background-color: white;
     top:2%;
     height: 96%;
     width: 20%;
