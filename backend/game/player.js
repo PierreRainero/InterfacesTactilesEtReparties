@@ -11,6 +11,7 @@ module.exports = class Player {
     this.bot = bot;
     this.heartbeatAverage = { value: 0, heartbeats: 0, max: 0, min: 0 };
     this.speedAverage = { value: 0, speeds: 0 };
+    this.finishTime = null;
   }
 
   /**
@@ -81,6 +82,7 @@ module.exports = class Player {
       this.progress += progress;
     } else {
       this.finish = true;
+      this.finishTime = new Date();
     }
   }
 

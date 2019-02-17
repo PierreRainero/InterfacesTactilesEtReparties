@@ -7,6 +7,8 @@ let kinect;
 let projector;
 let smartphone;
 
+let startTime = null;
+
 module.exports = {
 
     start: function () {
@@ -140,6 +142,7 @@ module.exports = {
      * Loop for a run
      */
     gameLoop: function () {
+        startTime = new Date();
         let updateJob = setInterval(() => {
             if (this.gameIteration()) {
                 clearInterval(updateJob);
@@ -254,20 +257,43 @@ module.exports = {
             if(player.speedAverage.speeds > 0){
                 averageSpeed = player.speedAverage.value / player.speedAverage.speeds;
             }
-            let averageHearthbeat = 0;
+            let averageHeartbeat = 0;
             if(player.heartbeatAverage.heartbeats > 0){
-                averageHearthbeat = player.heartbeatAverage.value / player.heartbeatAverage.heartbeats;
+                averageHeartbeat = player.heartbeatAverage.value / player.heartbeatAverage.heartbeats;
             }
+            let time = this.dateDiff(startTime, player.finishTime);
             res.push({
                 playerId: player.id,
+                time: time,
                 averageSpeed: averageSpeed,
-                averageHearthbeat: averageHearthbeat,
-                maxHearthBeat: player.heartbeatAverage.max,
-                minHearthBeat: player.heartbeatAverage.min,
+                averageHeartbeat: averageHeartbeat,
+                maxHeartbeat: player.heartbeatAverage.max,
+                minHeartbeat: player.heartbeatAverage.min,
                 hurdlesAvoided: player.hurdlesAvoided
             });
         }
 
         return res;
+    },
+
+    dateDiff(date1, date2){
+        var diff = {};
+        var tmp = date2 - date1;
+
+        diff.millisec = tmp % 1000;
+
+        tmp = Math.floor(tmp/1000);
+        diff.sec = tmp % 60;
+
+        tmp = Math.floor((tmp-diff.sec)/60);
+        diff.min = tmp % 60;
+
+        tmp = Math.floor((tmp-diff.min)/60);
+        diff.hour = tmp % 24;
+
+        tmp = Math.floor((tmp-diff.hour)/24);
+        diff.day = tmp;
+
+        return diff;
     }
 };
