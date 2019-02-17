@@ -70,7 +70,7 @@ socket.on('updatePlayers', function (data) {
 
 socket.on('collision', function (data) {
     //console.log("collision detected, player : ", data);
-    hurdlesObject[data.playerId][data.hurdleId].fall = true;
+    hurdlesObject[game.players.getPlayerTrack(data.playerId)][data.hurdleId].fall = true;
 });
 
 socket.on('playerNeedToJump', function (data) {

@@ -95,7 +95,7 @@ Game.prototype.setCountdown = function(value){
 };
 
 Game.prototype.playerJump = function (id) {
-    var position = this.players.positionOf(id);
+    var position = this.players.getPlayerLeftPosition(id);
 
     if(position !== null){
         this.players.get(position).jump();
@@ -119,7 +119,7 @@ Game.prototype.stopGame = function(){
 
 Game.prototype.playerNeedToJump = function (id) {
     var taille = 100 / this.players.playerNumber();
-    var position = 0 + taille*(this.players.positionOf(id)-1);
+    var position = taille*this.players.getPlayerLeftPosition(id);
     var style = `width: ${taille}%; left: ${position}%`;
     document.getElementById("playersReady").innerHTML += `<div id="jump${id}" style="${style}">Sautez !</div>`;
     setTimeout(() => {

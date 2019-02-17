@@ -26,6 +26,20 @@ Players.prototype.getPlayer = function(i){
     return this.getPlayers()[i];
 }
 
+Players.prototype.getPlayerLeftPosition = function(id){
+    for(let i = 0; i < this.playerNumber(); i++){
+        if(this.getPlayers()[i].id === id)
+            return i;
+    }
+}
+
+Players.prototype.getPlayerTrack = function(id){
+    for(let i = 0; i < this.players.length; i++){
+        if(this.players[i].id === id)
+            return i;
+    }
+}
+
 Players.prototype.getPlayers = function(){
     let result = [];
     for(let player of this.players){
