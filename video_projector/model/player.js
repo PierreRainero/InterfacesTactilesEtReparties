@@ -14,6 +14,7 @@ function Player(id, state, bot) {
     this.bot = bot;
     this.speed = 0;
 
+    this.initMinimap();
     this.updateTrait();
 }
 
@@ -86,6 +87,22 @@ Player.prototype.updateMinimap = function() {
     }
 
 }
+
+Player.prototype.initMinimap = function() {
+
+    if (this.id === 0){
+        document.getElementById("minimap-player1").style.backgroundColor = "red";
+    }
+    else if (this.id === 1) {
+        document.getElementById("minimap-player2").style.backgroundColor = "black";
+    }
+    else if (this.id === 2) {
+        document.getElementById("minimap-player3").style.backgroundColor = "blue";
+    }
+
+}
+
+
 
 Player.prototype.setAnimations = function (animations) {
     this.animations = animations;
