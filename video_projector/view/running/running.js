@@ -187,15 +187,15 @@ function setupViews(){
             }
         });
     } else {
-        for(var i = 0; i < game.players.playerNumber(); i++){
-            if(!game.players.getPlayer(i).bot) {
+        for(var i = 0; i < game.players.length(); i++){
+            if(!game.players.get(i).bot) {
                 views.push({
-                    left: (1 / game.players.playerNumber()) * i,
+                    left: (1 / game.players.playerNumber()) * game.players.getPlayerLeftPosition(i),
                     top: 0,
                     width: 1 / game.players.playerNumber(),
                     height: 1.0,
                     background: new THREE.Color("rgb(92, 205, 205)"),
-                    eye: [-450 + ((i+1) * 220), 350, cameraPositionZ],
+                    eye: [-450 + (game.players.getPlayerTrack(game.players.get(i).id) * 220), 350, cameraPositionZ],
                     up: [0, 1, 0],
                     fov: 30,
                     updateCamera: function (camera, scene, mouseX) {

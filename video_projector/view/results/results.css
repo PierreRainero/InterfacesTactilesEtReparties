@@ -1,7 +1,7 @@
 .resultsCol{
     position: absolute;
     top: 0;
-    height: 100%;
+    height: 97%;
     width: 50%;
 }
 
@@ -10,4 +10,19 @@
     border-radius: 10px;
     height: 100%;
     margin: 10px;
+    font-size: 20pt;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.resultsCard *{
+    margin: 20px;
+}
+
+.resultsName{
+    margin-top: 25px;
+}
+
+.resultsTitle, .resultsAverageSpeed, .resultsMaxHeartbeat{
+    margin-bottom: 50px;
 }

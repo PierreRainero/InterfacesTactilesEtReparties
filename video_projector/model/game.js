@@ -106,20 +106,20 @@ Game.prototype.getRelativePosition = function(position){
     return - position * 400;
 }
 
-Game.prototype.stopGame = function(){
+Game.prototype.stopGame = function(data){
     this.players.finishAll();
     clearInterval(this.chronoJob);
-    //document.getElementById("chrono").innerHTML = "Partie terminée";
+    var style = `width: 100%; left: 0%`;
+    document.getElementById("playersReady").innerHTML += `<div style="${style}">Partie terminée</div>`;
     setTimeout(() => {
-        this.displayResults();
-        document.getElementById("running").classList.add("hidden");
+        this.displayResults(data);
         document.getElementById("results").classList.remove("hidden");
     }, 1000);
 }
 
 Game.prototype.playerNeedToJump = function (id) {
     var taille = 100 / this.players.playerNumber();
-    var position = 0 + taille*(this.players.positionOf(id)-1);
+    var position = taille*this.players.getPlayerLeftPosition(id);
     var style = `width: ${taille}%; left: ${position}%`;
     document.getElementById("playersReady").innerHTML += `<div id="jump${id}" style="${style}">Sautez !</div>`;
     setTimeout(() => {
@@ -128,17 +128,53 @@ Game.prototype.playerNeedToJump = function (id) {
     }, 750);
 }
 
-Game.prototype.displayResults = function () {
+Game.prototype.displayResults = function (data) {
     var container = document.getElementById("results");
     container.innerHTML = "";
     for(var i = 0; i < this.players.length(); i++){
+        var playerId = 0;
+        var name = "Aries Merritt"
+        var time = {
+            min: 0,
+            sec: 12,
+            millisec: 80
+        };
+        var averageHeartbeat = 0;
+        var averageSpeed = 30.9;
+        var hurdlesAvoided = 10;
+        var maxHeartbeat = 0;
+        var minHeartbeat = 0;
+
+        for(let result of data){
+            if(result.playerId !== 0 && result.playerId === this.players.get(i).id){
+                playerId = result.playerId;
+                name = `Joueur ${result.playerId}`;
+                time = result.time;
+                averageHeartbeat = result.averageHeartbeat;
+                averageSpeed = (result.averageSpeed * 60) / 1000;
+                hurdlesAvoided = 0;
+                for(let hurdle of result.hurdlesAvoided){
+                    if(hurdle)
+                        hurdlesAvoided++;
+                }
+                maxHeartbeat = result.maxHeartbeat;
+                minHeartbeat = result.minHeartbeat;
+            }
+        }
+
         var taille = 100 / this.players.length();
         var position = 0 + taille*i;
         var style = `width: ${taille}%; left: ${position}%`;
         container.innerHTML += `<div style="${style}" class="resultsCol">
-            <div class="resultsCard">
-                <div>Nom</div>
-                <div></div>
+            <div class="resultsCard" style="background-color: ${playerId === 0 ? "#ffff00" : playerId === 1 ? " #CD5C5C" : "#1E90FF"}">
+                <div class="resultsName">${name}</div>
+                <div class="resultsTitle">${playerId === 0 ? "Détenteur du record du monde" : ""}</div>
+                <div class="resultsTime">Temps : ${time.min}:${time.sec}:${time.millisec}</div>
+                <div class="resultsAverageSpeed">Vitesse moyenne : ${averageSpeed}km/h</div>
+                <div class="resultsAverageHeartbeat">Battements cardiaque moyens : ${averageHeartbeat}</div>
+                <div class="resultsMinHeartbeat">Battements cardiaque minimum : ${minHeartbeat}</div>
+                <div class="resultsMaxHeartbeat">Battements cardiaque maximum : ${maxHeartbeat}</div>
+                <div class="resultsHurdlesAvoided">Haies évitées : ${hurdlesAvoided}/10</div>
             </div>
         </div>`;
     }
