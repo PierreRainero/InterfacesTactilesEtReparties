@@ -1,4 +1,4 @@
-var socket = io('http://localhost:8282');
+var socket = io('http://172.20.10.9:8282');
 
 socket.emit('connectProjector');
 

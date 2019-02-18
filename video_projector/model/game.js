@@ -150,8 +150,8 @@ Game.prototype.displayResults = function (data) {
                 playerId = result.playerId;
                 name = `Joueur ${result.playerId}`;
                 time = result.time;
-                averageHeartbeat = result.averageHeartbeat;
-                averageSpeed = (result.averageSpeed * 60) / 1000;
+                averageHeartbeat = Math.round(result.averageHeartbeat);
+                averageSpeed = Math.round(((result.averageSpeed * 3600) / 1000)*100)/100;
                 hurdlesAvoided = 0;
                 for(let hurdle of result.hurdlesAvoided){
                     if(hurdle)
@@ -169,12 +169,12 @@ Game.prototype.displayResults = function (data) {
             <div class="resultsCard" style="background-color: ${playerId === 0 ? "#ffff00" : playerId === 1 ? " #CD5C5C" : "#1E90FF"}">
                 <div class="resultsName">${name}</div>
                 <div class="resultsTitle">${playerId === 0 ? "Détenteur du record du monde" : ""}</div>
-                <div class="resultsTime">Temps : ${time.min}:${time.sec}:${time.millisec}</div>
+                <div class="resultsTime">Temps : ${time.min !== 0 ? `${time.min}m ` : ""}${time.sec}s ${time.millisec}</div>
                 <div class="resultsAverageSpeed">Vitesse moyenne : ${averageSpeed}km/h</div>
-                <div class="resultsAverageHeartbeat">Battements cardiaque moyens : ${averageHeartbeat}</div>
-                <div class="resultsMinHeartbeat">Battements cardiaque minimum : ${minHeartbeat}</div>
-                <div class="resultsMaxHeartbeat">Battements cardiaque maximum : ${maxHeartbeat}</div>
-                <div class="resultsHurdlesAvoided">Haies évitées : ${hurdlesAvoided}/10</div>
+                ${averageHeartbeat !== 0 ? `<div class="resultsAverageHeartbeat">Battements cardiaque moyens : ${averageHeartbeat}</div>` : ""}
+                ${minHeartbeat !== 0 ? `<div class="resultsMinHeartbeat">Battements cardiaque minimum : ${minHeartbeat}</div>` : ""}
+                ${maxHeartbeat !== 0 ? `<div class="resultsMaxHeartbeat">Battements cardiaque maximum : ${maxHeartbeat}</div>` : ""}
+                <div class="resultsHurdlesAvoided">Haies passées : ${hurdlesAvoided}/10</div>
             </div>
         </div>`;
     }

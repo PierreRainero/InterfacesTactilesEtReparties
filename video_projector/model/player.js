@@ -77,10 +77,10 @@ Player.prototype.updateMinimap = function() {
     var percent = (this.progress*95)/110;
 
     if (this.id === 0){
-        document.getElementById("minimap-player1").style.bottom = percent+"%";
+        document.getElementById("minimap-player2").style.bottom = percent+"%";
     }
     else if (this.id === 1) {
-        document.getElementById("minimap-player2").style.bottom = percent+"%";
+        document.getElementById("minimap-player1").style.bottom = percent+"%";
     }
     else if (this.id === 2) {
         document.getElementById("minimap-player3").style.bottom = percent+"%";
