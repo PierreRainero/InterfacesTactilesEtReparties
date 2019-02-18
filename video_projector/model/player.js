@@ -94,7 +94,7 @@ Player.prototype.initMinimap = function() {
         document.getElementById("minimap-player1").style.backgroundColor = "red";
     }
     else if (this.id === 1) {
-        document.getElementById("minimap-player2").style.backgroundColor = "black";
+        document.getElementById("minimap-player2").style.backgroundColor = "#ffd300";
     }
     else if (this.id === 2) {
         document.getElementById("minimap-player3").style.backgroundColor = "blue";

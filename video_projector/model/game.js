@@ -151,7 +151,7 @@ Game.prototype.displayResults = function (data) {
                 name = `Joueur ${result.playerId}`;
                 time = result.time;
                 averageHeartbeat = result.averageHeartbeat;
-                averageSpeed = result.averageSpeed;
+                averageSpeed = (result.averageSpeed * 60) / 1000;
                 hurdlesAvoided = 0;
                 for(let hurdle of result.hurdlesAvoided){
                     if(hurdle)
