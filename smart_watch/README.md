@@ -20,3 +20,7 @@ Une fois ces vérifications faites, on peut lancer l'application sur les montres
 Lorsque vous lancez l'application pour la première fois sur le smartphone, vous devez définir l'adresse IP du serveur dans le champs de texte prévu à cet effet. Cliquez ensuite sur "Se connecter". Vous devez maintenant définir sur chaque montre connectée la couleur du coureur auquel chaque montre est associée en cliquant sur le bouton de la couleur correspondante.
 
 Les applications sont maintenant prêtes, elles attedent qu'une nouvelle course commence.
+
+## Technologies utilisées
+
+* [Android SDK](https://developer.android.com/studio/releases/platform-tools) 26.0 minimum
