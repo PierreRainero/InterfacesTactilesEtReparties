@@ -1,4 +1,4 @@
-var socket = io('http://172.20.10.9:8282');
+var socket = io('http://localhost:8282');
 
 socket.emit('connectProjector');
 
@@ -81,4 +81,9 @@ socket.on('playerNeedToJump', function (data) {
 socket.on('gameFinished', function (data) {
     //console.log("Game finished received, data : ", data);
     game.stopGame(data);
+});
+
+socket.on('projectorRestart', function () {
+    //console.log("Restart received");
+    game.restart();
 });
