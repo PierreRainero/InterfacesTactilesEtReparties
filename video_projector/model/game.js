@@ -179,3 +179,18 @@ Game.prototype.displayResults = function (data) {
         </div>`;
     }
 }
+
+Game.prototype.restart = function(){
+    this.players = new Players();
+    this.startTime = null;
+    this.hurdles = [];
+    this.chronoJob = null;
+    clearRunners();
+    document.getElementById("results").classList.add("hidden");
+    document.getElementById("minimap").classList.add("hidden");
+    if(!document.getElementById("middleSeparation").classList.contains("hidden")){
+        document.getElementById("middleSeparation").classList.add("hidden");
+    }
+    this.clearPlayerReadyText();
+    document.getElementById("chrono").innerHTML = "";
+}
