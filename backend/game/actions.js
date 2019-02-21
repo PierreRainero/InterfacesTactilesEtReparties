@@ -192,6 +192,7 @@ module.exports = {
 
             setTimeout(function () {
                 kinect.emit('kinectRestart', "Ready");
+                projector.emit('projectorRestart');
                 if (smartphone) {
                     smartphone.emit('watchRestart', "Ready");
                 }

@@ -82,3 +82,8 @@ socket.on('gameFinished', function (data) {
     //console.log("Game finished received, data : ", data);
     game.stopGame(data);
 });
+
+socket.on('projectorRestart', function () {
+    //console.log("Restart received");
+    game.restart();
+});

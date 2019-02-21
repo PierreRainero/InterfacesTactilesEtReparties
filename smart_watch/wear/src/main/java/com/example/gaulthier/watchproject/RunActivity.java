@@ -180,9 +180,9 @@ public class RunActivity extends WearableActivity implements SensorEventListener
                 int playerId = jsonObj.getInt("playerId");
 
                 if (playerId == this.playerId) {
-                    heartbeatAverage = jsonObj.getInt("averageHearthbeat");
-                    heartbeatMax = jsonObj.getInt("maxHearthBeat");
-                    heartbeatMin = jsonObj.getInt("minHearthBeat");
+                    heartbeatAverage = jsonObj.getInt("averageHeartbeat");
+                    heartbeatMax = jsonObj.getInt("maxHeartbeat");
+                    heartbeatMin = jsonObj.getInt("minHeartbeat");
                 }
             }
 

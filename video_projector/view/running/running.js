@@ -312,6 +312,15 @@ function createWaitingScreen(){
     waitingGroup.add( shadowMesh );
 }
 
+function clearRunners(){
+    for (var i = runningGroup.children.length - 1; i >= 0; i--) {
+        runningGroup.remove(runningGroup.children[i]);
+    }
+
+    scene.remove(runningGroup);
+    scene.add(waitingGroup);
+}
+
 function createRunners(){
     var loader = new THREE.GLTFLoader();
 
