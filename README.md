@@ -15,6 +15,8 @@
 ## Documentation
 
 * [Spécifications](./doc/Specifications.pdf)
+* [Guide d'installation](./doc/Guide_installation.pdf)
+* [Documentation utilisateur](./doc/Documentation_utilisateur.pdf)
 
 ## Scénario (exemple d'utilisation)
 
