@@ -201,4 +201,6 @@ Game.prototype.restart = function(){
     }
     this.clearPlayerReadyText();
     document.getElementById("chrono").innerHTML = "";
+    document.getElementById("heartbeatPlayer1").innerHTML = "";
+    document.getElementById("heartbeatPlayer2").innerHTML = "";
 }
