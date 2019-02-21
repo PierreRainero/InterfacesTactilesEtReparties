@@ -7,7 +7,7 @@
 
 ## Description
 
-Ce projet se décompose en deux codes sources. D'une part le code de l'application mobile et d'autre part le code de l'application déstinée aux montres connectées. Les differentes montres connectées vont relever le rythme cardique des porteurs de montres et vont envoyer ces informations au smartphone. Ce dernier va transmettre les données qu'il recoit aux serveur.
+Ce projet se décompose en deux codes sources android. D'une part le code de l'application mobile et d'autre part le code de l'application déstinée aux montres connectées. Les differentes montres connectées vont relever le rythme cardique des porteurs de montres et vont envoyer ces informations au smartphone. Ce dernier va transmettre les données qu'il recoit aux serveur. 
 
 ## Configuration préalable
 
