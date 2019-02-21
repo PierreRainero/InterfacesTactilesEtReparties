@@ -75,9 +75,13 @@ Game.prototype.clearPlayerReadyText = function(){
 
 Game.prototype.setCountdown = function(value){
     var chrono = document.getElementById("chrono");
-    if(value > 0)
+    if(value > 0){
         chrono.innerHTML = value;
-    else if(value === 0){
+        if(value === 1) {
+            var audio = new Audio('view/running/sounds/start.wav');
+            audio.play();
+        }
+    } else if(value === 0){
         chrono.innerHTML = "C'est parti !";
 
         var minimap = document.getElementById("minimap");
@@ -108,6 +112,10 @@ Game.prototype.getRelativePosition = function(position){
 
 Game.prototype.stopGame = function(data){
     this.players.finishAll();
+
+    var audio = new Audio('view/running/sounds/end.wav');
+    audio.play();
+
     clearInterval(this.chronoJob);
     var style = `width: 100%; left: 0%`;
     document.getElementById("playersReady").innerHTML += `<div style="${style}">Partie terminée</div>`;
