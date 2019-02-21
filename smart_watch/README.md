@@ -5,19 +5,22 @@
 
 * [Gaulthier TOUSSAINT](gaulthiertoussaint@gmail.com)
 
-## Installation
+## Description
 
-Instructions to connect real phone to an android wear emulator and a real wear android :
+Ce projet se décompose en deux codes sources android. D'une part le code de l'application mobile et d'autre part le code de l'application déstinée aux montres connectées. Les differentes montres connectées vont relever le rythme cardique des porteurs de montres et vont envoyer ces informations au smartphone. Ce dernier va transmettre les données qu'il recoit aux serveur. 
 
-1. Connect the android phone to computer via USB (allow debugging, ...)
-2. Connect the wear android to computer via USB (allow debugging, ...)
-3. Create a android wear emulator in Android Studio > AVD Manager
-4. Open a command prompt and type 'adb devices'
-5. Get the id of each devices
-6. Type : 'adb -s &#60;AndroidPhoneId&#62; -d forward tcp:5601 tcp:5601'
-7. Open in the android phone the app 'Wear OS' and connect the two wear devices
+## Configuration préalable
 
-Connect the debugger to the watch :
+Avant toute chose, il est nécessaire de déployer les deux APK sur les deux terminaux (le mobile et la/les montre(s) connectée(s)).  Il faut s'assurer également que les montres sont bien connectés à un même smartphone, et que le smartphone se trouve sur le même réseau que le serveur.
 
-adb forward tcp:4444 localabstract:/adb-hub
-adb connect 127.0.0.1:4444
+Une fois ces vérifications faites, on peut lancer l'application sur les montres et l'application sur le smartphone.
+
+## Utilisation
+
+Lorsque vous lancez l'application pour la première fois sur le smartphone, vous devez définir l'adresse IP du serveur dans le champs de texte prévu à cet effet. Cliquez ensuite sur "Se connecter". Vous devez maintenant définir sur chaque montre connectée la couleur du coureur auquel chaque montre est associée en cliquant sur le bouton de la couleur correspondante.
+
+Les applications sont maintenant prêtes, elles attedent qu'une nouvelle course commence.
+
+## Technologies utilisées
+
+* [Android SDK](https://developer.android.com/studio/releases/platform-tools) 26.0 minimum
