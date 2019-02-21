@@ -187,7 +187,7 @@ module.exports = {
             projector.emit('gameFinished', this.calculateAverages());
             kinect.emit('gameFinished', "Finished");
             if (smartphone) {
-                smartphone.emit('gameFinished', this.calculateAverages());
+                smartphone.emit('gameFinished', this.calculateAverages())
             }
 
             setTimeout(function () {
