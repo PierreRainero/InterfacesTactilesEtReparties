@@ -191,7 +191,6 @@ Game.prototype.displayResults = function (data) {
 Game.prototype.restart = function(){
     this.players = new Players();
     this.startTime = null;
-    this.hurdles = [];
     this.chronoJob = null;
     clearRunners();
     document.getElementById("results").classList.add("hidden");
