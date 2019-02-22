@@ -20,7 +20,7 @@ var shadowMaterial;
 
 var clock = new THREE.Clock();
 
-var gravity = 1;
+var gravity = 0.1;
 var playerBasePositionY = 15;
 var cameraPositionZ = 1400;
 var hurdlesObject = [];
@@ -294,7 +294,7 @@ function createWaitingScreen(){
 
         var mesh = new THREE.Mesh(textGeo, textMaterial);
         mesh.position.y = 500;
-        mesh.position.z = -700;
+        mesh.position.z = -1400;
         waitingGroup.add(mesh);
     });
 
@@ -307,7 +307,7 @@ function createWaitingScreen(){
     shadowMesh = new THREE.Mesh( shadowGeo, shadowMaterial );
     shadowMesh.position.x = 0;
     shadowMesh.position.y = 2;
-    shadowMesh.position.z = -700;
+    shadowMesh.position.z = -1400;
     shadowMesh.rotation.x = - Math.PI / 2;
     waitingGroup.add( shadowMesh );
 }
