@@ -6,6 +6,7 @@ using System;
 using System.Configuration;
 using System.Collections.Generic;
 using log4net;
+using System.Timers;
 
 namespace Kinect.Gameplay
 {
@@ -22,7 +23,8 @@ namespace Kinect.Gameplay
         private Player[] players;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private bool logMode;
-        private int pingCounter;
+        private Timer timer;
+        private bool isPinging;
 
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace Kinect.Gameplay
         public Game(bool log=false)
         {
             logMode = log;
+            isPinging = false;
             Int32.TryParse(ConfigurationManager.AppSettings["socketIO_port"], out int port);
             socketIO = new SocketIOClient(ConfigurationManager.AppSettings["socketIO_url"], port);
 
@@ -155,14 +158,29 @@ namespace Kinect.Gameplay
         /// <param name="frequence">Frequence to send a request in second (1 by default)</param>
         public void KeepConnectionAlive(int frequence=1)
         {
-            if (pingCounter >= 30*frequence)
+            if (!isPinging)
             {
-                socketIO.Ping();
-                pingCounter = 0;
+                timer = new Timer(frequence * 1000);
+                timer.Enabled = true;
+                timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
+                timer.Start();
+                isPinging = true;
             }
-            else
+        }
+        private void timer_Elapsed(object sender, EventArgs e)
+        {
+            socketIO.Ping();
+        }
+
+        /// <summary>
+        /// Stop the connection keeping alive
+        /// </summary>
+        public void StopConnectionForced()
+        {
+            if (isPinging)
             {
-                pingCounter++;
+                timer.Stop();
+                isPinging = false;
             }
         }
 
@@ -179,8 +197,8 @@ namespace Kinect.Gameplay
             players = new Player[2];
             players[0] = new Player(1);
             players[1] = new Player(2);
-            pingCounter = 0;
             kinectMotor.Players = players;
+            StopConnectionForced();
 
             Step = GameStep.WAITING;
         }

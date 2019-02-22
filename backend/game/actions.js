@@ -190,14 +190,14 @@ module.exports = {
                 smartphone.emit('gameFinished', this.calculateAverages())
             }
 
-            setTimeout(function () {
+            setTimeout((function () {
                 kinect.emit('kinectRestart', "Ready");
                 projector.emit('projectorRestart');
                 if (smartphone) {
                     smartphone.emit('watchRestart', "Ready");
                 }
-                players = new Array();
-            }, 60000);
+                this.setup();
+            }).bind(this), 60000);
         }
 
         return everyoneFinished;
