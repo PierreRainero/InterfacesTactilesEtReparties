@@ -94,11 +94,6 @@ namespace Kinect.Communication
         /// </summary>
         public void Ping()
         {
-            if (!socket.IsAlive)
-            {
-                socket.Connect();
-            }
-
             SimpleObjectFormater objectToSend = new SimpleObjectFormater();
             objectToSend.AddString("time", DateTime.Now.TimeOfDay.ToString());
             Emit("PING", objectToSend.JSONFormat());

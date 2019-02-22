@@ -60,6 +60,9 @@ io.on('connection', function (socket) {
   socket.on('heartbeat', function(data) {
     game.heartbeatReceived(JSON.parse(data));
   });
+
+  socket.on('PING', function(data) {
+  });
 });
 
 // View engine setup

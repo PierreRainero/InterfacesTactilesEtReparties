@@ -60,6 +60,7 @@ namespace Kinect.Gameplay.Model
         {
             TackedId = -1;
             CurrentSkeleton = null;
+            PreviousSkeleton = null;
         }
 
         /// <summary>

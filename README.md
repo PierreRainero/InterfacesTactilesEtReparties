@@ -14,6 +14,7 @@
 
 ## Documentation
 
+* [Vidéo de présentation](https://www.youtube.com/watch?v=rDBsN6mNsnc)
 * [Spécifications](./doc/Specifications.pdf)
 * [Guide d'installation](./doc/Guide_installation.pdf)
 * [Documentation utilisateur](./doc/Documentation_utilisateur.pdf)
@@ -31,10 +32,10 @@
     * Le chronomètre en haut ;
     * Une vue par joueur à la troisième personne représentant le coureur sur une piste de course avec des haies (écran divisé) ;
     * Une mini-carte d’avancement en bas à droite ou au centre de l'écran en fonction du nombre de joueurs.
-9. Les joueurs doivent alors courir sur place afin de faire avancer leur personnage. Il doivent également sauter pour éviter les haies qui se présentent à eux. Le vidéoprojecteur indique le meilleur moment où le joueur doivent sauter et les montres connectés émettent une vibration si une haie est percutée.
-10. Un joueur virtuel, imitant les performances d’un athlète de haut niveau, court en même temps que les participants. Sa progression est renseignée en temps réel sur la mini-carte. Ce joueur virtuel suit les performances du recordman en titre à savoir Aries Merritt.
+9. Les joueurs doivent alors courir sur place afin de faire avancer leur personnage. Ils doivent également sauter pour éviter les haies qui se présentent à eux. Le vidéoprojecteur indique le meilleur moment où le joueur doivent sauter et les montres connectées émettent une vibration si une haie est percutée.
+10. Un joueur virtuel, imitant les performances d’un athlète de haut niveau, court en même temps que les participants. Sa progression est renseignée en temps réel sur la mini-carte. Ce joueur virtuel suit les performances du recordman en titre à savoir « Aries Merritt ».
 11. Les participants portant une montre ont accès tout au long de la course à des données biométriques comme leur rythme cardiaque.
 12. Dès qu’un joueur passe la ligne d’arrivée virtuelle, sa vue à la troisième personne affiche un message “Terminé !” accompagné de son classement.
-13. Lorsque tous les joueurs ont passé la ligne d’arrivée, le dispositif de projection bascule sur l’écran de résultats. Ce dernier affiche pour chaque joueur son classement, sa vitesse moyenne, le nombre de haies qu’il a passé avec succès et son rythme cardiaque moyen. Il affiche également à côté les résultats (classement, vitesse moyenne, rythme cardiaque moyen) du joueur virtuel imitant un athlète.
-14. Les participants ont également un récapitulatif de leur rythme cardiaque sur leur montre, il peuvent voir leurs pulsations cardiaque min, moyenne et max.
+13. Lorsque tous les joueurs ont passé la ligne d’arrivée, le dispositif de projection bascule sur l’écran de résultats. Cette dernière affiche pour chaque joueur son classement, sa vitesse moyenne, le nombre de haies qu’il a passé avec succès et son rythme cardiaque moyen. Il affiche également à côté les résultats (classement, vitesse moyenne, rythme cardiaque moyen) du joueur virtuel imitant un athlète.
+14. Les participants ont également un récapitulatif de leur rythme cardiaque sur leur montre, ils peuvent voir leurs pulsations cardiaque min, moyenne et max.
 15. Au bout d’une minute, le système est réinitialisé et l’écran de projection affiche un message indiquant que le système est en attente de participants pour une nouvelle partie.
