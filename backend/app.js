@@ -17,6 +17,19 @@ app.set('port', process.env.PORT || 3000);
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 server.listen(8282);
+var raceLabel;
+
+/**
+ * Get label of the race if option is used
+ */
+const labelFlagIndex = process.argv.indexOf('--label');
+if(labelFlagIndex>-1){
+  if(process.argv.length>=labelFlagIndex+2){
+    raceLabel = process.argv[labelFlagIndex+1];
+  }else{
+    throw 'Flag "--label" should be follow by a value, ex : npm start -- --label museeSportNice';
+  }
+}
 
 var projectorSocket = null;
 var smartphoneSocket = null;
@@ -36,7 +49,7 @@ io.on('connection', function (socket) {
 
   socket.on('kinectConnected', function (kinect) {
     console.log('Kinect '+kinect.state+'.');
-    game.setup();
+    game.setup(raceLabel);
     kinectSocket = socket;
   });
 

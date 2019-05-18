@@ -1,4 +1,5 @@
 const Player = require('./player.js');
+const recorder = require('../metrics/recorder');
 const map = require('./map.js');
 
 let players;
@@ -8,6 +9,7 @@ let projector;
 let smartphone;
 
 let startTime = null;
+let recordLabel;
 
 module.exports = {
 
@@ -22,7 +24,8 @@ module.exports = {
     /**
      * Setup configurations to start a new game
      */
-    setup: function () {
+    setup: function (label) {
+        recordLabel = !recordLabel? label : recordLabel;
         players = new Array();
         players.push(new Player(0, 2, true));
     },
@@ -122,13 +125,13 @@ module.exports = {
     },
 
     /**
-     * Update the current speed of a player
+     * Update the current speed of all players
      * @param {array} data object which contains all players id associates to a speed (m/s)
      */
     updatePlayersSpeed: function (data) {
         for (const player of data) {
             const playerObtained = players[this.findPlayerIndexById(player.id)];
-            if (!playerObtained.hasJumped) {
+            if (!playerObtained.finish) { // Stop updating player speed if he finished his race
                 playerObtained.updateSpeed(player.speed);
             }
         }
@@ -184,10 +187,13 @@ module.exports = {
         if (!everyoneFinished) {
             projector.emit('updatePlayers', this.playersToDTO());
         } else {
-            projector.emit('gameFinished', this.calculateAverages());
+            const raceResult = this.calculateAverages();
+            recorder.addRecord(recordLabel, raceResult);
+
+            projector.emit('gameFinished', raceResult);
             kinect.emit('gameFinished', "Finished");
             if (smartphone) {
-                smartphone.emit('gameFinished', this.calculateAverages())
+                smartphone.emit('gameFinished', raceResult)
             }
 
             setTimeout((function () {

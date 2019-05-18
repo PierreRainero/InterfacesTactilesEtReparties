@@ -21,7 +21,8 @@ Ce projet est responsable de la logique commune à toutes les parties de la cour
 ## Déploiement
 
 Il faut dans un premier temps récupérer tous les packages [npm](https://www.npmjs.com/) nécessaires au projet, pour cela il faut disposer de [node.js](https://nodejs.org/en/) et lancer la commande `npm i`.  
-Il faut ensuite démarrer le server à l'aide de la commande `npm start` (l'URI du serveur sera alors "localhost").
+Il faut ensuite démarrer le server à l'aide de la commande `npm start` (l'URI du serveur sera alors "localhost").  
+Il est possible d'ajouter un label aux métriques de chaque course avec l'option : `npm start -- --label monlabel`.  
 
 ## Technologies utilisées
 
